@@ -11,11 +11,22 @@ export default {
     nodeResolve: true,
     rootDir: '../..',
     plugins: [
+        {
+          transform({ path }) {
+            if (path.endsWith('ttl')) {
+              return {
+                headers: {
+                  'content-type': 'application/javascript'
+                }
+              }
+            }
+          }
+        },
         esbuildPlugin({ ts: true }),
         storybookPlugin({ type: 'web-components' }),
         rdfjs,
-        fromRollup(turtle),
-        fromRollup(nodeResolve),
+        fromRollup(turtle)(),
+        fromRollup(nodeResolve)(),
         fromRollup(commonjs)({
             exclude: [
                 '**/node_modules/@open-wc/**/*',
