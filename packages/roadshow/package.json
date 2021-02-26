@@ -1,0 +1,28 @@
+{
+  "name": "@hydrofoil/roadshow",
+  "version": "0.0.0",
+  "author": "Tomasz Pluskiewicz <awesome@hypermedia.app>",
+  "license": "MIT",
+  "main": "index.js",
+  "type": "module",
+  "files": [
+    "**/*.js",
+    "**/*.d.ts"
+  ],
+  "dependencies": {
+    "@rdf-esm/dataset": "^0.5.1",
+    "@rdfine/dash": "^0.1.2",
+    "@rdfine/shacl": "^0.7.4",
+    "@tpluscode/rdfine": "^0.5.24",
+    "@tpluscode/rdf-ns-builders": "^0.4.0",
+    "clownface": "^1.2.0",
+    "lit-html": "^1.3.0"
+  },
+  "scripts": {
+    "prepack": "tsc"
+  },
+  "private": false,
+  "publishConfig": {
+    "access": "public"
+  }
+}

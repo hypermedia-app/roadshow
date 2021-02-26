@@ -1,5 +1,5 @@
 {
-  "name": "@hydrofoil/roadshow",
+  "name": "roadshow",
   "private": true,
   "description": "Rendering app layouts using SHACL and lit-html",
   "scripts": {
@@ -8,25 +8,31 @@
     "release": "changeset publish"
   },
   "devDependencies": {
+    "@babel/preset-typescript": "^7.13.0",
     "@changesets/cli": "^2.12.0",
+    "@open-wc/eslint-config": "^4.2.0",
     "@tpluscode/eslint-config": "^0.1.1",
+    "@typescript-eslint/eslint-plugin": "^4.15.1",
+    "@typescript-eslint/parser": "^4.15.1",
     "eslint": "^7.12.0",
     "eslint-config-standard": "^15.0.0",
     "eslint-plugin-babel": "^5.3.1",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.3.1",
     "eslint-plugin-standard": "^4.0.2",
     "eslint-plugin-wc": "^1.2.0",
     "husky": "^5.0.9",
     "lint-staged": "^10.5.4",
-    "ts-lit-plugin": "^1.2.1"
+    "ts-lit-plugin": "^1.2.1",
+    "typescript": "^4.1.5"
   },
   "repository": "git@github.com:hypermedia-app/roadshow.git",
-  "author": "Hypermedia App <awesome@hypermedia.app>",
+  "author": "Tomasz Pluskiewicz <awesome@hypermedia.app>",
   "license": "MIT",
   "workspaces": [
-    "packages/*",
-    "storybook"
+    "apps/*",
+    "packages/*"
   ],
   "lint-staged": {
     "*.{js,ts}": [

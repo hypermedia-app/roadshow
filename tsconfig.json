@@ -28,11 +28,9 @@
   },
   "include": [
     "packages",
-    "demos",
-    "karma.conf.js",
+    "apps",
     "test-setup.js",
     "test-karma-setup.js",
-    "types/global.d.ts",
-    "stories"
+    "web-dev-server.config.mjs"
   ]
 }
