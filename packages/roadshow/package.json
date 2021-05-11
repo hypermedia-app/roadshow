@@ -11,8 +11,8 @@
   ],
   "dependencies": {
     "@rdf-esm/dataset": "^0.5.1",
-    "@rdfine/dash": "^0.1.2",
-    "@rdfine/shacl": "^0.7.4",
+    "@rdfine/dash": "^0.1.3",
+    "@rdfine/shacl": "^0.8.0",
     "@tpluscode/rdfine": "^0.5.24",
     "@tpluscode/rdf-ns-builders": "^0.4.0",
     "clownface": "^1.2.0",
