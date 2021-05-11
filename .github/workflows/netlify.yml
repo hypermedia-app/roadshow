@@ -15,7 +15,7 @@ jobs:
 
       - uses: nelonoel/branch-name@v1.0.1
 
-      - run: yarn typedoc
+      # - run: yarn typedoc
 
       - name: Publish preview
         uses: jsmrcaga/action-netlify-deploy@v1.5.0
@@ -24,6 +24,7 @@ jobs:
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
           NETLIFY_DEPLOY_MESSAGE: Preview ${{ env.BRANCH_NAME }}
           build_directory: dist
+          build_command: (cd apps/storybook; yarn build)
           deploy_alias: ${{ env.BRANCH_NAME }}
           NETLIFY_DEPLOY_TO_PROD: ${{ env.BRANCH_NAME == 'master' }}
 
