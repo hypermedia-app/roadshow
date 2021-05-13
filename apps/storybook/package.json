@@ -1,13 +1,13 @@
 {
   "name": "storybook",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "private": true,
   "scripts": {
     "start": "wds",
     "build": "build-storybook --output-dir ../../dist/storybook"
   },
   "dependencies": {
-    "@hydrofoil/roadshow": "0.0.0",
+    "@hydrofoil/roadshow": "0.0.1",
     "@rdf-esm/dataset": "^0.5.1",
     "@rdf-esm/formats-common": "^0.5",
     "@rdfine/hydra": "^0.6.4",
