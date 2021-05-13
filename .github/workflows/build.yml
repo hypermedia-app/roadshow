@@ -22,7 +22,6 @@ jobs:
           node-version: 13
       - run: yarn install --ci
       - run: yarn tsc --noEmit
-      - run: yarn build
 
   test:
     runs-on: ubuntu-latest
