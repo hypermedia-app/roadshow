@@ -25,7 +25,7 @@ export interface Roadshow {
 export interface Viewer {
   viewer?: NamedNode | BlankNode
   render(roadshow: Roadshow, resource: GraphPointer, shape: NodeShape | undefined): TemplateResult
-  match(arg: {resource: GraphPointer | undefined; shape: NodeShape | undefined}): number | null
+  match(arg: {resource: GraphPointer; shape: NodeShape | undefined}): number | null
 }
 
 interface RoadshowInit {
@@ -33,9 +33,9 @@ interface RoadshowInit {
   viewers: Viewer[]
 }
 
-function suitableShape(resource: GraphPointer | undefined) {
+function suitableShape(resource: GraphPointer) {
   return (shape: NodeShape) => {
-    const types = resource?.out(rdf.type).toArray() || []
+    const types = resource.out(rdf.type).toArray() || []
 
     const hasTargetClass = shape.pointer.has(sh.targetClass, types).terms.length > 0
     const s1 = shape.pointer.has(rdf.type, [rdfs.Class, sh.NodeShape])
@@ -52,7 +52,7 @@ type SuitableViewerResult = [
   NodeShape | undefined
 ]
 
-function suitableViewer(resource: GraphPointer | undefined) {
+function suitableViewer(resource: GraphPointer) {
   return ([{ viewer, render, match }, shape]: [Viewer, NodeShape | undefined]): SuitableViewerResult => ([{
     render,
     viewer,
