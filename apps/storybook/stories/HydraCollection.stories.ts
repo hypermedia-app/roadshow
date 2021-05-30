@@ -1,4 +1,4 @@
-import { html } from 'lit-html'
+import { html } from 'lit'
 import roadshow, { Viewer } from '@hydrofoil/roadshow'
 import { findNodes } from 'clownface-shacl-path'
 import { hydra, sh, rdf, schema } from '@tpluscode/rdf-ns-builders'

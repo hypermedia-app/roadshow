@@ -17,7 +17,7 @@
     "@tpluscode/rdfine": "^0.5.22",
     "clownface": "^1.2.0",
     "clownface-shacl-path": "^1.0.0",
-    "lit-html": "^1.3.0"
+    "lit": "^2.0.0-rc.2"
   },
   "devDependencies": {
     "@rdfjs/serializer-rdfjs": "^0.0.4",
