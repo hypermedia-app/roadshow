@@ -78,7 +78,7 @@ export default ({ viewers, ...init }: RoadshowInit): Roadshow => {
     get shapes() {
       return shapes
     },
-    show: directive(({ resource, shape: overrideShape }: ViewParams) => (part: NodePart | unknown) => {
+    show: directive(({ resource, shape: preferredShape }: ViewParams) => (part: NodePart | unknown) => {
       if (!(part instanceof NodePart)) {
         throw new Error('show directive can only be used in content bindings')
       }
@@ -88,7 +88,7 @@ export default ({ viewers, ...init }: RoadshowInit): Roadshow => {
         return
       }
 
-      const found = shapes.filter(suitableShape(resource))
+      const found = [preferredShape, shapes.filter(suitableShape(resource))]
       const pairs: [Viewer, NodeShape | undefined][] = found.length
         ? cartesian(viewers, found)
         : viewers.map(v => [v])
@@ -98,7 +98,7 @@ export default ({ viewers, ...init }: RoadshowInit): Roadshow => {
         .sort(byScore)[0] || []
 
       if (viewer) {
-        part.setValue(viewer.render(roadshow, resource, overrideShape || shape))
+        part.setValue(viewer.render(roadshow, resource, shape))
       } else {
         part.setValue(resource?.value || '')
       }
