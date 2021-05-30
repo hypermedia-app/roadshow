@@ -1,19 +1,18 @@
 import { directive, NodePart, TemplateResult } from 'lit-html'
-import clownface, { GraphPointer, AnyPointer } from 'clownface'
-import { BlankNode, DatasetCore, NamedNode } from 'rdf-js'
-import { dataset } from '@rdf-esm/dataset'
-import { rdf, sh } from '@tpluscode/rdf-ns-builders'
+import type { GraphPointer } from 'clownface'
+import { BlankNode, NamedNode } from 'rdf-js'
+import { dash, rdf, rdfs, sh } from '@tpluscode/rdf-ns-builders'
 import { NodeShape } from '@rdfine/shacl'
 import { fromPointer } from '@rdfine/shacl/lib/NodeShape'
 import { NodeShapeMixinEx, PropertyShapeMixinEx } from '@rdfine/dash/extensions/sh'
 import RdfResource from '@tpluscode/rdfine'
+import { NodeShapeBundle, PropertyShapeBundle } from '@rdfine/shacl/bundles'
 
+RdfResource.factory.addMixin(...NodeShapeBundle, ...PropertyShapeBundle)
 RdfResource.factory.addMixin(NodeShapeMixinEx, PropertyShapeMixinEx)
 
-// const stateMap = new WeakMap()
-
 interface ViewParams {
-  resource: GraphPointer
+  resource: GraphPointer | undefined
   shape?: NodeShape
 }
 
@@ -26,46 +25,54 @@ export interface Roadshow {
 export interface Viewer {
   viewer?: NamedNode | BlankNode
   render(roadshow: Roadshow, resource: GraphPointer, shape: NodeShape | undefined): TemplateResult
-  match(arg: {resource: GraphPointer; shape: NodeShape | undefined}): number | null
+  match(arg: {resource: GraphPointer | undefined; shape: NodeShape | undefined}): number | null
 }
 
 interface RoadshowInit {
-  shapes: AnyPointer[]
+  shapes: GraphPointer[]
   viewers: Viewer[]
 }
 
-function suitableShape(resource: GraphPointer) {
-  return (shape: NodeShape) => shape.pointer.has(sh.targetClass, resource.out(rdf.type)).terms.length > 0
-}
+function suitableShape(resource: GraphPointer | undefined) {
+  return (shape: NodeShape) => {
+    const types = resource?.out(rdf.type).toArray() || []
 
-function combineDatasets(combined: DatasetCore, shape: AnyPointer) {
-  for (const dataset of shape.datasets) {
-    for (const quad of dataset) {
-      combined.add(quad)
-    }
+    const hasTargetClass = shape.pointer.has(sh.targetClass, types).terms.length > 0
+    const s1 = shape.pointer.has(rdf.type, [rdfs.Class, sh.NodeShape])
+
+    const hasImplicitTarget = s1.terms.length > 0 && types.some(type => type.term.equals(shape.id))
+    const applicable = shape.pointer.has(dash.applicableToClass, types).terms.length > 0
+
+    return hasTargetClass || hasImplicitTarget || applicable
   }
-  return combined
 }
 
-function suitableViewer(resource: GraphPointer, shape: NodeShape | undefined) {
-  return ({ viewer, render, match }: Viewer): Pick<Viewer, 'render' | 'viewer'> & { score: number | null } => ({
+type SuitableViewerResult = [
+  Pick<Viewer, 'render' | 'viewer'> & { score: number | null },
+  NodeShape | undefined
+]
+
+function suitableViewer(resource: GraphPointer | undefined) {
+  return ([{ viewer, render, match }, shape]: [Viewer, NodeShape | undefined]): SuitableViewerResult => ([{
     render,
     viewer,
     score: match({ resource, shape }),
-  })
+  }, shape])
 }
 
-function byScore(left: { score: number | null }, right: { score: number | null }): number {
+function byScore([left]: SuitableViewerResult, [right]: SuitableViewerResult): number {
   const leftScore = left.score || 0
   const rightScore = right.score || 0
 
   return rightScore - leftScore
 }
 
+const cartesian =
+  (...a: any[]) => a.reduce((a, b) => a.flatMap((d: any) => b.map((e: any) => [d, e].flat())))
+
 export default ({ viewers, ...init }: RoadshowInit): Roadshow => {
-  const shapes = clownface({ dataset: init.shapes.reduce(combineDatasets, dataset()) })
-    .has(rdf.type, sh.NodeShape)
-    .map(ptr => fromPointer(ptr))
+  const shapes = init.shapes
+    .map((ptr: any) => fromPointer(ptr))
 
   const roadshow: Roadshow = {
     get shapes() {
@@ -76,14 +83,25 @@ export default ({ viewers, ...init }: RoadshowInit): Roadshow => {
         throw new Error('show directive can only be used in content bindings')
       }
 
-      const [found] = shapes.filter(suitableShape(resource))
-      const shape = overrideShape || found
-      const [viewer] = viewers
-        .map(suitableViewer(resource, shape))
-        .filter(({ score }) => score)
-        .sort(byScore)
+      if (!resource) {
+        part.setValue('')
+        return
+      }
 
-      part.setValue(viewer?.render(roadshow, resource, shape) || resource.value)
+      const found = shapes.filter(suitableShape(resource))
+      const pairs: [Viewer, NodeShape | undefined][] = found.length
+        ? cartesian(viewers, found)
+        : viewers.map(v => [v])
+      const [viewer, shape] = pairs
+        .map(suitableViewer(resource))
+        .filter(([{ score }]) => score)
+        .sort(byScore)[0] || []
+
+      if (viewer) {
+        part.setValue(viewer.render(roadshow, resource, overrideShape || shape))
+      } else {
+        part.setValue(resource?.value || '')
+      }
     }),
     findShape({ resource }) {
       return shapes.filter(suitableShape(resource))[0]
