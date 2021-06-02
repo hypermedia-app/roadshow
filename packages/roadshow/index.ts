@@ -1,5 +1,5 @@
 import { TemplateResult } from 'lit'
-import { directive } from 'lit/directive.js'
+import { directive } from 'lit/async-directive.js'
 import type { GraphPointer } from 'clownface'
 import { BlankNode, NamedNode } from 'rdf-js'
 import { NodeShape } from '@rdfine/shacl'
@@ -13,8 +13,10 @@ import { suitableShape } from './libs/shape'
 RdfResource.factory.addMixin(...NodeShapeBundle, ...PropertyShapeBundle)
 RdfResource.factory.addMixin(NodeShapeMixinEx, PropertyShapeMixinEx)
 
+type Resource = GraphPointer | undefined | null
+
 export interface ViewParams {
-  resource: GraphPointer | undefined
+  resource: Resource | Promise<Resource>
   shape?: NodeShape
 }
 
@@ -33,6 +35,7 @@ export interface Viewer {
 interface RoadshowInit {
   shapes: GraphPointer[]
   viewers: Viewer[]
+  load?(id: NamedNode): Promise<GraphPointer<NamedNode>>
 }
 
 export default ({ viewers, ...init }: RoadshowInit): Roadshow => {

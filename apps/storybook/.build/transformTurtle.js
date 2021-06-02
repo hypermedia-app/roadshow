@@ -9,13 +9,13 @@ const serializer = new Serializer({
 })
 
 module.exports = function turtle () {
-  const filter = createFilter(/ttl$/)
+  const filter = createFilter(/(ttl|trig)$/)
 
   return {
     name: 'turtle-transform',
     async transform (code, id) {
       if (!filter(id)) return
-      const stream = await parsers.import('text/turtle', toStream(code))
+      const stream = await parsers.import('application/trig', toStream(code))
 
       return {
         code: await toString(serializer.import(stream)),

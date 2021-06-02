@@ -1,4 +1,5 @@
-import { Directive, PartInfo, PartType } from 'lit/directive.js'
+import { PartInfo, PartType } from 'lit/directive.js'
+import { AsyncDirective } from 'lit/async-directive.js'
 import type { NodeShape } from '@rdfine/shacl'
 import type { GraphPointer } from 'clownface'
 import type { Roadshow, Viewer, ViewParams } from './index'
@@ -26,10 +27,12 @@ function byScore([left]: SuitableViewerResult, [right]: SuitableViewerResult): n
 const cartesian =
   (...a: any[]) => a.reduce((a, b) => a.flatMap((d: any) => b.map((e: any) => [d, e].flat())))
 
-export abstract class RoadshowDirective extends Directive {
+export abstract class RoadshowDirective extends AsyncDirective {
   abstract get shapes(): NodeShape[]
   abstract get viewers(): Viewer[]
   abstract get roadshow(): Roadshow
+
+  viewer?: Pick<Viewer, 'render' | 'viewer'>
 
   constructor(partInfo: PartInfo) {
     super(partInfo)
@@ -38,24 +41,31 @@ export abstract class RoadshowDirective extends Directive {
     }
   }
 
-  render({ resource, shape: preferredShape }: ViewParams): unknown {
-    if (!resource) {
-      return ''
-    }
+  render({ resource: resourceOrLazy, shape: preferredShape }: ViewParams): unknown {
+    Promise.resolve().then(async () => {
+      const resource = await resourceOrLazy
 
-    const found = [preferredShape, ...this.roadshow.findShapes({ resource })]
-    const pairs: [Viewer, NodeShape | undefined][] = found.length
-      ? cartesian(this.viewers, found)
-      : this.viewers.map(v => [v])
-    const [viewer, shape] = pairs
-      .map(suitableViewer(resource))
-      .filter(([{ score }]) => score)
-      .sort(byScore)[0] || []
+      if (!resource) {
+        return ''
+      }
 
-    if (viewer) {
-      return viewer.render(this.roadshow, resource, shape)
-    }
+      const found = [preferredShape, ...this.roadshow.findShapes({ resource })]
+      const pairs: [Viewer, NodeShape | undefined][] = found.length
+        ? cartesian(this.viewers, found)
+        : this.viewers.map(v => [v])
+      const [viewer, shape] = pairs
+        .map(suitableViewer(resource))
+        .filter(([{ score }]) => score)
+        .sort(byScore)[0] || []
 
-    return resource?.value || ''
+      if (viewer) {
+        this.viewer = viewer
+        return this.setValue(viewer.render(this.roadshow, resource, shape))
+      }
+
+      return this.setValue(resource?.value || '')
+    })
+
+    return 'Loading'
   }
 }

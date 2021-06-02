@@ -13,7 +13,7 @@ export default {
   plugins: [
     {
       transform ({ path }) {
-        if (path.endsWith('ttl')) {
+        if (path.endsWith('ttl') || path.endsWith('trig')) {
           return {
             headers: {
               'content-type': 'application/javascript',

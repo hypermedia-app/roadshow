@@ -8,8 +8,10 @@
   },
   "dependencies": {
     "@hydrofoil/roadshow": "0.0.1",
+    "@rdf-esm/data-model": "^0.5.4",
     "@rdf-esm/dataset": "^0.5.1",
     "@rdf-esm/formats-common": "^0.5",
+    "@rdf-esm/namespace": "^0.5",
     "@rdfine/hydra": "^0.6.4",
     "@rdfine/schema": "^0.6.3",
     "@rdfine/shacl": "^0.8",
