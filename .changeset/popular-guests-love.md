@@ -3,4 +3,4 @@
 "storybook": minor
 ---
 
-Rewrite with lit@2
+Rewrite with lit@2 using `ReactiveControllers`

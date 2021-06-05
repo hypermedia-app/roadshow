@@ -22,6 +22,8 @@
     "lit": "^2.0.0-rc.2"
   },
   "devDependencies": {
+    "@babel/plugin-proposal-class-properties": "^7.13.0",
+    "@babel/plugin-proposal-decorators": "^7.14.2",
     "@rdfjs/serializer-rdfjs": "^0.0.4",
     "@rollup/plugin-commonjs": "^17.1.0",
     "@rollup/plugin-node-resolve": "^11.2.0",

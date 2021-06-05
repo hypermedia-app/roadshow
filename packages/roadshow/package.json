@@ -14,7 +14,16 @@
     "@rdfine/shacl": "^0.8.0",
     "@tpluscode/rdfine": "^0.5.24",
     "@tpluscode/rdf-ns-builders": "^0.4.0",
+    "@rdf-esm/dataset": "^0.5.0",
+    "@rdf-esm/namespace": "^0.5.3",
+    "@rdf-esm/term-map": "^0.5.0",
+    "@rdfjs/types": "*",
+    "clownface": "^1.2.0",
+    "clownface-shacl-path": "^1.0.1",
     "lit": "^2.0.0-rc.2"
+  },
+  "devDependencies": {
+    "@types/rdfjs__term-map": "*"
   },
   "scripts": {
     "prepack": "tsc"

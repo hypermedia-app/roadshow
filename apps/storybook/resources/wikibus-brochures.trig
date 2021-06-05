@@ -353,7 +353,7 @@
     bibo:pages 6 ;
     schema:associatedMedia <https://sources.wikibus.org/brochure/1567/file> ;
     schema:contributor
-      <https://users.wikibus.org/user/google-oauth2%7C117957693005245427833> ;
+      <https://users.wikibus.org/user/tplus> ;
     schema:primaryImageOfPage
       <https://sources.wikibus.org/image/wikibus%20library/brochures/dz8kmjrgh0wyoac267sf> ;
     rdfs:comment "União de Transportadores para Importação e Comércio, Lda."^^xsd:string ;
@@ -367,7 +367,7 @@
     bibo:pages 2 ;
     schema:associatedMedia <https://sources.wikibus.org/brochure/1644/file> ;
     schema:contributor
-      <https://users.wikibus.org/user/google-oauth2%7C117957693005245427833> ;
+      <https://users.wikibus.org/user/tplus> ;
     schema:primaryImageOfPage
       <https://sources.wikibus.org/image/wikibus%20library/brochures/gxbiao0eou1kvhg3nujw> ;
     ns0:images <https://sources.wikibus.org/brochure/1644/images> .
@@ -380,7 +380,7 @@
     bibo:pages 2 ;
     schema:associatedMedia <https://sources.wikibus.org/brochure/2941/file> ;
     schema:contributor
-      <https://users.wikibus.org/user/google-oauth2%7C117957693005245427833> ;
+      <https://users.wikibus.org/user/tplus> ;
     schema:primaryImageOfPage
       <https://sources.wikibus.org/image/wikibus%20library/brochures/n6r73fayzuwiwkxczoc2> ;
     ns0:images <https://sources.wikibus.org/brochure/2941/images> .
@@ -393,7 +393,7 @@
     bibo:pages 2 ;
     schema:associatedMedia <https://sources.wikibus.org/brochure/2942/file> ;
     schema:contributor
-      <https://users.wikibus.org/user/google-oauth2%7C117957693005245427833> ;
+      <https://users.wikibus.org/user/tplus> ;
     schema:primaryImageOfPage
       <https://sources.wikibus.org/image/wikibus%20library/brochures/wayhhbc0kjzkkkvqg8le> ;
     ns0:images <https://sources.wikibus.org/brochure/2942/images> .
@@ -407,7 +407,7 @@
     bibo:pages 16 ;
     schema:associatedMedia <https://sources.wikibus.org/brochure/361/file> ;
     schema:contributor
-      <https://users.wikibus.org/user/google-oauth2%7C117957693005245427833> ;
+      <https://users.wikibus.org/user/john> ;
     ns0:images <https://sources.wikibus.org/brochure/361/images> ;
     ns0:wishlistItem <https://sources.wikibus.org/wishlist/361> .
 
@@ -421,7 +421,7 @@
     bibo:pages 6 ;
     schema:associatedMedia <https://sources.wikibus.org/brochure/4450/file> ;
     schema:contributor
-      <https://users.wikibus.org/user/google-oauth2%7C117957693005245427833> ;
+      <https://users.wikibus.org/user/john> ;
     schema:primaryImageOfPage
       <https://sources.wikibus.org/image/wikibus%20library/brochures/ke8dq6cbg3ngrkiuc566> ;
     ns0:images <https://sources.wikibus.org/brochure/4450/images> .
@@ -436,7 +436,7 @@
     bibo:pages 6 ;
     schema:associatedMedia <https://sources.wikibus.org/brochure/4451/file> ;
     schema:contributor
-      <https://users.wikibus.org/user/google-oauth2%7C117957693005245427833> ;
+      <https://users.wikibus.org/user/john> ;
     schema:primaryImageOfPage
       <https://sources.wikibus.org/image/wikibus%20library/brochures/geowtoeur6z6dpzg3uew> ;
     ns0:images <https://sources.wikibus.org/brochure/4451/images> .
@@ -449,7 +449,7 @@
     bibo:pages 2 ;
     schema:associatedMedia <https://sources.wikibus.org/brochure/4637/file> ;
     schema:contributor
-      <https://users.wikibus.org/user/google-oauth2%7C117957693005245427833> ;
+      <https://users.wikibus.org/user/john> ;
     schema:primaryImageOfPage
       <https://sources.wikibus.org/image/wikibus%20library/brochures/lfs7pburkgg02hcrdhsy> ;
     ns0:images <https://sources.wikibus.org/brochure/4637/images> .
@@ -463,7 +463,7 @@
     bibo:pages 2 ;
     schema:associatedMedia <https://sources.wikibus.org/brochure/4638/file> ;
     schema:contributor
-      <https://users.wikibus.org/user/google-oauth2%7C117957693005245427833> ;
+      <https://users.wikibus.org/user/john> ;
     schema:primaryImageOfPage
       <https://sources.wikibus.org/image/wikibus%20library/brochures/msiw4goqoxglr5umw7lt> ;
     ns0:images <https://sources.wikibus.org/brochure/4638/images> .
@@ -476,7 +476,7 @@
     bibo:pages 4 ;
     schema:associatedMedia <https://sources.wikibus.org/brochure/4750/file> ;
     schema:contributor
-      <https://users.wikibus.org/user/google-oauth2%7C117957693005245427833> ;
+      <https://users.wikibus.org/user/john> ;
     ns0:images <https://sources.wikibus.org/brochure/4750/images> ;
     ns0:wishlistItem <https://sources.wikibus.org/wishlist/4750> .
 
@@ -490,7 +490,7 @@
     bibo:pages 4 ;
     schema:associatedMedia <https://sources.wikibus.org/brochure/4751/file> ;
     schema:contributor
-      <https://users.wikibus.org/user/google-oauth2%7C117957693005245427833> ;
+      <https://users.wikibus.org/user/john> ;
     ns0:images <https://sources.wikibus.org/brochure/4751/images> ;
     ns0:wishlistItem <https://sources.wikibus.org/wishlist/4751> .
 
@@ -503,7 +503,7 @@
     bibo:pages 2 ;
     schema:associatedMedia <https://sources.wikibus.org/brochure/4752/file> ;
     schema:contributor
-      <https://users.wikibus.org/user/google-oauth2%7C117957693005245427833> ;
+      <https://users.wikibus.org/user/john> ;
     ns0:images <https://sources.wikibus.org/brochure/4752/images> ;
     ns0:wishlistItem <https://sources.wikibus.org/wishlist/4752> .
 
@@ -586,11 +586,18 @@
     dtype:orderIndex 1 .
 }
 
-<https://users.wikibus.org/user/google-oauth2%7C117957693005245427833> {
-  <https://users.wikibus.org/user/google-oauth2%7C117957693005245427833>
+<https://users.wikibus.org/user/tplus> {
+  <https://users.wikibus.org/user/tplus>
     a schema:Person ;
-    schema:identifier "google-oauth2|117957693005245427833" ;
     schema:image [ a schema:ImageObject ;
                    schema:contentUrl <https://lh3.googleusercontent.com/a-/AOh14Gg1oJW0idITYYlQ7X0iiFW_HZFtTReE7NGUjjO_XxA=s96-c> ] ;
     schema:name "Tomek Pluskiewicz" .
+}
+
+<https://users.wikibus.org/user/john> {
+  <https://users.wikibus.org/user/john>
+    a schema:Person ;
+    schema:image [ a schema:ImageObject ;
+                   schema:contentUrl <https://lh3.googleusercontent.com/a-/AOh14Gg1oJW0idITYYlQ7X0iiFW_HZFtTReE7NGUjjO_XxA=s96-c> ] ;
+    schema:name "John Doe" .
 }

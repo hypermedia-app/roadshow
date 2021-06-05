@@ -10,6 +10,7 @@
        schema:givenName "John" ;
        schema:telephone "123456789" ;
        schema:image [
+                      a schema:ImageObject ;
                       schema:contentUrl <https://www.placecage.com/320/240> ;
                       schema:caption "John's profile image" ;
                     ]
@@ -20,6 +21,7 @@
           schema:telephone "555666777" ;
           schema:image
             [
+              a schema:ImageObject ;
               schema:contentUrl <https://placeimg.com/320/240/face> ;
               schema:caption "Jane's profile image" ;
             ]
