@@ -9,7 +9,7 @@ import { RenderersController } from './RenderersController'
 import { ViewersController } from './ViewersController'
 import { ShapesController } from './ShapesController'
 import { ResourcesController } from './ResourcesController'
-import { rdsh } from './namespace'
+import { rs } from './namespace'
 
 const TRUE = literal('true', xsd.boolean)
 
@@ -88,7 +88,7 @@ export class RoadshowController implements ReactiveController {
       shapes: this.shapes,
       show({ resource, property }) {
         let toRender = resource
-        if (property?.pointer.out(rdsh.dereference).term?.equals(TRUE) && resource.term.termType === 'NamedNode') {
+        if (property?.pointer.out(rs.dereference).term?.equals(TRUE) && resource.term.termType === 'NamedNode') {
           const dereferenced = resources.get(resource.term)
           if (dereferenced) {
             toRender = dereferenced
