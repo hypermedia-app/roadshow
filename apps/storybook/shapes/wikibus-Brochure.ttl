@@ -1,0 +1,19 @@
+PREFIX schema: <http://schema.org/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+prefix sh: <http://www.w3.org/ns/shacl#>
+prefix wbo: <https://wikibus.org/ontology#>
+prefix roadshow: <https://hypermedia.app/roadshow#>
+
+<>
+  sh:targetClass wbo:Brochure ;
+  sh:property
+    [
+      sh:path dcterms:title ;
+      sh:name "Title" ;
+    ],
+    [
+      sh:path schema:contributor ;
+      sh:name "Contributor" ;
+      roadshow:dereference true ;
+    ] ;
+.

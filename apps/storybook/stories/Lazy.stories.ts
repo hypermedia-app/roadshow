@@ -5,9 +5,10 @@ import { hydra, sh, rdf, dash } from '@tpluscode/rdf-ns-builders'
 import { namedNode } from '@rdf-esm/data-model'
 import { ResourceLoader } from '@hydrofoil/roadshow/ResourcesController'
 import clownface from 'clownface'
+import { fromPointer } from '@rdfine/shacl/lib/NodeShape'
 import { template } from '../lib/template'
-import hydraCollectionShape from '../shapes/hydra-collection'
-import wikibusBrochure from '../shapes/wikibus-Brochure'
+import hydraCollectionShape from '../shapes/hydra-collection.ttl'
+import wikibusBrochure from '../shapes/wikibus-Brochure.ttl'
 import { runFactory } from '../resources/runFactory'
 import brochures from '../resources/wikibus-brochures.trig'
 
@@ -71,7 +72,7 @@ const Template = template<ViewStoryParams>(({ resource, viewers, renderers }) =>
   const shapes = [
     hydraCollectionShape,
     wikibusBrochure,
-  ]
+  ].map(runFactory).map(p => fromPointer(p))
 
   return html`
     <roadshow-view .resourceId="${namedNode(resource)}"

@@ -1,0 +1,35 @@
+PREFIX dash: <http://datashapes.org/dash#>
+PREFIX schema: <http://schema.org/>
+PREFIX sh: <http://www.w3.org/ns/shacl#>
+
+<>
+  sh:targetClass schema:Person ;
+  sh:property
+    [
+      sh:path schema:givenName ;
+      sh:name "First name" ;
+      sh:order 10 ;
+    ],
+    [
+      sh:path schema:familyName ;
+      sh:name 'Last name' ;
+      sh:order 20 ;
+    ],
+    [
+      sh:path schema:telephone ;
+      sh:name 'Phone #' ;
+      sh:order 30 ;
+    ],
+    [
+      sh:path schema:image ;
+      dash:hidden true ;
+      sh:node
+        [
+          sh:targetClass: schema:ImageObject ;
+          sh:property
+            [
+              sh:path schema:contentUrl ;
+            ] ;
+        ] ;
+    ] ;
+.

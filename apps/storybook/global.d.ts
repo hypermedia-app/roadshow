@@ -1,5 +1,7 @@
-declare module '../resources/*.ttl' {
-  import { Quad, DataFactory, Quad, DataFactory } from 'rdf-js'
+/* eslint-disable import/no-duplicates */
+
+declare module '*.ttl' {
+  import { Quad, DataFactory } from 'rdf-js'
 
   export declare interface QuadArrayFactory {
     (factory: DataFactory): Quad[]
@@ -10,7 +12,8 @@ declare module '../resources/*.ttl' {
   export default factory
 }
 
-declare module '../resources/*.trig' {
+declare module '*.trig' {
+  import { Quad, DataFactory } from 'rdf-js'
 
   export declare interface QuadArrayFactory {
     (factory: DataFactory): Quad[]

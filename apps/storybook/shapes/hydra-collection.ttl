@@ -1,0 +1,10 @@
+PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
+PREFIX sh: <http://www.w3.org/ns/shacl#>
+
+<>
+  sh:targetClass hydra:Collection ;
+  sh:property
+    [
+      sh:path hydra:member ;
+    ] ;
+.

@@ -3,10 +3,11 @@ import { Renderer, ViewerMatchInit } from '@hydrofoil/roadshow'
 import '@hydrofoil/roadshow/roadshow-view'
 import { findNodes } from 'clownface-shacl-path'
 import { hydra, sh, rdf, schema, dash } from '@tpluscode/rdf-ns-builders'
+import { fromPointer } from '@rdfine/shacl/lib/NodeShape'
 import { template } from '../lib/template'
 import addressBook, { QuadArrayFactory } from '../resources/hydra-collection.ttl'
-import hydraCollectionShape from '../shapes/hydra-collection'
-import schemaPerson from '../shapes/schema-person'
+import hydraCollectionShape from '../shapes/hydra-collection.ttl'
+import schemaPerson from '../shapes/schema-person.ttl'
 import { runFactory } from '../resources/runFactory'
 
 const collectionViewer: ViewerMatchInit = {
@@ -95,7 +96,7 @@ const Template = template<ViewStoryParams>(({ resource, viewers, renderers }) =>
   const shapes = [
     hydraCollectionShape,
     schemaPerson,
-  ]
+  ].map(runFactory).map(p => fromPointer(p))
 
   return html`
     <roadshow-view .resource="${runFactory(resource)}"
