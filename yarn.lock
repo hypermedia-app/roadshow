@@ -1127,6 +1127,21 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
+"@hydrofoil/vocabularies@^0.1.3":
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/@hydrofoil/vocabularies/-/vocabularies-0.1.3.tgz#96deda0325e17dd32a4d18500f21f83cb038cc87"
+  integrity sha512-sNPuh0Y229gY11HRjtXvQP4Vy1cAYUi1ekMKpJxeNbsJrBRl/12iOnAR8WFWgmRebDgyowGAhG/x+jexo6xOyw==
+  dependencies:
+    "@rdf-esm/namespace" "^0.5.3"
+    "@rdfjs/parser-n3" "^1.1.4"
+    "@zazuko/rdf-vocabularies" "*"
+    commander "^5.0.0"
+    pkg-dir "^5.0.0"
+    rdf-ext "^1.3.1"
+    rdf-js "*"
+    readable-stream "^3.6.0"
+    string-to-stream "^3.0.1"
+
 "@lit/reactive-element@^1.0.0-rc.2":
   version "1.0.0-rc.2"
   resolved "https://registry.yarnpkg.com/@lit/reactive-element/-/reactive-element-1.0.0-rc.2.tgz#f24dba16ea571a08dca70f1783bd2ca5ec8de3ee"
@@ -2096,6 +2111,18 @@
   version "2.5.0"
   resolved "https://registry.yarnpkg.com/@webcomponents/webcomponentsjs/-/webcomponentsjs-2.5.0.tgz#61b27785a6ad5bfd68fa018201fe418b118cb38d"
   integrity sha512-C0l51MWQZ9kLzcxOZtniOMohpIFdCLZum7/TEHv3XWFc1Fvt5HCpbSX84x8ltka/JuNKcuiDnxXFkiB2gaePcg==
+
+"@zazuko/rdf-vocabularies@*":
+  version "2021.6.10"
+  resolved "https://registry.yarnpkg.com/@zazuko/rdf-vocabularies/-/rdf-vocabularies-2021.6.10.tgz#a8d8dd22934b160e0f6cd52d2fc3ab2f91eb4b70"
+  integrity sha512-Cwflod4ACJfAhrx7RcMGvG0DaDR8QBJfWWBOjuntvSnTbZ6+79ycuvfG0Hde3gyUfT31ncLy6yuFhiDGqH+ETw==
+  dependencies:
+    "@rdfjs/parser-n3" "^1.1.4"
+    commander "^5.0.0"
+    pkg-dir "^5.0.0"
+    rdf-ext "^1.3.1"
+    readable-stream "^3.6.0"
+    string-to-stream "^3.0.1"
 
 "@zazuko/rdf-vocabularies@latest":
   version "2021.2.8"
@@ -6281,7 +6308,7 @@ rdf-dataset-indexed@^0.4.0:
     "@rdfjs/data-model" "^1.1.1"
     readable-stream "^3.3.0"
 
-rdf-ext@^1.3.0:
+rdf-ext@^1.3.0, rdf-ext@^1.3.1:
   version "1.3.1"
   resolved "https://registry.yarnpkg.com/rdf-ext/-/rdf-ext-1.3.1.tgz#742445a23b5cff0d2aecf3211cfb7b26c25b05f5"
   integrity sha512-mdkmEULWtKV9t5EHfnAxM2zL4xiloiSrEZnDtsBsVEpR4kk7teUfhotaXBzW5J1EHZSq5KcZ5VmJsUFZljLMSw==
@@ -6290,6 +6317,13 @@ rdf-ext@^1.3.0:
     "@rdfjs/to-ntriples" "^1.0.1"
     rdf-dataset-indexed "^0.4.0"
     rdf-normalize "^1.0.0"
+
+rdf-js@*:
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/rdf-js/-/rdf-js-4.0.2.tgz#f01510528bbfc6e004012b71a8a533896c4c4c10"
+  integrity sha512-ApvlFa/WsQh8LpPK/6hctQwG06Z9ztQQGWVtrcrf9L6+sejHNXLPOqL+w7q3hF+iL0C4sv3AX1PUtGkLNzyZ0Q==
+  dependencies:
+    "@rdfjs/types" "*"
 
 rdf-normalize@^1.0.0:
   version "1.0.0"

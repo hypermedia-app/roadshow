@@ -4,12 +4,12 @@ import { NodeShape } from '@rdfine/shacl'
 import { NamedNode } from '@rdfjs/types'
 import { dash, xsd } from '@tpluscode/rdf-ns-builders'
 import { literal } from '@rdf-esm/dataset'
+import { roadshow } from '@hydrofoil/vocabularies/builders/strict'
 import { RenderContext, Renderer, RoadshowView } from './index'
 import { RenderersController } from './RenderersController'
 import { ViewersController } from './ViewersController'
 import { ShapesController } from './ShapesController'
 import { ResourcesController } from './ResourcesController'
-import { rs } from './namespace'
 
 const TRUE = literal('true', xsd.boolean)
 
@@ -86,9 +86,9 @@ export class RoadshowController implements ReactiveController {
       renderers: this.renderers,
       viewers: this.viewers,
       shapes: this.shapes,
-      show({ resource, property }) {
+      show({ resource, property, shape }) {
         let toRender = resource
-        if (property?.pointer.out(rs.dereference).term?.equals(TRUE) && resource.term.termType === 'NamedNode') {
+        if (property?.pointer.out(roadshow.dereference).term?.equals(TRUE) && resource.term.termType === 'NamedNode') {
           const dereferenced = resources.get(resource.term)
           if (dereferenced) {
             toRender = dereferenced
@@ -102,7 +102,7 @@ export class RoadshowController implements ReactiveController {
 
         const [viewer] = viewers.findApplicableViewers(toRender).map(v => v.pointer)
         const render = renderers.get(viewer?.term)
-        return render.call(this, toRender, undefined)
+        return render.call(this, toRender, shape)
       },
     }
 

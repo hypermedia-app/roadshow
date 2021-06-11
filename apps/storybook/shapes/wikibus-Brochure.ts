@@ -3,7 +3,7 @@ import { NodeShapeBundle, PropertyShapeBundle } from '@rdfine/shacl/bundles'
 import { fromPointer } from '@rdfine/shacl/lib/NodeShape'
 import { dcterms, schema } from '@tpluscode/rdf-ns-builders'
 import namespace from '@rdf-esm/namespace'
-import { rs } from '@hydrofoil/roadshow/namespace'
+import { roadshow } from '@hydrofoil/vocabularies/builders/strict'
 import { blankNode } from '../lib/nodes'
 
 const wbo = namespace('https://wikibus.org/ontology#')
@@ -19,6 +19,6 @@ export default fromPointer(blankNode(), {
   }, {
     path: schema.contributor,
     name: 'Contributor',
-    [rs.dereference.value]: true,
+    [roadshow.dereference.value]: true,
   }],
 })

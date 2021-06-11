@@ -36,7 +36,7 @@ const tableView: Renderer = {
       <tbody>
         ${collection.out(hydra.member).map(member => html`<tr>
           ${memberShape?.property.filter(({ hidden }) => !hidden).map(prop => html`<td>
-            ${findNodes(member, prop.pointer.out(sh.path).toArray()[0]).map(resource => html`${this.show({ resource })}`)}
+            ${findNodes(member, prop.pointer.out(sh.path).toArray()[0]).map(resource => html`${this.show({ resource, shape: memberShape })}`)}
           </td>`)}
         </tr>`)}
       </tbody>
