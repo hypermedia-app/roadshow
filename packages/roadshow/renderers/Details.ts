@@ -23,6 +23,10 @@ export const detailsView: Renderer = {
   viewer: dash.DetailsViewer,
   render(resource, shape) {
     const propertiesInit = shape!.property.reduce<[Term, ResourceMap][]>((entries, property) => {
+      if (property.hidden) {
+        return entries
+      }
+
       const objects = findNodes(resource, property.pointer.out(sh.path))
         .map((value) => {
           const viewers = this.viewers.findApplicableViewers(value).map(v => v.pointer)
