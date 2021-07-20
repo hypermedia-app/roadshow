@@ -1,4 +1,4 @@
-import { ReactiveController } from 'lit'
+import { html, ReactiveController } from 'lit'
 import type { GraphPointer } from 'clownface'
 import { NodeShape } from '@rdfine/shacl'
 import { NamedNode } from '@rdfjs/types'
@@ -66,13 +66,13 @@ export class RoadshowController implements ReactiveController {
 
   render(): unknown {
     if (!this.resource) {
-      return 'Loading...'
+      return RoadshowController.__renderLoadingSlot()
     }
     if (!this.shape) {
-      return 'No applicable shape found...'
+      return RoadshowController.__renderNoShapeSlot()
     }
     if (!this.__render) {
-      return 'No renderer'
+      return RoadshowController.__renderNoRendererSlot()
     }
 
     const { viewers, renderers, resources, host } = this
@@ -92,7 +92,7 @@ export class RoadshowController implements ReactiveController {
             resources.load?.(resource.term).then(() => {
               host.requestUpdate()
             })
-            return 'Loading...'
+            return RoadshowController.__renderLoadingSlot()
           }
         }
 
@@ -103,5 +103,17 @@ export class RoadshowController implements ReactiveController {
     }
 
     return this.__render.call(context, this.resource, this.shape)
+  }
+
+  private static __renderNoShapeSlot() {
+    return html`<slot name="no-shape">No applicable shape found...</slot>`
+  }
+
+  private static __renderLoadingSlot() {
+    return html`<slot name="loading">Loading...</slot>`
+  }
+
+  private static __renderNoRendererSlot() {
+    return html`<slot name="no-renderer">No renderer!</slot>`
   }
 }
