@@ -1,4 +1,4 @@
-import { LitElement } from 'lit'
+import { LitElement, PropertyValues } from 'lit'
 import { property } from 'lit/decorators.js'
 import type { GraphPointer } from 'clownface'
 import type { BlankNode, NamedNode } from '@rdfjs/types'
@@ -27,6 +27,12 @@ export class RoadshowViewElement extends LitElement implements RoadshowView {
   constructor() {
     super()
     this.roadshow = new RoadshowController(this)
+  }
+
+  protected updated(_changedProperties: PropertyValues): void {
+    if (_changedProperties.has('resource') || _changedProperties.has('resourceId')) {
+      this.roadshow.prepareResource()
+    }
   }
 
   render(): unknown {

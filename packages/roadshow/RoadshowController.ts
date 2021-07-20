@@ -36,7 +36,11 @@ export class RoadshowController implements ReactiveController {
     this.host.addController(this)
   }
 
-  async hostConnected(): Promise<void> {
+  hostConnected(): Promise<void> {
+    return this.prepareResource()
+  }
+
+  async prepareResource(): Promise<void> {
     const { resourceId } = this.host
     if (this.host.resource) {
       this.resource = this.host.resource
@@ -44,27 +48,18 @@ export class RoadshowController implements ReactiveController {
       this.resource = await this.resources.load?.(resourceId)
     }
 
-    this.prepareResource()
-    this.host.requestUpdate()
-  }
+    if (this.resource) {
+      this.applicableShapes = this.shapes.findApplicableShape(this.resource);
+      ([this.shape] = this.applicableShapes)
+      const { shape } = this
 
-  prepareResource(): void {
-    const { resource } = this
-    if (!resource) {
-      return
+      if (shape) {
+        const applicableViewers = this.viewers.findApplicableViewers(this.resource).map(({ pointer }) => pointer)
+        this.applicableViewers = [...applicableViewers, this.viewers.get(dash.DetailsViewer)];
+        ([this.viewer] = this.applicableViewers)
+        this.__render = this.renderers.get(this.viewer?.term)
+      }
     }
-
-    this.applicableShapes = this.shapes.findApplicableShape(resource);
-    ([this.shape] = this.applicableShapes)
-    const { shape } = this
-    if (!shape) {
-      return
-    }
-
-    const applicableViewers = this.viewers.findApplicableViewers(resource).map(({ pointer }) => pointer)
-    this.applicableViewers = [...applicableViewers, this.viewers.get(dash.DetailsViewer)];
-    ([this.viewer] = this.applicableViewers)
-    this.__render = this.renderers.get(this.viewer?.term)
 
     this.host.requestUpdate()
   }
