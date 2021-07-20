@@ -10,16 +10,17 @@ import type { ViewersController } from './ViewersController'
 import type { RenderersController } from './RenderersController'
 import type { ResourceLoader } from './ResourcesController'
 
-export interface RenderContext {
+export interface RenderContext<T = unknown> {
   shapes: ShapesController
   viewers: ViewersController
   renderers: RenderersController
   show(params: { resource: GraphPointer; shape?: NodeShape; property?: PropertyShape }): unknown
+  params: T
 }
 
-export interface Renderer {
+export interface Renderer<T = unknown> {
   viewer: NamedNode
-  render(this: RenderContext, resource: GraphPointer, shape: NodeShape | undefined): TemplateResult | string
+  render(this: RenderContext<T>, resource: GraphPointer, shape: NodeShape): TemplateResult | string
 }
 
 export interface ViewerMatch {
@@ -38,6 +39,7 @@ export interface RoadshowView extends ReactiveControllerHost {
   renderers: Renderer[]
   viewers: ViewerMatchInit[]
   resourceLoader?: ResourceLoader
+  params: any
 }
 
 RdfResource.factory.addMixin(...NodeShapeBundle, ...PropertyShapeBundle)

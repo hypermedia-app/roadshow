@@ -86,6 +86,7 @@ export class RoadshowController implements ReactiveController {
       renderers: this.renderers,
       viewers: this.viewers,
       shapes: this.shapes,
+      params: this.host.params,
       show({ resource, property, shape }) {
         let toRender = resource
         if (property?.pointer.out(roadshow.dereference).term?.equals(TRUE) && resource.term.termType === 'NamedNode') {
@@ -102,7 +103,7 @@ export class RoadshowController implements ReactiveController {
 
         const [viewer] = viewers.findApplicableViewers(toRender).map(v => v.pointer)
         const render = renderers.get(viewer?.term)
-        return render.call(this, toRender, shape)
+        return render.call(this, toRender, shape!)
       },
     }
 

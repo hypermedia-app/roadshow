@@ -16,6 +16,9 @@ export class RoadshowViewElement extends LitElement implements RoadshowView {
   @property({ type: Object })
   resourceId: NamedNode | undefined
 
+  @property({ type: Object })
+  params: unknown = {}
+
   shapes: NodeShape[] = []
   renderers: Renderer[] = []
   viewers: ViewerMatchInit[] = []
