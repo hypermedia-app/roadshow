@@ -10,7 +10,7 @@ export interface ResourceLoader {
 
 export class ResourcesController implements ReactiveController {
   private resources: Map<Term, GraphPointer>
-  _load?: ResourceLoader
+  private _load?: ResourceLoader
 
   constructor(private host: RoadshowView) {
     this.resources = new TermMap()

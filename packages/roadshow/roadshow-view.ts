@@ -6,6 +6,7 @@ import type { NodeShape } from '@rdfine/shacl'
 import { RoadshowController } from './RoadshowController'
 import type { RoadshowView, Renderer, ViewerMatchInit } from './index'
 import type { ResourceLoader } from './ResourcesController'
+import { ShapesLoader } from './ShapesController'
 
 export class RoadshowViewElement extends LitElement implements RoadshowView {
   private roadshow: RoadshowController
@@ -23,6 +24,7 @@ export class RoadshowViewElement extends LitElement implements RoadshowView {
   renderers: Renderer[] = []
   viewers: ViewerMatchInit[] = []
   resourceLoader?: ResourceLoader
+  shapesLoader?: ShapesLoader
 
   constructor() {
     super()

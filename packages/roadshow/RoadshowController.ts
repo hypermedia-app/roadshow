@@ -49,7 +49,7 @@ export class RoadshowController implements ReactiveController {
     }
 
     if (this.resource) {
-      this.applicableShapes = this.shapes.findApplicableShape(this.resource);
+      this.applicableShapes = await this.shapes.findApplicableShape({ resource: this.resource });
       ([this.shape] = this.applicableShapes)
       const { shape } = this
 
@@ -66,13 +66,13 @@ export class RoadshowController implements ReactiveController {
 
   render(): unknown {
     if (!this.resource) {
-      return RoadshowController.__renderLoadingSlot()
+      return RoadshowController.renderLoadingSlot()
     }
     if (!this.shape) {
-      return RoadshowController.__renderNoShapeSlot()
+      return RoadshowController.renderNoShapeSlot()
     }
     if (!this.__render) {
-      return RoadshowController.__renderNoRendererSlot()
+      return RoadshowController.renderNoRendererSlot()
     }
 
     const { viewers, renderers, resources, host } = this
@@ -92,7 +92,7 @@ export class RoadshowController implements ReactiveController {
             resources.load?.(resource.term).then(() => {
               host.requestUpdate()
             })
-            return RoadshowController.__renderLoadingSlot()
+            return RoadshowController.renderLoadingSlot()
           }
         }
 
@@ -105,15 +105,15 @@ export class RoadshowController implements ReactiveController {
     return this.__render.call(context, this.resource, this.shape)
   }
 
-  private static __renderNoShapeSlot() {
+  static renderNoShapeSlot() {
     return html`<slot name="no-shape">No applicable shape found...</slot>`
   }
 
-  private static __renderLoadingSlot() {
+  static renderLoadingSlot() {
     return html`<slot name="loading">Loading...</slot>`
   }
 
-  private static __renderNoRendererSlot() {
+  static renderNoRendererSlot() {
     return html`<slot name="no-renderer">No renderer!</slot>`
   }
 }

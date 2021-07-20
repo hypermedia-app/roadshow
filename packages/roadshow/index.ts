@@ -5,7 +5,7 @@ import type { NodeShape, PropertyShape } from '@rdfine/shacl'
 import { NodeShapeMixinEx, PropertyShapeMixinEx } from '@rdfine/dash/extensions/sh'
 import RdfResource from '@tpluscode/rdfine'
 import { NodeShapeBundle, PropertyShapeBundle } from '@rdfine/shacl/bundles'
-import type { ShapesController } from './ShapesController'
+import type { ShapesController, ShapesLoader } from './ShapesController'
 import type { ViewersController } from './ViewersController'
 import type { RenderersController } from './RenderersController'
 import type { ResourceLoader } from './ResourcesController'
@@ -39,6 +39,7 @@ export interface RoadshowView extends ReactiveControllerHost {
   renderers: Renderer[]
   viewers: ViewerMatchInit[]
   resourceLoader?: ResourceLoader
+  shapesLoader?: ShapesLoader
   params: any
 }
 

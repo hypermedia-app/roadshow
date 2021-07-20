@@ -11,8 +11,8 @@
   ],
   "dependencies": {
     "@hydrofoil/vocabularies": "^0.2.0",
-    "@rdfine/dash": "^0.2.0",
-    "@rdfine/shacl": "^0.8.1",
+    "@rdfine/dash": "^0.2.1",
+    "@rdfine/shacl": "^0.8.2",
     "@tpluscode/rdfine": "^0.5.29",
     "@tpluscode/rdf-ns-builders": "^1.0.0",
     "@rdf-esm/dataset": "^0.5.0",
