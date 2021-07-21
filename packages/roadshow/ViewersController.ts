@@ -7,7 +7,7 @@ import { dataset } from '@rdf-esm/dataset'
 import { RoadshowView, Viewer, ViewerMatchInit } from './index'
 import * as defaultViewers from './viewers'
 
-interface ViewerScore {
+export interface ViewerScore {
   pointer: GraphPointer<NamedNode>
   score: number | null
 }

@@ -1,5 +1,4 @@
 import { html } from 'lit'
-import { until } from 'lit/directives/until.js'
 import { Renderer, ViewerMatchInit } from '@hydrofoil/roadshow'
 import { findNodes } from 'clownface-shacl-path'
 import { hydra, sh, rdf, dash } from '@tpluscode/rdf-ns-builders'
@@ -10,6 +9,8 @@ import type { GraphPointer } from 'clownface'
 import { ResourceLoader } from '@hydrofoil/roadshow/ResourcesController'
 import clownface from 'clownface'
 import { RoadshowController } from '@hydrofoil/roadshow/RoadshowController'
+import type { NodeShape } from '@rdfine/shacl'
+import { NodeViewState } from '@hydrofoil/roadshow/lib/state'
 import { template } from '../lib/template'
 import hydraCollectionShape from '../shapes/hydra-collection.ttl'
 import wikibusBrochure from '../shapes/wikibus-Brochure.ttl'
@@ -23,32 +24,47 @@ const collectionViewer: ViewerMatchInit = {
   },
 }
 
-const tableView: Renderer = {
+declare module '@hydrofoil/roadshow' {
+  interface LocalState {
+    memberShape?: NodeShape
+    applicableMemberShapes?: NodeShape[]
+  }
+}
+
+const tableView: Renderer<NodeViewState> = {
   viewer: dash.HydraCollectionViewer,
   render(collection) {
-    const memberTypes = collection
-      .out(hydra.manages)
-      .has(hydra.property, rdf.type)
-      .out(hydra.object)
+    const { memberShape } = this.state
+    if (!memberShape) {
+      const memberTypes = collection
+        .out(hydra.manages)
+        .has(hydra.property, rdf.type)
+        .out(hydra.object);
 
-    const shapeLoaded = this.shapes.findApplicableShape({ class: memberTypes })
-      .then(([memberShape]) => html`<table>
+      (async () => {
+        this.state.applicableMemberShapes = await this.shapes.findApplicableShape({ class: memberTypes });
+        [this.state.memberShape] = this.state.applicableMemberShapes
+        this.requestUpdate()
+      })()
+
+      return RoadshowController.renderLoadingSlot()
+    }
+
+    return html`<table>
       <thead>
         <tr>
-          ${memberShape?.property.map(prop => html`<td>${prop.name}</td>`)}
+          ${memberShape.property.map(prop => html`<td>${prop.name}</td>`)}
         </tr>
       </thead>
       <tbody>
         ${collection.out(hydra.member).map(member => html`<tr>
-          ${memberShape?.property.filter(({ hidden }) => !hidden).map(property => html`
+          ${memberShape.property.filter(({ hidden }) => !hidden).map(property => html`
           <td>
             ${findNodes(member, property.pointer.out(sh.path).toArray()[0]).map(resource => html`${this.show({ resource, property })}`)}
           </td>`)}
         </tr>`)}
       </tbody>
-    </table>`)
-
-    return html`${until(shapeLoaded, RoadshowController.renderLoadingSlot())}`
+    </table>`
   },
 }
 

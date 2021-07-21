@@ -33,7 +33,7 @@ export class RoadshowViewElement extends LitElement implements RoadshowView {
 
   protected updated(_changedProperties: PropertyValues): void {
     if (_changedProperties.has('resource') || _changedProperties.has('resourceId')) {
-      this.roadshow.prepareResource()
+      this.roadshow.prepareViewState()
     }
   }
 

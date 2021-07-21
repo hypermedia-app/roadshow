@@ -9,18 +9,27 @@ import type { ShapesController, ShapesLoader } from './ShapesController'
 import type { ViewersController } from './ViewersController'
 import type { RenderersController } from './RenderersController'
 import type { ResourceLoader } from './ResourcesController'
+import { ViewState } from './lib/state'
 
-export interface RenderContext<T = unknown> {
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface LocalState {
+
+}
+
+export interface RenderContext<S, T = unknown> {
+  depth: number
+  state: S & LocalState
   shapes: ShapesController
   viewers: ViewersController
   renderers: RenderersController
-  show(params: { resource: GraphPointer; shape?: NodeShape; property?: PropertyShape }): unknown
+  show(params: { resource: GraphPointer; shape?: NodeShape; property: PropertyShape | NamedNode }): unknown
+  requestUpdate(): void
   params: T
 }
 
-export interface Renderer<T = unknown> {
+export interface Renderer<S extends ViewState = ViewState, T = unknown> {
   viewer: NamedNode
-  render(this: RenderContext<T>, resource: GraphPointer, shape: NodeShape): TemplateResult | string
+  render(this: RenderContext<S, T>, resource: GraphPointer, shape?: NodeShape): TemplateResult | string
 }
 
 export interface ViewerMatch {

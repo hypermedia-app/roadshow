@@ -36,8 +36,10 @@ const tableView: Renderer = {
       </thead>
       <tbody>
         ${collection.out(hydra.member).map(member => html`<tr>
-          ${memberShape?.property.filter(({ hidden }) => !hidden).map(prop => html`<td>
-            ${findNodes(member, prop.pointer.out(sh.path).toArray()[0]).map(resource => html`${this.show({ resource, shape: memberShape })}`)}
+          ${memberShape?.property.filter(({ hidden }) => !hidden).map(property => html`<td>
+            ${findNodes(member, property.pointer.out(sh.path).toArray()[0]).map(resource => html`
+              ${this.show({ resource, shape: memberShape, property })}
+            `)}
           </td>`)}
         </tr>`)}
       </tbody>
@@ -60,7 +62,7 @@ const galleryView: Renderer = {
     return html`<div>
         ${collection.out(hydra.member).map((member) => {
     const resource = member.out(schema.image).toArray()[0]
-    return html`<div>${this.show({ resource, shape: imageShape })}</div>`
+    return html`<div>${this.show({ resource, shape: imageShape, property: schema.image })}</div>`
   })}
     </div>`
   },
