@@ -124,6 +124,11 @@ export class RoadshowController implements ReactiveController {
 
         const initRenderer = () => {
           objectState.applicableViewers = viewers.findApplicableViewers(objectState.pointer)
+          if (propertyShape?.viewer) {
+            objectState.applicableViewers.unshift({
+              pointer: viewers.get(propertyShape.viewer.id), score: null,
+            })
+          }
           if (viewer) {
             objectState.applicableViewers.unshift({
               pointer: viewers.get(viewer), score: null,

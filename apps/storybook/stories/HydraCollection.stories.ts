@@ -19,7 +19,7 @@ const collectionViewer: ViewerMatchInit = {
 
 const tableView: Renderer = {
   viewer: dash.HydraCollectionViewer,
-  render(collection) {
+  render(collection, shape) {
     const memberTypes = collection
       .out(hydra.manages)
       .has(hydra.property, rdf.type)
@@ -27,6 +27,7 @@ const tableView: Renderer = {
 
     const memberShape = this.shapes.shapes
       .find(shape => shape.pointer.has(sh.targetClass, memberTypes).terms.length)
+    const memberPropertyShape = shape?.property.find(({ pointer }) => hydra.member.equals(pointer.out(sh.path).term))
 
     return html`<table>
       <thead>
@@ -35,12 +36,11 @@ const tableView: Renderer = {
         </tr>
       </thead>
       <tbody>
-        ${collection.out(hydra.member).map(resource => this.show({
+        ${collection.out(hydra.member).map(resource => html`<tr>${this.show({
     resource,
     shape: memberShape,
-    property: hydra.member,
-    viewer: dash.HydraMemberViewer,
-  }))}
+    property: memberPropertyShape || hydra.member,
+  })}</tr>`)}
       </tbody>
     </table>`
   },
@@ -49,13 +49,13 @@ const tableView: Renderer = {
 const tableRowView: Renderer = {
   viewer: dash.HydraMemberViewer,
   render(member, memberShape) {
-    return html`<tr>
+    return html`
       ${memberShape?.property.filter(({ hidden }) => !hidden).map(property => html`<td>
         ${findNodes(member, property.pointer.out(sh.path)).map(resource => html`
           ${this.show({ resource, shape: memberShape, property })}
         `)}
       </td>`)}
-    </tr>`
+    `
   },
 }
 

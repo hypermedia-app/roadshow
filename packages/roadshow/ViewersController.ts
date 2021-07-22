@@ -1,7 +1,7 @@
 import { ReactiveController } from 'lit'
 import type { GraphPointer } from 'clownface'
 import TermMap from '@rdf-esm/term-map'
-import { NamedNode } from '@rdfjs/types'
+import { NamedNode, Term } from '@rdfjs/types'
 import clownface, { AnyPointer } from 'clownface'
 import { dataset } from '@rdf-esm/dataset'
 import { RoadshowView, Viewer, ViewerMatchInit } from './index'
@@ -61,7 +61,11 @@ export class ViewersController implements ReactiveController {
       .sort(byScore)
   }
 
-  get(viewer: NamedNode): GraphPointer<NamedNode> {
+  get(viewer: Term): GraphPointer<NamedNode> {
+    if (viewer.termType !== 'NamedNode') {
+      throw new Error('Viewer must be an IRI')
+    }
+
     return ViewersController.viewerMeta.node(viewer)
   }
 }
