@@ -1,10 +1,7 @@
 import type { ReactiveControllerHost, TemplateResult } from 'lit'
 import type { GraphPointer } from 'clownface'
-import type { BlankNode, NamedNode } from 'rdf-js'
+import type { BlankNode, NamedNode } from '@rdfjs/types'
 import type { NodeShape, PropertyShape } from '@rdfine/shacl'
-import { NodeShapeMixinEx, PropertyShapeMixinEx } from '@rdfine/dash/extensions/sh'
-import RdfResource from '@tpluscode/rdfine'
-import { NodeShapeBundle, PropertyShapeBundle } from '@rdfine/shacl/bundles'
 import type { ShapesController, ShapesLoader } from './ShapesController'
 import type { ViewersController } from './ViewersController'
 import type { RenderersController } from './RenderersController'
@@ -16,13 +13,21 @@ export interface LocalState {
 
 }
 
+interface Show {
+  resource: GraphPointer
+  shape?: NodeShape
+  property: PropertyShape | NamedNode
+  viewer?: NamedNode
+}
+
 export interface RenderContext<S, T = unknown> {
   depth: number
-  state: S & LocalState
+  state: S
+  locals: LocalState
   shapes: ShapesController
   viewers: ViewersController
   renderers: RenderersController
-  show(params: { resource: GraphPointer; shape?: NodeShape; property: PropertyShape | NamedNode }): unknown
+  show(params: Show): unknown
   requestUpdate(): void
   params: T
 }
@@ -51,9 +56,6 @@ export interface RoadshowView extends ReactiveControllerHost {
   shapesLoader?: ShapesLoader
   params: any
 }
-
-RdfResource.factory.addMixin(...NodeShapeBundle, ...PropertyShapeBundle)
-RdfResource.factory.addMixin(NodeShapeMixinEx, PropertyShapeMixinEx)
 
 export interface Viewer {
   pointer: GraphPointer<NamedNode>

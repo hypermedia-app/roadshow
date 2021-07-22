@@ -34,7 +34,7 @@ declare module '@hydrofoil/roadshow' {
 const tableView: Renderer<NodeViewState> = {
   viewer: dash.HydraCollectionViewer,
   render(collection) {
-    const { memberShape } = this.state
+    const { memberShape } = this.locals
     if (!memberShape) {
       const memberTypes = collection
         .out(hydra.manages)
@@ -42,8 +42,8 @@ const tableView: Renderer<NodeViewState> = {
         .out(hydra.object);
 
       (async () => {
-        this.state.applicableMemberShapes = await this.shapes.findApplicableShape({ class: memberTypes });
-        [this.state.memberShape] = this.state.applicableMemberShapes
+        this.locals.applicableMemberShapes = await this.shapes.findApplicableShape({ class: memberTypes });
+        [this.locals.memberShape] = this.locals.applicableMemberShapes
         this.requestUpdate()
       })()
 

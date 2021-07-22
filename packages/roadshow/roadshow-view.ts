@@ -3,6 +3,9 @@ import { property } from 'lit/decorators.js'
 import type { GraphPointer } from 'clownface'
 import type { BlankNode, NamedNode } from '@rdfjs/types'
 import type { NodeShape } from '@rdfine/shacl'
+import RdfResource from '@tpluscode/rdfine'
+import { NodeShapeBundle, PropertyShapeBundle } from '@rdfine/shacl/bundles'
+import { NodeShapeMixinEx, PropertyShapeMixinEx } from '@rdfine/dash/extensions/sh'
 import { RoadshowController } from './RoadshowController'
 import type { RoadshowView, Renderer, ViewerMatchInit } from './index'
 import type { ResourceLoader } from './ResourcesController'
@@ -49,3 +52,6 @@ declare global {
 }
 
 customElements.define('roadshow-view', RoadshowViewElement)
+
+RdfResource.factory.addMixin(...NodeShapeBundle, ...PropertyShapeBundle)
+RdfResource.factory.addMixin(NodeShapeMixinEx, PropertyShapeMixinEx)

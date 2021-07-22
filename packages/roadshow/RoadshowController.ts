@@ -5,12 +5,13 @@ import { dash, sh, xsd } from '@tpluscode/rdf-ns-builders/strict'
 import { literal } from '@rdf-esm/dataset'
 import { roadshow } from '@hydrofoil/vocabularies/builders/strict'
 import { PropertyShape } from '@rdfine/shacl'
-import { RenderContext, Renderer, RoadshowView } from './index'
+import type { BlankNode } from 'rdf-js'
+import { LocalState, RenderContext, Renderer, RoadshowView } from './index'
 import { RenderersController } from './RenderersController'
 import { ViewersController, ViewerScore } from './ViewersController'
 import { ShapesController } from './ShapesController'
 import { ResourcesController } from './ResourcesController'
-import { NodeViewState, PropertyViewState } from './lib/state'
+import { initState, NodeViewState, PropertyViewState } from './lib/state'
 
 const TRUE = literal('true', xsd.boolean)
 
@@ -18,6 +19,7 @@ export class RoadshowController implements ReactiveController {
   private __render: Renderer['render'] | undefined
 
   state: NodeViewState | null = null
+  locals: LocalState = {}
 
   constructor(
     private host: RoadshowView,
@@ -39,7 +41,7 @@ export class RoadshowController implements ReactiveController {
 
   async prepareViewState(): Promise<void> {
     const { resourceId } = this.host
-    let resource: GraphPointer | undefined
+    let resource: GraphPointer<NamedNode | BlankNode> | undefined
     if (this.host.resource) {
       resource = this.host.resource
     } else if (resourceId) {
@@ -91,12 +93,13 @@ export class RoadshowController implements ReactiveController {
     const context: RenderContext<NodeViewState> = {
       depth: 0,
       state: this.state,
+      locals: this.locals,
       renderers: this.renderers,
       viewers: this.viewers,
       shapes: this.shapes,
       params: this.host.params,
       requestUpdate: this.host.requestUpdate.bind(this.host),
-      show({ resource, property, shape }) {
+      show({ resource, property, shape, viewer }) {
         let propertyKey: string | undefined
         let propertyShape: PropertyShape | undefined
         if ('termType' in property) {
@@ -113,21 +116,25 @@ export class RoadshowController implements ReactiveController {
           shape: propertyShape,
           objects: {},
         }
-        const objectState = propertyState.objects[resource.term.value] || {
-          pointer: resource,
-          applicableViewers: [],
-        }
+        const objectState = propertyState.objects[resource.term.value] || initState(resource)
 
         if (objectState?.render) {
           return objectState.render()
         }
 
-        const prepareRenderer = () => {
+        const initRenderer = () => {
           objectState.applicableViewers = viewers.findApplicableViewers(objectState.pointer)
+          if (viewer) {
+            objectState.applicableViewers.unshift({
+              pointer: viewers.get(viewer), score: null,
+            })
+          }
+
           objectState.viewer = objectState.applicableViewers[0]?.pointer
           const renderer = renderers.get(objectState.viewer.term)
           const childContext = {
             ...this,
+            state: objectState,
             depth: this.depth + 1,
           }
           objectState.render = () => renderer.call(childContext, objectState.pointer, shape)
@@ -137,7 +144,7 @@ export class RoadshowController implements ReactiveController {
           const previouslyLoaded = resources.get(resource.term)
           if (previouslyLoaded) {
             objectState.pointer = previouslyLoaded
-            prepareRenderer()
+            initRenderer()
           } else {
             objectState.render = RoadshowController.renderLoadingSlot
             resources.load?.(resource.term).then(() => {
@@ -146,7 +153,7 @@ export class RoadshowController implements ReactiveController {
             })
           }
         } else {
-          prepareRenderer()
+          initRenderer()
         }
 
         this.state.properties[propertyKey] = propertyState

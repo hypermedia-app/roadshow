@@ -31,19 +31,31 @@ const tableView: Renderer = {
     return html`<table>
       <thead>
         <tr>
-          ${memberShape?.property.map(prop => html`<td>${prop.name}</td>`)}
+          ${memberShape?.property.filter(p => !p.hidden).map(prop => html`<td>${prop.name}</td>`)}
         </tr>
       </thead>
       <tbody>
-        ${collection.out(hydra.member).map(member => html`<tr>
-          ${memberShape?.property.filter(({ hidden }) => !hidden).map(property => html`<td>
-            ${findNodes(member, property.pointer.out(sh.path).toArray()[0]).map(resource => html`
-              ${this.show({ resource, shape: memberShape, property })}
-            `)}
-          </td>`)}
-        </tr>`)}
+        ${collection.out(hydra.member).map(resource => this.show({
+    resource,
+    shape: memberShape,
+    property: hydra.member,
+    viewer: dash.HydraMemberViewer,
+  }))}
       </tbody>
     </table>`
+  },
+}
+
+const tableRowView: Renderer = {
+  viewer: dash.HydraMemberViewer,
+  render(member, memberShape) {
+    return html`<tr>
+      ${memberShape?.property.filter(({ hidden }) => !hidden).map(property => html`<td>
+        ${findNodes(member, property.pointer.out(sh.path)).map(resource => html`
+          ${this.show({ resource, shape: memberShape, property })}
+        `)}
+      </td>`)}
+    </tr>`
   },
 }
 
@@ -57,14 +69,26 @@ const galleryView: Renderer = {
 
     const memberShape = this.shapes.shapes
       .find(shape => shape.pointer.has(sh.targetClass, memberTypes).terms.length)
-    const imageShape = memberShape?.property.find(s => s.pointer.has(sh.path, schema.image).term)?.node
 
     return html`<div>
-        ${collection.out(hydra.member).map((member) => {
-    const resource = member.out(schema.image).toArray()[0]
-    return html`<div>${this.show({ resource, shape: imageShape, property: schema.image })}</div>`
-  })}
+      ${collection.out(hydra.member).map(resource => this.show({
+    resource,
+    shape: memberShape,
+    property: hydra.member,
+    viewer: dash.HydraMemberViewer,
+  }))}
     </div>`
+  },
+}
+
+const galleryMemberView: Renderer = {
+  viewer: dash.HydraMemberViewer,
+  render(member) {
+    const images = member.out(schema.image).toArray()
+
+    return html`${images.map(image => html`<div>
+      ${this.show({ resource: image, property: schema.image })}
+    </div>`)}`
   },
 }
 
@@ -113,12 +137,12 @@ export const AddressBookTable = Template.bind({})
 AddressBookTable.args = {
   resource: addressBook,
   viewers: [collectionViewer],
-  renderers: [tableView],
+  renderers: [tableView, tableRowView],
 }
 
 export const ProfileGallery = Template.bind({})
 ProfileGallery.args = {
   resource: addressBook,
   viewers: [collectionViewer, imageViewer],
-  renderers: [galleryView, imageView],
+  renderers: [galleryView, galleryMemberView, imageView],
 }
