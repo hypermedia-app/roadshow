@@ -4,6 +4,7 @@ import '@hydrofoil/roadshow/roadshow-view'
 import { findNodes } from 'clownface-shacl-path'
 import { hydra, sh, rdf, schema, dash } from '@tpluscode/rdf-ns-builders'
 import { fromPointer } from '@rdfine/shacl/lib/NodeShape'
+import { NamedNode } from 'rdf-js'
 import { template } from '../lib/template'
 import addressBook, { QuadArrayFactory } from '../resources/hydra-collection.ttl'
 import hydraCollectionShape from '../shapes/hydra-collection.ttl'
@@ -14,6 +15,13 @@ const collectionViewer: ViewerMatchInit = {
   viewer: dash.HydraCollectionViewer,
   match({ resource }) {
     return resource.has(rdf.type, hydra.Collection).terms.length ? 50 : 0
+  },
+}
+
+const pagerViewer: ViewerMatchInit = {
+  viewer: dash.HydraPartialCollectionViewViewer,
+  match({ resource }) {
+    return resource.has(rdf.type, hydra.PartialCollectionView).terms.length ? 50 : 0
   },
 }
 
@@ -28,6 +36,7 @@ const tableView: Renderer = {
     const memberShape = this.shapes.shapes
       .find(shape => shape.pointer.has(sh.targetClass, memberTypes).terms.length)
     const memberPropertyShape = shape?.property.find(({ pointer }) => hydra.member.equals(pointer.out(sh.path).term))
+    const viewPropertyShape = shape?.property.find(({ pointer }) => hydra.view.equals(pointer.out(sh.path).term))
 
     return html`<table>
       <thead>
@@ -42,7 +51,35 @@ const tableView: Renderer = {
     property: memberPropertyShape || hydra.member,
   })}</tr>`)}
       </tbody>
-    </table>`
+    </table>
+
+    ${collection.out(hydra.view).map(view => this.show({
+    resource: view,
+    property: viewPropertyShape || hydra.view,
+  }))}`
+  },
+}
+
+const pagerView: Renderer = {
+  viewer: dash.HydraPartialCollectionViewViewer,
+  render(resource) {
+    const link = (property: NamedNode) => {
+      const page = resource.out(property).toArray()[0]
+      return !page
+        ? ''
+        : this.show({
+          resource: page,
+          property,
+          viewer: dash.URIViewer,
+        })
+    }
+
+    return html`<div>
+      <span>${link(hydra.first)}</span>
+      <span>${link(hydra.previous)}</span>
+      <span>${link(hydra.next)}</span>
+      <span>${link(hydra.last)}</span>
+    </div>`
   },
 }
 
@@ -136,8 +173,8 @@ const Template = template<ViewStoryParams>(({ resource, viewers, renderers }) =>
 export const AddressBookTable = Template.bind({})
 AddressBookTable.args = {
   resource: addressBook,
-  viewers: [collectionViewer],
-  renderers: [tableView, tableRowView],
+  viewers: [collectionViewer, pagerViewer],
+  renderers: [tableView, tableRowView, pagerView],
 }
 
 export const ProfileGallery = Template.bind({})

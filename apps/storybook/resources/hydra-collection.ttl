@@ -1,3 +1,4 @@
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix hydra: <http://www.w3.org/ns/hydra/core#> .
 @prefix schema: <http://schema.org/> .
@@ -31,4 +32,15 @@
        hydra:property rdf:type ;
        hydra:object schema:Person ;
      ] ;
+  hydra:view
+    [
+      a hydra:PartialCollectionView ;
+      hydra:first <?page=1> ;
+      hydra:next <?page=3> ;
+      hydra:last <?page=20> ;
+    ] ;
 .
+
+<?page=1> rdfs:label "0" .
+<?page=3> rdfs:label "3" .
+<?page=20> rdfs:label "20" .
