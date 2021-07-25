@@ -15,6 +15,10 @@ interface CoreState<T extends Term = Term> {
 export interface PropertyViewState {
   shape?: PropertyShape
   objects: Record<string, ViewState>
+  path?: NamedNode
+  applicableViewers: ViewerScore[]
+  viewer?: GraphPointer<NamedNode>
+  render?(): TemplateResult | string
 }
 
 export type LiteralViewState = CoreState<Literal>

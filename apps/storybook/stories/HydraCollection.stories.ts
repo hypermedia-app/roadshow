@@ -1,10 +1,12 @@
 import { html } from 'lit'
-import { Renderer, ViewerMatchInit } from '@hydrofoil/roadshow'
+import { MultiRenderer, Renderer, ViewerMatchInit } from '@hydrofoil/roadshow'
 import '@hydrofoil/roadshow/roadshow-view'
 import { findNodes } from 'clownface-shacl-path'
-import { hydra, sh, rdf, schema, dash } from '@tpluscode/rdf-ns-builders'
+import { hydra, sh, rdf, schema, dash, rdfs } from '@tpluscode/rdf-ns-builders'
 import { fromPointer } from '@rdfine/shacl/lib/NodeShape'
 import { NamedNode } from 'rdf-js'
+import type { MultiPointer } from 'clownface'
+import type { Literal } from '@rdfjs/types'
 import { template } from '../lib/template'
 import addressBook, { QuadArrayFactory } from '../resources/hydra-collection.ttl'
 import hydraCollectionShape from '../shapes/hydra-collection.ttl'
@@ -22,6 +24,23 @@ const pagerViewer: ViewerMatchInit = {
   viewer: dash.HydraPartialCollectionViewViewer,
   match({ resource }) {
     return resource.has(rdf.type, hydra.PartialCollectionView).terms.length ? 50 : 0
+  },
+}
+
+const localizedLabelViewer: ViewerMatchInit = {
+  viewer: dash.LocalLabelViewer,
+  matchMulti({ state }) {
+    return state.path?.equals(rdfs.label) ? 1 : 0
+  },
+}
+
+const localizedLabel: MultiRenderer<any> = {
+  viewer: dash.LocalLabelViewer,
+  render(resources: MultiPointer<Literal>) {
+    const arr = resources.toArray()
+    const label = arr.find(r => r.term.language === this.params.language) || arr.find(r => r.term.language === 'en')
+
+    return label ? html`${this.show({ property: rdfs.label, resource: label, viewer: dash.LiteralViewer })}` : ''
   },
 }
 
@@ -152,10 +171,11 @@ export default {
 interface ViewStoryParams {
   resource: QuadArrayFactory
   viewers: ViewerMatchInit[]
-  renderers: Renderer[]
+  renderers: Array<Renderer | MultiRenderer>
+  language?: string
 }
 
-const Template = template<ViewStoryParams>(({ resource, viewers, renderers }) => {
+const Template = template<ViewStoryParams>(({ resource, viewers, renderers, language }) => {
   const shapes = [
     hydraCollectionShape,
     schemaPerson,
@@ -166,6 +186,7 @@ const Template = template<ViewStoryParams>(({ resource, viewers, renderers }) =>
                    .shapes="${shapes}"
                    .viewers="${viewers}"
                    .renderers="${renderers}"
+                   .params="${{ language }}"
     ></roadshow-view>
     `
 })
@@ -173,8 +194,9 @@ const Template = template<ViewStoryParams>(({ resource, viewers, renderers }) =>
 export const AddressBookTable = Template.bind({})
 AddressBookTable.args = {
   resource: addressBook,
-  viewers: [collectionViewer, pagerViewer],
-  renderers: [tableView, tableRowView, pagerView],
+  viewers: [collectionViewer, pagerViewer, localizedLabelViewer],
+  renderers: [tableView, tableRowView, pagerView, localizedLabel],
+  language: '',
 }
 
 export const ProfileGallery = Template.bind({})

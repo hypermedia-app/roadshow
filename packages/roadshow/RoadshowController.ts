@@ -1,6 +1,6 @@
 import { html, ReactiveController } from 'lit'
 import type { GraphPointer } from 'clownface'
-import { NamedNode } from '@rdfjs/types'
+import { NamedNode, Term } from '@rdfjs/types'
 import { dash, sh, xsd } from '@tpluscode/rdf-ns-builders/strict'
 import { literal } from '@rdf-esm/dataset'
 import { roadshow } from '@hydrofoil/vocabularies/builders/strict'
@@ -12,6 +12,7 @@ import { ViewersController, ViewerScore } from './ViewersController'
 import { ShapesController } from './ShapesController'
 import { ResourcesController } from './ResourcesController'
 import { initState, NodeViewState, PropertyViewState } from './lib/state'
+import { isGraphPointer } from './lib/clownface'
 
 const TRUE = literal('true', xsd.boolean)
 
@@ -59,7 +60,7 @@ export class RoadshowController implements ReactiveController {
     const [shape] = applicableShapes
 
     if (shape) {
-      applicableViewers = this.viewers.findApplicableViewers(resource)
+      applicableViewers = this.viewers.findApplicableViewers({ object: resource })
       applicableViewers = [...applicableViewers, { pointer: this.viewers.get(dash.DetailsViewer), score: null }]
       viewer = applicableViewers[0]?.pointer
       this.__render = this.renderers.get(viewer.term)
@@ -97,25 +98,61 @@ export class RoadshowController implements ReactiveController {
       renderers: this.renderers,
       viewers: this.viewers,
       shapes: this.shapes,
-      params: this.host.params,
+      get params() { return host.params },
       requestUpdate: this.host.requestUpdate.bind(this.host),
       show({ resource, property, shape, viewer }) {
         let propertyKey: string | undefined
         let propertyShape: PropertyShape | undefined
+        let path: Term | undefined
         if ('termType' in property) {
           propertyKey = property.value
+          path = property
         } else {
-          propertyKey = property.pointer.out(sh.path).value
+          path = property.pointer.out(sh.path).term
+          propertyKey = path?.value
           propertyShape = property
         }
         if (!propertyKey) {
           throw new Error('Missing property path term')
         }
 
-        const propertyState: PropertyViewState = this.state.properties[propertyKey] || {
-          shape: propertyShape,
-          objects: {},
+        const propertyState: PropertyViewState = this.state.properties
+          ? (this.state.properties[propertyKey] || {
+            shape: propertyShape,
+            objects: {},
+            path,
+          })
+          : this.state as any as PropertyViewState
+
+        if (!isGraphPointer(resource)) {
+          if (!propertyState.render) {
+            propertyState.applicableViewers = viewers.findApplicableViewers({ object: resource, state: propertyState })
+            propertyState.viewer = propertyState.applicableViewers[0]?.pointer
+
+            if (!propertyState.viewer) {
+              propertyState.render = () => html`${resource.toArray().map(obj => this.show({
+                resource: obj,
+                property,
+                shape,
+                viewer,
+              }))}`
+            } else {
+              propertyState.render = () => {
+                const render: any = this.renderers.get(propertyState.viewer?.term)
+                const childContext = {
+                  ...this,
+                  get params() { return host.params },
+                  state: propertyState,
+                  depth: this.depth + 1,
+                }
+                return render.call(childContext, resource)
+              }
+            }
+          }
+
+          return propertyState.render()
         }
+
         const objectState = propertyState.objects[resource.term.value] || initState(resource)
 
         if (objectState?.render) {
@@ -123,7 +160,7 @@ export class RoadshowController implements ReactiveController {
         }
 
         const initRenderer = () => {
-          objectState.applicableViewers = viewers.findApplicableViewers(objectState.pointer)
+          objectState.applicableViewers = viewers.findApplicableViewers({ object: objectState.pointer })
           if (propertyShape?.viewer) {
             objectState.applicableViewers.unshift({
               pointer: viewers.get(propertyShape.viewer.id), score: null,
@@ -139,6 +176,7 @@ export class RoadshowController implements ReactiveController {
           const renderer = renderers.get(objectState.viewer.term)
           const childContext = {
             ...this,
+            get params() { return host.params },
             state: objectState,
             depth: this.depth + 1,
           }
@@ -161,7 +199,7 @@ export class RoadshowController implements ReactiveController {
           initRenderer()
         }
 
-        this.state.properties[propertyKey] = propertyState
+        if (this.state.properties) this.state.properties[propertyKey] = propertyState
         propertyState.objects[resource.term.value] = objectState
         return objectState.render!()
       },

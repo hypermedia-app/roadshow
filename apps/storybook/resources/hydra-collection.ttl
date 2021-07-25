@@ -41,6 +41,6 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
     ] ;
 .
 
-<?page=1> rdfs:label "0" .
-<?page=3> rdfs:label "3" .
-<?page=20> rdfs:label "20" .
+<?page=1> rdfs:label "First"@en, "Pierwsza"@pl .
+<?page=3> rdfs:label "Next"@en, "Następna"@pl .
+<?page=20> rdfs:label "Last"@en, "Ostatnia"@pl .
