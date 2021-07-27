@@ -2,16 +2,10 @@ import type { ReactiveControllerHost, TemplateResult } from 'lit'
 import type { GraphPointer, MultiPointer } from 'clownface'
 import type { BlankNode, NamedNode, Term } from '@rdfjs/types'
 import type { NodeShape, PropertyShape } from '@rdfine/shacl'
-import type { ShapesController, ShapesLoader } from './ShapesController'
-import type { ViewerScore, ViewersController } from './ViewersController'
-import type { RenderersController } from './RenderersController'
-import type { ResourceLoader, ResourcesController } from './ResourcesController'
+import type { ShapesLoader } from './ShapesController'
+import type { ResourceLoader } from './ResourcesController'
 import type { PropertyViewState, ViewState } from './lib/state'
-
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface LocalState {
-
-}
+import type { ViewContext } from './lib/ViewContext'
 
 export interface Show {
   resource: MultiPointer
@@ -26,31 +20,14 @@ export interface InitRenderer {
   property: PropertyShape | NamedNode
 }
 
-export interface RenderContext<S, T = unknown> {
-  initRenderer(overrides: InitRenderer): void
-  depth: number
-  parent?: RenderContext<any, T>
-  state: S
-  locals: LocalState
-  shapes: ShapesController
-  viewers: ViewersController
-  renderers: RenderersController
-  resources: ResourcesController
-  show(params: Show): unknown
-  requestUpdate(): void
-  params: T
-  render?(): unknown
-  findApplicableViewers(ptr: GraphPointer): ViewerScore[]
-}
-
 export interface Renderer<S extends ViewState = ViewState, T = unknown> {
   viewer: NamedNode
-  render(this: RenderContext<S, T>, resource: GraphPointer, shape?: NodeShape): TemplateResult | string
+  render(this: ViewContext<S, T>, resource: GraphPointer, shape?: NodeShape): TemplateResult | string
 }
 
 export interface MultiRenderer<T = unknown> {
   viewer: NamedNode
-  render(this: RenderContext<PropertyViewState, T>, resources: MultiPointer): TemplateResult | string
+  render(this: ViewContext<PropertyViewState, T>, resources: MultiPointer): TemplateResult | string
 }
 
 export interface ViewerMatch {

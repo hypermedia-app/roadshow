@@ -1,16 +1,20 @@
 import { PropertyShape } from '@rdfine/shacl'
 import { sh } from '@tpluscode/rdf-ns-builders/strict'
 import type { GraphPointer, MultiPointer } from 'clownface'
-import { RenderContext, Show } from '../index'
-import { NodeViewState } from './state'
-import type { RoadshowController } from '../RoadshowController'
-import { ShapesController } from '../ShapesController'
-import { ViewersController } from '../ViewersController'
-import { RenderersController } from '../RenderersController'
-import PropertyRenderContext from './PropertyRenderContext'
-import { ResourcesController } from '../ResourcesController'
+import { Show } from '../../index'
+import { ResourceViewState } from '../state'
+import type { RoadshowController } from '../../RoadshowController'
+import { ShapesController } from '../../ShapesController'
+import { ViewersController } from '../../ViewersController'
+import { RenderersController } from '../../RenderersController'
+import { ResourcesController } from '../../ResourcesController'
+import { ViewContext } from './index'
+import PropertyViewContext from './PropertyViewContext'
+import factory, { Factory } from './factory'
+import LiteralViewContext from './LiteralViewContext'
+import ResourceViewContext from './ResourceViewContext'
 
-export default class implements RenderContext<NodeViewState> {
+export default class implements ViewContext<ResourceViewState> {
   shapes: ShapesController
   viewers: ViewersController
   renderers: RenderersController
@@ -18,14 +22,19 @@ export default class implements RenderContext<NodeViewState> {
 
   readonly locals = {}
   requestUpdate: OmitThisParameter<() => void>;
+  readonly create: Factory
 
-  constructor(private controller: RoadshowController, public state: NodeViewState) {
+  constructor(private controller: RoadshowController, public state: ResourceViewState) {
     this.shapes = controller.shapes
     this.viewers = controller.viewers
     this.renderers = controller.renderers
     this.resources = controller.resources
     this.requestUpdate = controller.host.requestUpdate.bind(controller.host)
     this.locals = {}
+    this.create = factory({
+      LiteralViewContext,
+      ResourceViewContext,
+    })
   }
 
   get depth(): number {
@@ -53,7 +62,7 @@ export default class implements RenderContext<NodeViewState> {
     }
 
     let propertyState = this.state.properties[propertyKey]
-    const context = new PropertyRenderContext(this, resource, propertyState || { path })
+    const context = new PropertyViewContext(this, resource, propertyState || { path })
     if (!propertyState) {
       propertyState = context.state
       this.state.properties[propertyKey] = propertyState

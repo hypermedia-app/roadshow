@@ -1,21 +1,20 @@
 import type { GraphPointer, MultiPointer } from 'clownface'
-import { InitRenderer, LocalState, RenderContext, Show } from '../index'
-import { ShapesController } from '../ShapesController'
-import { ViewersController } from '../ViewersController'
-import { RenderersController } from '../RenderersController'
-import { ResourcesController } from '../ResourcesController'
-import { CoreState } from './state'
+import type { InitRenderer, Show } from '../../index'
+import type { ShapesController } from '../../ShapesController'
+import type { ViewersController } from '../../ViewersController'
+import type { RenderersController } from '../../RenderersController'
+import type { ResourcesController } from '../../ResourcesController'
+import type { CoreState } from '../state'
+import type { ViewContext } from './index'
 
-export default abstract class<T extends CoreState, TParent = any, R extends MultiPointer = GraphPointer> implements RenderContext<T> {
-  locals: LocalState
+export default abstract class ViewContextBase<T extends CoreState, TParent = any, R extends MultiPointer = GraphPointer> implements ViewContext<T> {
   shapes: ShapesController
   viewers: ViewersController
   renderers: RenderersController
   resources: ResourcesController
   state: T
 
-  constructor(public parent: RenderContext<TParent>, pointer: R, state: Partial<T> = {}) {
-    this.locals = {}
+  constructor(public parent: ViewContext<TParent>, pointer: R, state: Partial<T> = {}) {
     this.shapes = parent.shapes
     this.viewers = parent.viewers
     this.renderers = parent.renderers
@@ -23,7 +22,10 @@ export default abstract class<T extends CoreState, TParent = any, R extends Mult
     this.state = { ...this.initState(pointer), ...state }
   }
 
-  abstract show(params: Show): unknown
+  show(params: Show): unknown {
+    return this.parent.show(params)
+  }
+
   abstract initState(pointer: R): T
 
   get depth(): number {
@@ -55,5 +57,9 @@ export default abstract class<T extends CoreState, TParent = any, R extends Mult
 
   findApplicableViewers(object: GraphPointer) {
     return this.parent.findApplicableViewers(object)
+  }
+
+  create(parent: ViewContext<any>, pointer: GraphPointer, state?: any): ViewContext<any> {
+    return this.parent.create(parent, pointer, state)
   }
 }

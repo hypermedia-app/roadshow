@@ -4,19 +4,20 @@ import { roadshow } from '@hydrofoil/vocabularies/builders/strict'
 import { PropertyShape } from '@rdfine/shacl'
 import { sh } from '@tpluscode/rdf-ns-builders/strict'
 import { html } from 'lit'
-import RenderContext from './RenderContext'
-import { NodeViewState, PropertyViewState } from './state'
-import { InitRenderer, Show } from '../index'
-import { isGraphPointer, TRUE } from './clownface'
-import PropertyRenderContext from './PropertyRenderContext'
+import ViewContextBase from './ViewContextBase'
+import { ResourceViewState, PropertyViewState } from '../state'
+import { InitRenderer, Show } from '../../index'
+import { isGraphPointer, TRUE } from '../clownface'
+import PropertyViewContext from './PropertyViewContext'
 
-export default class NodeRenderContext extends RenderContext<NodeViewState, PropertyViewState> {
-  initState(pointer: GraphPointer<NamedNode>): NodeViewState {
+export default class ResourceViewContext extends ViewContextBase<ResourceViewState, PropertyViewState> {
+  initState(pointer: GraphPointer<NamedNode>): ResourceViewState {
     return {
       pointer,
       properties: {},
       applicableShapes: [],
       applicableViewers: [],
+      locals: {},
     }
   }
 
@@ -42,7 +43,7 @@ export default class NodeRenderContext extends RenderContext<NodeViewState, Prop
 
     let propertyState = this.state.properties[propertyKey]
     if (!propertyState) {
-      const context = new PropertyRenderContext(this, resource, propertyState || { path })
+      const context = new PropertyViewContext(this, resource, propertyState || { path })
       propertyState = context.state
       this.state.properties[propertyKey] = propertyState
       context.initRenderer({

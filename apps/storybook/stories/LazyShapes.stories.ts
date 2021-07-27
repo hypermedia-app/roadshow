@@ -10,7 +10,7 @@ import { ResourceLoader } from '@hydrofoil/roadshow/ResourcesController'
 import clownface from 'clownface'
 import { RoadshowController } from '@hydrofoil/roadshow/RoadshowController'
 import type { NodeShape } from '@rdfine/shacl'
-import { NodeViewState } from '@hydrofoil/roadshow/lib/state'
+import { ResourceViewState } from '@hydrofoil/roadshow/lib/state'
 import { template } from '../lib/template'
 import hydraCollectionShape from '../shapes/hydra-collection.ttl'
 import wikibusBrochure from '../shapes/wikibus-Brochure.ttl'
@@ -31,10 +31,10 @@ declare module '@hydrofoil/roadshow' {
   }
 }
 
-const tableView: Renderer<NodeViewState> = {
+const tableView: Renderer<ResourceViewState> = {
   viewer: dash.HydraCollectionViewer,
   render(collection) {
-    const { memberShape } = this.locals
+    const { memberShape } = this.state.locals
     if (!memberShape) {
       const memberTypes = collection
         .out(hydra.manages)
@@ -42,8 +42,8 @@ const tableView: Renderer<NodeViewState> = {
         .out(hydra.object);
 
       (async () => {
-        this.locals.applicableMemberShapes = await this.shapes.findApplicableShape({ class: memberTypes });
-        [this.locals.memberShape] = this.locals.applicableMemberShapes
+        this.state.locals.applicableMemberShapes = await this.shapes.findApplicableShape({ class: memberTypes });
+        [this.state.locals.memberShape] = this.state.locals.applicableMemberShapes
         this.requestUpdate()
       })()
 

@@ -3,18 +3,19 @@ import type { GraphPointer } from 'clownface'
 import { NamedNode } from '@rdfjs/types'
 import { dash } from '@tpluscode/rdf-ns-builders/strict'
 import type { BlankNode } from 'rdf-js'
-import { RenderContext, Renderer, RoadshowView } from './index'
+import { Renderer, RoadshowView } from './index'
 import { RenderersController } from './RenderersController'
 import { ViewersController, ViewerScore } from './ViewersController'
 import { ShapesController } from './ShapesController'
 import { ResourcesController } from './ResourcesController'
-import { NodeViewState } from './lib/state'
-import RootContext from './lib/RootContext'
+import { ResourceViewState } from './lib/state'
+import type { ViewContext } from './lib/ViewContext'
+import RootContext from './lib/ViewContext/RootContext'
 
 export class RoadshowController implements ReactiveController {
   private __render: Renderer['render'] | undefined
 
-  rootContext: RenderContext<NodeViewState> | null = null
+  rootContext: ViewContext<ResourceViewState> | null = null
 
   constructor(
     public host: RoadshowView,
@@ -67,6 +68,7 @@ export class RoadshowController implements ReactiveController {
       properties: {},
       applicableViewers,
       viewer,
+      locals: {},
     })
 
     return this.host.requestUpdate()

@@ -2,18 +2,18 @@ import type { MultiPointer } from 'clownface'
 import { GraphPointer } from 'clownface'
 import { PropertyShape } from '@rdfine/shacl'
 import { findNodes } from 'clownface-shacl-path'
-import RenderContext from './RenderContext'
-import { NodeViewState, PropertyViewState } from './state'
-import { InitRenderer, Show } from '../index'
-import { isGraphPointer } from './clownface'
-import { create } from './context'
+import ViewContextBase from './ViewContextBase'
+import { ResourceViewState, PropertyViewState } from '../state'
+import { InitRenderer, Show } from '../../index'
+import { isGraphPointer } from '../clownface'
 
-export default class PropertyRenderContext extends RenderContext<PropertyViewState, NodeViewState, MultiPointer> {
+export default class PropertyViewContext extends ViewContextBase<PropertyViewState, ResourceViewState, MultiPointer> {
   initState(): PropertyViewState {
     return {
       pointer: null as never,
       applicableViewers: [],
       objects: {},
+      locals: {},
     }
   }
 
@@ -34,13 +34,13 @@ export default class PropertyRenderContext extends RenderContext<PropertyViewSta
     }
 
     if (!objectState) {
-      const childContext = create(this, resource)
+      const childContext = this.create(this, resource)
       objectState = childContext.state
       this.state.objects[resource.term.value] = objectState
     }
 
     if (!objectState.render) {
-      const childContext = create(this, resource, objectState)
+      const childContext = this.create(this, resource, objectState)
       objectState = childContext.state
 
       childContext.initRenderer({

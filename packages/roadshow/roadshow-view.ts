@@ -10,7 +10,7 @@ import { RoadshowController } from './RoadshowController'
 import type { RoadshowView, Renderer, ViewerMatchInit } from './index'
 import type { ResourceLoader } from './ResourcesController'
 import { ShapesLoader } from './ShapesController'
-import { NodeViewState } from './lib/state'
+import { ResourceViewState } from './lib/state'
 
 export class RoadshowViewElement extends LitElement implements RoadshowView {
   static get styles() {
@@ -41,7 +41,7 @@ export class RoadshowViewElement extends LitElement implements RoadshowView {
     this.roadshow = new RoadshowController(this)
   }
 
-  get state(): NodeViewState | undefined {
+  get state(): ResourceViewState | undefined {
     return this.roadshow.rootContext?.state
   }
 
