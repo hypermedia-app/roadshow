@@ -1,33 +1,27 @@
 import { html, ReactiveController } from 'lit'
 import type { GraphPointer } from 'clownface'
-import { NamedNode, Term } from '@rdfjs/types'
-import { dash, sh, xsd } from '@tpluscode/rdf-ns-builders/strict'
-import { literal } from '@rdf-esm/dataset'
-import { roadshow } from '@hydrofoil/vocabularies/builders/strict'
-import { PropertyShape } from '@rdfine/shacl'
+import { NamedNode } from '@rdfjs/types'
+import { dash } from '@tpluscode/rdf-ns-builders/strict'
 import type { BlankNode } from 'rdf-js'
-import { LocalState, RenderContext, Renderer, RoadshowView } from './index'
+import { RenderContext, Renderer, RoadshowView } from './index'
 import { RenderersController } from './RenderersController'
 import { ViewersController, ViewerScore } from './ViewersController'
 import { ShapesController } from './ShapesController'
 import { ResourcesController } from './ResourcesController'
-import { initState, NodeViewState, PropertyViewState } from './lib/state'
-import { isGraphPointer } from './lib/clownface'
-
-const TRUE = literal('true', xsd.boolean)
+import { NodeViewState } from './lib/state'
+import RootContext from './lib/RootContext'
 
 export class RoadshowController implements ReactiveController {
   private __render: Renderer['render'] | undefined
 
-  state: NodeViewState | null = null
-  locals: LocalState = {}
+  rootContext: RenderContext<NodeViewState> | null = null
 
   constructor(
-    private host: RoadshowView,
-    private resources = new ResourcesController(host),
-    private renderers = new RenderersController(host),
-    private viewers = new ViewersController(host),
-    private shapes = new ShapesController(host),
+    public host: RoadshowView,
+    public resources = new ResourcesController(host),
+    public renderers = new RenderersController(host),
+    public viewers = new ViewersController(host),
+    public shapes = new ShapesController(host),
   ) {
     this.host.addController(renderers)
     this.host.addController(viewers)
@@ -50,7 +44,7 @@ export class RoadshowController implements ReactiveController {
     }
 
     if (!resource) {
-      this.state = null
+      this.rootContext = null
       return this.host.requestUpdate()
     }
 
@@ -66,146 +60,30 @@ export class RoadshowController implements ReactiveController {
       this.__render = this.renderers.get(viewer.term)
     }
 
-    this.state = {
+    this.rootContext = new RootContext(this, {
       pointer: resource,
       applicableShapes,
       shape,
       properties: {},
       applicableViewers,
       viewer,
-    }
+    })
 
     return this.host.requestUpdate()
   }
 
   render(): unknown {
-    if (!this.state?.pointer) {
+    if (!this.rootContext?.state.pointer) {
       return RoadshowController.renderLoadingSlot()
     }
-    if (!this.state?.shape) {
+    if (!this.rootContext?.state.shape) {
       return RoadshowController.renderNoShapeSlot()
     }
     if (!this.__render) {
       return RoadshowController.renderNoRendererSlot()
     }
 
-    const { viewers, renderers, resources, host } = this
-
-    const context: RenderContext<NodeViewState> = {
-      depth: 0,
-      state: this.state,
-      locals: this.locals,
-      renderers: this.renderers,
-      viewers: this.viewers,
-      shapes: this.shapes,
-      get params() { return host.params },
-      requestUpdate: this.host.requestUpdate.bind(this.host),
-      show({ resource, property, shape, viewer }) {
-        let propertyKey: string | undefined
-        let propertyShape: PropertyShape | undefined
-        let path: Term | undefined
-        if ('termType' in property) {
-          propertyKey = property.value
-          path = property
-        } else {
-          path = property.pointer.out(sh.path).term
-          propertyKey = path?.value
-          propertyShape = property
-        }
-        if (!propertyKey) {
-          throw new Error('Missing property path term')
-        }
-
-        const propertyState: PropertyViewState = this.state.properties
-          ? (this.state.properties[propertyKey] || {
-            shape: propertyShape,
-            objects: {},
-            path,
-          })
-          : this.state as any as PropertyViewState
-
-        if (!isGraphPointer(resource)) {
-          if (!propertyState.render) {
-            propertyState.applicableViewers = viewers.findApplicableViewers({ object: resource, state: propertyState })
-            propertyState.viewer = propertyState.applicableViewers[0]?.pointer
-
-            if (!propertyState.viewer) {
-              propertyState.render = () => html`${resource.toArray().map(obj => this.show({
-                resource: obj,
-                property,
-                shape,
-                viewer,
-              }))}`
-            } else {
-              propertyState.render = () => {
-                const render: any = this.renderers.get(propertyState.viewer?.term)
-                const childContext = {
-                  ...this,
-                  get params() { return host.params },
-                  state: propertyState,
-                  depth: this.depth + 1,
-                }
-                return render.call(childContext, resource)
-              }
-            }
-          }
-
-          return propertyState.render()
-        }
-
-        const objectState = propertyState.objects[resource.term.value] || initState(resource)
-
-        if (objectState?.render) {
-          return objectState.render()
-        }
-
-        const initRenderer = () => {
-          objectState.applicableViewers = viewers.findApplicableViewers({ object: objectState.pointer })
-          if (propertyShape?.viewer) {
-            objectState.applicableViewers.unshift({
-              pointer: viewers.get(propertyShape.viewer.id), score: null,
-            })
-          }
-          if (viewer) {
-            objectState.applicableViewers.unshift({
-              pointer: viewers.get(viewer), score: null,
-            })
-          }
-
-          objectState.viewer = objectState.applicableViewers[0]?.pointer
-          const renderer = renderers.get(objectState.viewer.term)
-          const childContext = {
-            ...this,
-            get params() { return host.params },
-            state: objectState,
-            depth: this.depth + 1,
-          }
-          objectState.render = () => renderer.call(childContext, objectState.pointer, shape)
-        }
-
-        if (propertyShape?.pointer.out(roadshow.dereference).term?.equals(TRUE) && resource.term.termType === 'NamedNode') {
-          const previouslyLoaded = resources.get(resource.term)
-          if (previouslyLoaded) {
-            objectState.pointer = previouslyLoaded
-            initRenderer()
-          } else {
-            objectState.render = RoadshowController.renderLoadingSlot
-            resources.load?.(resource.term).then(() => {
-              delete objectState.render
-              host.requestUpdate()
-            })
-          }
-        } else {
-          initRenderer()
-        }
-
-        if (this.state.properties) this.state.properties[propertyKey] = propertyState
-        propertyState.objects[resource.term.value] = objectState
-        return objectState.render!()
-      },
-    }
-
-    return this.__render.call(context, this.state.pointer, this.state.shape)
+    return this.__render.call(this.rootContext, this.rootContext.state.pointer, this.rootContext.state.shape)
   }
 
   static renderNoShapeSlot() {

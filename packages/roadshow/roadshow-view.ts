@@ -1,4 +1,4 @@
-import { LitElement, PropertyValues } from 'lit'
+import { css, LitElement, PropertyValues } from 'lit'
 import { property } from 'lit/decorators.js'
 import type { GraphPointer } from 'clownface'
 import type { BlankNode, NamedNode } from '@rdfjs/types'
@@ -10,8 +10,15 @@ import { RoadshowController } from './RoadshowController'
 import type { RoadshowView, Renderer, ViewerMatchInit } from './index'
 import type { ResourceLoader } from './ResourcesController'
 import { ShapesLoader } from './ShapesController'
+import { NodeViewState } from './lib/state'
 
 export class RoadshowViewElement extends LitElement implements RoadshowView {
+  static get styles() {
+    return css`:host {
+      display: block;
+    }`
+  }
+
   private roadshow: RoadshowController
 
   @property({ type: Object })
@@ -32,6 +39,10 @@ export class RoadshowViewElement extends LitElement implements RoadshowView {
   constructor() {
     super()
     this.roadshow = new RoadshowController(this)
+  }
+
+  get state(): NodeViewState | undefined {
+    return this.roadshow.rootContext?.state
   }
 
   protected updated(_changedProperties: PropertyValues): void {

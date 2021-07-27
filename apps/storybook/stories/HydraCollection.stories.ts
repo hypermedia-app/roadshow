@@ -30,7 +30,7 @@ const pagerViewer: ViewerMatchInit = {
 const localizedLabelViewer: ViewerMatchInit = {
   viewer: dash.LocalLabelViewer,
   matchMulti({ state }) {
-    return state.path?.equals(rdfs.label) ? 1 : 0
+    return state.path?.term?.equals(rdfs.label) ? 1 : 0
   },
 }
 
