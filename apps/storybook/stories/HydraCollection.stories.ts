@@ -175,7 +175,7 @@ interface ViewStoryParams {
   language?: string
 }
 
-const Template = template<ViewStoryParams>(({ resource, viewers, renderers, language }) => {
+const Template = template<ViewStoryParams>(({ resource, viewers, renderers, ...params }) => {
   const shapes = [
     hydraCollectionShape,
     schemaPerson,
@@ -186,7 +186,7 @@ const Template = template<ViewStoryParams>(({ resource, viewers, renderers, lang
                    .shapes="${shapes}"
                    .viewers="${viewers}"
                    .renderers="${renderers}"
-                   .params="${{ language }}"
+                   .params="${params}"
     ></roadshow-view>
     `
 })
