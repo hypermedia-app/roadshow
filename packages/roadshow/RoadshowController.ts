@@ -1,4 +1,4 @@
-import { html, ReactiveController } from 'lit'
+import { ReactiveController } from 'lit'
 import type { GraphPointer } from 'clownface'
 import { NamedNode } from '@rdfjs/types'
 import { dash } from '@tpluscode/rdf-ns-builders/strict'
@@ -11,6 +11,7 @@ import { ResourcesController } from './ResourcesController'
 import { ResourceViewState } from './lib/state'
 import type { ViewContext } from './lib/ViewContext'
 import RootContext from './lib/ViewContext/RootContext'
+import * as fallback from './lib/fallbackSlots'
 
 export class RoadshowController implements ReactiveController {
   private __render: Renderer['render'] | undefined
@@ -76,27 +77,15 @@ export class RoadshowController implements ReactiveController {
 
   render(): unknown {
     if (!this.rootContext?.state.pointer) {
-      return RoadshowController.renderLoadingSlot()
+      return fallback.renderLoadingSlot()
     }
     if (!this.rootContext?.state.shape) {
-      return RoadshowController.renderNoShapeSlot()
+      return fallback.renderNoShapeSlot()
     }
     if (!this.__render) {
-      return RoadshowController.renderNoRendererSlot()
+      return fallback.renderNoRendererSlot()
     }
 
     return this.__render.call(this.rootContext, this.rootContext.state.pointer, this.rootContext.state.shape)
-  }
-
-  static renderNoShapeSlot() {
-    return html`<slot name="no-shape">No applicable shape found...</slot>`
-  }
-
-  static renderLoadingSlot() {
-    return html`<slot name="loading">Loading...</slot>`
-  }
-
-  static renderNoRendererSlot() {
-    return html`<slot name="no-renderer">No renderer!</slot>`
   }
 }

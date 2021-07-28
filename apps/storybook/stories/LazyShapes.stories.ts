@@ -8,7 +8,7 @@ import { namedNode } from '@rdf-esm/data-model'
 import type { GraphPointer } from 'clownface'
 import { ResourceLoader } from '@hydrofoil/roadshow/ResourcesController'
 import clownface from 'clownface'
-import { RoadshowController } from '@hydrofoil/roadshow/RoadshowController'
+import { renderLoadingSlot } from '@hydrofoil/roadshow/lib/fallbackSlots'
 import type { NodeShape } from '@rdfine/shacl'
 import { ResourceViewState } from '@hydrofoil/roadshow/lib/state'
 import { template } from '../lib/template'
@@ -47,7 +47,7 @@ const tableView: Renderer<ResourceViewState> = {
         this.requestUpdate()
       })()
 
-      return RoadshowController.renderLoadingSlot()
+      return renderLoadingSlot()
     }
 
     return html`<table>

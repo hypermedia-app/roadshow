@@ -3,12 +3,12 @@ import { NamedNode } from 'rdf-js'
 import { roadshow } from '@hydrofoil/vocabularies/builders/strict'
 import { PropertyShape } from '@rdfine/shacl'
 import { sh } from '@tpluscode/rdf-ns-builders/strict'
-import { html } from 'lit'
 import ViewContextBase from './ViewContextBase'
 import { ResourceViewState, PropertyViewState } from '../state'
 import { InitRenderer, Show } from '../../index'
 import { isGraphPointer, TRUE } from '../clownface'
 import PropertyViewContext from './PropertyViewContext'
+import { renderLoadingSlot } from '../fallbackSlots'
 
 export default class ResourceViewContext extends ViewContextBase<ResourceViewState, PropertyViewState> {
   initState(pointer: GraphPointer<NamedNode>): ResourceViewState {
@@ -76,7 +76,7 @@ export default class ResourceViewContext extends ViewContextBase<ResourceViewSta
       return
     }
 
-    objectState.render = () => html`<slot>Loading...</slot>`
+    objectState.render = renderLoadingSlot
     this.resources.load?.(resource.term).then(() => {
       delete objectState.render
       this.requestUpdate()
