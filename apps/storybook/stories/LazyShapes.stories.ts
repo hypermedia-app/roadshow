@@ -27,6 +27,7 @@ const collectionViewer: ViewerMatchInit = {
 declare module '@hydrofoil/roadshow' {
   interface LocalState {
     memberShape?: NodeShape
+    memberShapeLoading?: boolean
     applicableMemberShapes?: NodeShape[]
   }
 }
@@ -42,8 +43,13 @@ const tableView: Renderer<ResourceViewState> = {
         .out(hydra.object);
 
       (async () => {
+        if (this.state.locals.memberShapeLoading) return
+
+        this.state.locals.memberShapeLoading = true
         this.state.locals.applicableMemberShapes = await this.shapes.findApplicableShape({ class: memberTypes });
         [this.state.locals.memberShape] = this.state.locals.applicableMemberShapes
+
+        this.state.locals.memberShapeLoading = false
         this.requestUpdate()
       })()
 

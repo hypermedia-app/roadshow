@@ -32,8 +32,8 @@ export class RoadshowController implements ReactiveController {
     this.host.addController(this)
   }
 
-  hostConnected(): Promise<void> {
-    return this.prepareViewState()
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  hostConnected(): void {
   }
 
   async prepareViewState(): Promise<void> {
