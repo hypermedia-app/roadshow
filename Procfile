@@ -1,1 +1,1 @@
-web: npm run -w storybook start -- -p $PORT
+web: yarn wsrun -p storybook -c start -p $PORT
