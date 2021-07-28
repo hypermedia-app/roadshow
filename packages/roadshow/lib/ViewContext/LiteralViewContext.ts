@@ -11,4 +11,8 @@ export default class LiteralViewContext extends ViewContextBase<LiteralViewState
       locals: {},
     }
   }
+
+  show() {
+    throw new Error('Literal view cannot have children')
+  }
 }
