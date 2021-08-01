@@ -34,4 +34,4 @@ jobs:
           authToken: ${{ secrets.GITHUB_TOKEN }}
           context: Netlify Site
           state: success
-          target_url: https://${{ env.BRANCH_NAME }}--roadshow.netlify.app
+          target_url: https://${{ env.BRANCH_NAME }}--roadshow.netlify.app/storybook/
