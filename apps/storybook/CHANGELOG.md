@@ -1,5 +1,19 @@
 # storybook
 
+## 0.1.1
+
+### Patch Changes
+
+- 4872423: Add pager to example rendering
+- Updated dependencies [4872423]
+- Updated dependencies [bc1b7c6]
+- Updated dependencies [647a92a]
+- Updated dependencies [9cd5d66]
+- Updated dependencies [02b7ce7]
+- Updated dependencies [98294b2]
+- Updated dependencies [1272ffb]
+  - @hydrofoil/roadshow@0.2.0
+
 ## 0.1.0
 
 ### Minor Changes
