@@ -8,9 +8,9 @@ import { namedNode } from '@rdf-esm/data-model'
 import type { GraphPointer } from 'clownface'
 import { ResourceLoader } from '@hydrofoil/roadshow/ResourcesController'
 import clownface from 'clownface'
-import { RoadshowController } from '@hydrofoil/roadshow/RoadshowController'
+import { renderLoadingSlot } from '@hydrofoil/roadshow/lib/fallbackSlots'
 import type { NodeShape } from '@rdfine/shacl'
-import { NodeViewState } from '@hydrofoil/roadshow/lib/state'
+import { ResourceViewState } from '@hydrofoil/roadshow/lib/state'
 import { template } from '../lib/template'
 import hydraCollectionShape from '../shapes/hydra-collection.ttl'
 import wikibusBrochure from '../shapes/wikibus-Brochure.ttl'
@@ -27,14 +27,15 @@ const collectionViewer: ViewerMatchInit = {
 declare module '@hydrofoil/roadshow' {
   interface LocalState {
     memberShape?: NodeShape
+    memberShapeLoading?: boolean
     applicableMemberShapes?: NodeShape[]
   }
 }
 
-const tableView: Renderer<NodeViewState> = {
+const tableView: Renderer<ResourceViewState> = {
   viewer: dash.HydraCollectionViewer,
   render(collection) {
-    const { memberShape } = this.locals
+    const { memberShape } = this.state.locals
     if (!memberShape) {
       const memberTypes = collection
         .out(hydra.manages)
@@ -42,12 +43,17 @@ const tableView: Renderer<NodeViewState> = {
         .out(hydra.object);
 
       (async () => {
-        this.locals.applicableMemberShapes = await this.shapes.findApplicableShape({ class: memberTypes });
-        [this.locals.memberShape] = this.locals.applicableMemberShapes
+        if (this.state.locals.memberShapeLoading) return
+
+        this.state.locals.memberShapeLoading = true
+        this.state.locals.applicableMemberShapes = await this.shapes.findApplicableShape({ class: memberTypes });
+        [this.state.locals.memberShape] = this.state.locals.applicableMemberShapes
+
+        this.state.locals.memberShapeLoading = false
         this.requestUpdate()
       })()
 
-      return RoadshowController.renderLoadingSlot()
+      return renderLoadingSlot()
     }
 
     return html`<table>

@@ -1,64 +1,35 @@
 /* eslint-disable no-use-before-define */
 import type { NodeShape, PropertyShape } from '@rdfine/shacl'
-import type { BlankNode, Literal, NamedNode, Term } from '@rdfjs/types'
-import type { GraphPointer } from 'clownface'
+import type { BlankNode, Literal, NamedNode } from '@rdfjs/types'
+import type { GraphPointer, MultiPointer } from 'clownface'
 import type { TemplateResult } from 'lit'
 import type { ViewerScore } from '../ViewersController'
 
-interface CoreState<T extends Term = Term> {
-  pointer: GraphPointer<T>
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface LocalState {
+
+}
+
+export interface CoreState<T extends any = any> {
+  pointer: T
   applicableViewers: ViewerScore[]
   viewer?: GraphPointer<NamedNode>
   render?(): TemplateResult | string
+  locals: LocalState
 }
 
-export interface PropertyViewState {
+export interface PropertyViewState extends CoreState<never> {
   shape?: PropertyShape
   objects: Record<string, ViewState>
+  path?: MultiPointer
 }
 
-export type LiteralViewState = CoreState<Literal>
+export type LiteralViewState = CoreState<GraphPointer<Literal>>
 
-export interface NodeViewState extends CoreState<BlankNode | NamedNode> {
+export interface ResourceViewState extends CoreState<GraphPointer<BlankNode | NamedNode>> {
   shape?: NodeShape
   applicableShapes: NodeShape[]
-  properties: Record<string, PropertyViewState>
+  properties: Partial<Record<string, PropertyViewState>>
 }
 
-export type ViewState = LiteralViewState | NodeViewState
-
-function isIri(pointer: GraphPointer): pointer is GraphPointer<NamedNode | BlankNode> {
-  return pointer.term.termType === 'NamedNode' || pointer.term.termType === 'BlankNode'
-}
-
-function isLiteral(pointer: GraphPointer): pointer is GraphPointer<Literal> {
-  return pointer.term.termType === 'Literal'
-}
-
-function initNodeViewState(pointer: GraphPointer<NamedNode | BlankNode>): NodeViewState {
-  return {
-    pointer,
-    applicableViewers: [],
-    applicableShapes: [],
-    properties: {},
-  }
-}
-
-function initLiteralViewState(pointer:GraphPointer<Literal>): LiteralViewState {
-  return {
-    pointer,
-    applicableViewers: [],
-  }
-}
-
-export function initState(pointer: GraphPointer): ViewState {
-  if (isIri(pointer)) {
-    return initNodeViewState(pointer)
-  }
-
-  if (isLiteral(pointer)) {
-    return initLiteralViewState(pointer)
-  }
-
-  throw new Error('Rendered node must be literal, IRI or blank node')
-}
+export type ViewState = LiteralViewState | ResourceViewState

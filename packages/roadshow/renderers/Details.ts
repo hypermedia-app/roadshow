@@ -29,7 +29,7 @@ export const detailsView: Renderer = {
 
       const objects = findNodes(resource, property.pointer.out(sh.path))
         .map((value) => {
-          const viewers = this.viewers.findApplicableViewers(value).map(v => v.pointer)
+          const viewers = this.findApplicableViewers(value).map(v => v.pointer)
           const [viewer] = viewers
           const render = this.renderers.get(viewer?.term)
 
