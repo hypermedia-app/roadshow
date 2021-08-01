@@ -1,5 +1,20 @@
 # @hydrofoil/roadshow
 
+## 0.2.0
+
+### Minor Changes
+
+- 98294b2: Minimal support for `dash:MultiViewer`
+- 1272ffb: Keep proper state of rendered objects
+
+### Patch Changes
+
+- 4872423: Display `rdfs:label` for rendered links
+- bc1b7c6: Added params to view
+- 647a92a: Refresh rendering when view's `resource` property changes
+- 9cd5d66: Render fallback content in slots
+- 02b7ce7: Add loading capability to shapes controller
+
 ## 0.1.0
 
 ### Minor Changes
