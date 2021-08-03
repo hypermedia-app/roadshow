@@ -21,7 +21,7 @@ export class RoadshowController implements ReactiveController {
   constructor(
     public host: RoadshowView,
     public resources = new ResourcesController(host),
-    public renderers = new RenderersController(host),
+    public renderers = new RenderersController(),
     public viewers = new ViewersController(host),
     public shapes = new ShapesController(host),
   ) {
@@ -94,5 +94,9 @@ export class RoadshowController implements ReactiveController {
     }
 
     return this.__render.call(this.rootContext, this.rootContext.state.pointer, this.rootContext.state.shape)
+  }
+
+  refreshRenderers(): void {
+    this.renderers.set(this.host.renderers)
   }
 }

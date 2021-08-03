@@ -31,7 +31,10 @@ export class RoadshowViewElement extends LitElement implements RoadshowView {
   params: unknown = {}
 
   shapes: NodeShape[] = []
+
+  @property({ type: Array })
   renderers: Renderer[] = []
+
   viewers: ViewerMatchInit[] = []
   resourceLoader?: ResourceLoader
   shapesLoader?: ShapesLoader
@@ -48,6 +51,10 @@ export class RoadshowViewElement extends LitElement implements RoadshowView {
   protected updated(_changedProperties: PropertyValues): void {
     if (_changedProperties.has('resource') || _changedProperties.has('resourceId')) {
       this.roadshow.prepareViewState()
+    }
+
+    if (_changedProperties.has('renderers')) {
+      this.roadshow.refreshRenderers()
     }
   }
 
