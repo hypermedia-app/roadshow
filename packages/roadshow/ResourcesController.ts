@@ -5,7 +5,7 @@ import TermMap from '@rdf-esm/term-map'
 import { RoadshowView } from './index'
 
 export interface ResourceLoader {
-  (term: NamedNode): Promise<GraphPointer<NamedNode>>
+  (term: NamedNode): Promise<GraphPointer>
 }
 
 export class ResourcesController implements ReactiveController {
