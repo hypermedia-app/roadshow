@@ -58,6 +58,13 @@ export class RoadshowController implements ReactiveController {
     if (shape) {
       applicableViewers = this.viewers.findApplicableViewers({ object: resource })
       applicableViewers = [...applicableViewers, { pointer: this.viewers.get(dash.DetailsViewer), score: null }]
+      const [dashViewer] = shape.pointer.out(dash.viewer).toArray()
+      if (dashViewer) {
+        applicableViewers.unshift({
+          pointer: dashViewer as any,
+          score: null,
+        })
+      }
       viewer = applicableViewers[0]?.pointer
       this.__render = this.renderers.get(viewer.term)
     }
