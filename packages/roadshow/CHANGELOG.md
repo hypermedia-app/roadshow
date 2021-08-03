@@ -1,5 +1,13 @@
 # @hydrofoil/roadshow
 
+## 0.2.1
+
+### Patch Changes
+
+- 526c463: Experimental: preselecting NodeShape viewer with dash:viewer
+- baacc95: Setting renderes property did not add them to controller
+- 9f3e9ae: Relax type for resource and shape loaders
+
 ## 0.2.0
 
 ### Minor Changes
