@@ -13,6 +13,6 @@ export function isLiteral(ptr: GraphPointer): ptr is GraphPointer<Literal> {
   return ptr.term.termType === 'Literal'
 }
 
-export function isResource(ptr: GraphPointer): ptr is GraphPointer<BlankNode | NamedNode> {
-  return ptr.term.termType === 'BlankNode' || ptr.term.termType === 'NamedNode'
+export function isResource(ptr: GraphPointer | undefined | null): ptr is GraphPointer<BlankNode | NamedNode> {
+  return ptr?.term.termType === 'BlankNode' || ptr?.term.termType === 'NamedNode'
 }

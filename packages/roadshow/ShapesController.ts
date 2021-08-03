@@ -17,7 +17,7 @@ interface FindShapeForClass {
 type FindShape<T extends Term = Term> = FindShapeForResource<T> | FindShapeForClass
 
 export interface ShapesLoader {
-  (arg: FindShape<NamedNode>): Promise<Array<GraphPointer<NamedNode>>>
+  (arg: FindShape<NamedNode>): Promise<Array<GraphPointer>>
 }
 
 function isUriResource(arg: FindShape): arg is (FindShapeForResource<NamedNode> | FindShapeForClass) {
@@ -41,7 +41,7 @@ export class ShapesController implements ReactiveController {
       const pointers = await this._load(applicableTo)
 
       if (pointers.length) {
-        return pointers.map(ptr => fromPointer(ptr))
+        return pointers.map((ptr: any) => fromPointer(ptr))
       }
     }
 

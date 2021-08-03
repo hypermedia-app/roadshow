@@ -12,6 +12,7 @@ import { ResourceViewState } from './lib/state'
 import type { ViewContext } from './lib/ViewContext'
 import RootContext from './lib/ViewContext/RootContext'
 import * as fallback from './lib/fallbackSlots'
+import { isResource } from './lib/clownface'
 
 export class RoadshowController implements ReactiveController {
   private __render: Renderer['render'] | undefined
@@ -38,11 +39,14 @@ export class RoadshowController implements ReactiveController {
 
   async prepareViewState(): Promise<void> {
     const { resourceId } = this.host
-    let resource: GraphPointer<NamedNode | BlankNode> | undefined
+    let resource: GraphPointer<NamedNode | BlankNode> | undefined | null
     if (this.host.resource) {
       resource = this.host.resource
     } else if (resourceId) {
-      resource = await this.resources.load?.(resourceId)
+      const loaded = await this.resources.load?.(resourceId)
+      if (isResource(loaded)) {
+        resource = loaded
+      }
     }
 
     if (!resource) {
