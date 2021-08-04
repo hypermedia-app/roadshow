@@ -1,5 +1,12 @@
 # @hydrofoil/roadshow
 
+## 0.2.2
+
+### Patch Changes
+
+- 0d1d689: PropertyShape woould not be stored to state
+- 2c59f97: Prevent dereference loop if it had failed
+
 ## 0.2.1
 
 ### Patch Changes
