@@ -77,9 +77,11 @@ export default class ResourceViewContext extends ViewContextBase<ResourceViewSta
     }
 
     objectState.render = renderLoadingSlot
-    this.resources.load?.(resource.term).then(() => {
-      delete objectState.render
-      this.requestUpdate()
+    this.resources.load?.(resource.term).then((loaded) => {
+      if (loaded) {
+        delete objectState.render
+        this.requestUpdate()
+      }
     })
   }
 }
