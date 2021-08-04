@@ -1,6 +1,5 @@
 import type { MultiPointer } from 'clownface'
 import { GraphPointer } from 'clownface'
-import { PropertyShape } from '@rdfine/shacl'
 import { findNodes } from 'clownface-shacl-path'
 import ViewContextBase from './ViewContextBase'
 import { ResourceViewState, PropertyViewState } from '../state'
@@ -18,9 +17,8 @@ export default class PropertyViewContext extends ViewContextBase<PropertyViewSta
   }
 
   show({ resource, viewer, property, shape }: Show): unknown {
-    let propertyShape: PropertyShape | undefined
     if (!('termType' in property)) {
-      propertyShape = property
+      this.state.shape = property
     }
 
     if (!isGraphPointer(resource)) {
@@ -44,7 +42,7 @@ export default class PropertyViewContext extends ViewContextBase<PropertyViewSta
       objectState = childContext.state
 
       childContext.initRenderer({
-        viewer: propertyShape?.viewer?.id || viewer,
+        viewer: this.state.shape?.viewer?.id || viewer,
         property,
         shape,
       })
