@@ -8,6 +8,7 @@ import type { PropertyViewState, ViewState } from './lib/state'
 import type { ViewContext } from './lib/ViewContext'
 
 export { html, css } from 'lit'
+export type { LocalState } from './lib/state'
 
 export interface Show {
   resource: MultiPointer
