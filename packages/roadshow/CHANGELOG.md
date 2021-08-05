@@ -1,5 +1,12 @@
 # @hydrofoil/roadshow
 
+## 0.2.3
+
+### Patch Changes
+
+- f77a9c9: Re-export lit
+- 80d6212: Missing export of `LocalState`
+
 ## 0.2.2
 
 ### Patch Changes
