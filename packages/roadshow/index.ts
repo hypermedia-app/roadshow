@@ -7,6 +7,8 @@ import type { ResourceLoader } from './ResourcesController'
 import type { PropertyViewState, ViewState } from './lib/state'
 import type { ViewContext } from './lib/ViewContext'
 
+export { html, css } from 'lit'
+
 export interface Show {
   resource: MultiPointer
   shape?: NodeShape
