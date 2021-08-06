@@ -89,7 +89,6 @@ const pagerView: Renderer = {
         : this.show({
           resource: page,
           property,
-          viewer: dash.URIViewer,
         })
     }
 

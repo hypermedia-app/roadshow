@@ -1,9 +1,10 @@
 import type { MultiPointer } from 'clownface'
 import { GraphPointer } from 'clownface'
 import { findNodes } from 'clownface-shacl-path'
+import { dash, rdf, sh } from '@tpluscode/rdf-ns-builders'
 import ViewContextBase from './ViewContextBase'
 import { ResourceViewState, PropertyViewState } from '../state'
-import { InitRenderer, Show } from '../../index'
+import { InitRenderer, MultiRenderer, Show } from '../../index'
 import { isGraphPointer } from '../clownface'
 
 export default class PropertyViewContext extends ViewContextBase<PropertyViewState, ResourceViewState, MultiPointer> {
@@ -53,19 +54,29 @@ export default class PropertyViewContext extends ViewContextBase<PropertyViewSta
 
   initRenderer({ viewer, shape, property }: InitRenderer): void {
     const resource = findNodes(this.parent.state.pointer, this.state.path!)
+    const propertyShape = 'termType' in property
+      ? shape?.property.find(propShape => propShape.pointer.has(sh.path, property).term)
+      : property
 
-    if (!isGraphPointer(resource)) {
-      if (!this.state.render) {
-        this.state.applicableViewers = this.viewers.findApplicableViewers({ object: resource, state: this.state })
-        this.state.viewer = this.state.applicableViewers[0]?.pointer
+    if (this.state.render) {
+      return
+    }
 
-        if (this.state.viewer) {
-          this.state.render = () => {
-            const render: any = this.renderers.get(this.state.viewer?.term)
-            return render.call(this, resource)
-          }
-        }
-      }
+    const multiViewer = viewer || propertyShape?.viewer?.id
+    const pointer = multiViewer ? this.viewers.get(multiViewer) : undefined
+    const isMultiViewer = pointer?.has(rdf.type, dash.MultiViewer).term
+
+    if (isGraphPointer(resource) || !isMultiViewer) {
+      return
+    }
+
+    if (pointer && isMultiViewer) {
+      this.state.viewer = pointer
+    }
+
+    const render: MultiRenderer['render'] = this.renderers.get(this.state.viewer?.term)
+    if (this.state.viewer && render) {
+      this.state.render = () => render.call(this, resource)
     }
   }
 
