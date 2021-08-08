@@ -3,7 +3,7 @@ import type { GraphPointer } from 'clownface'
 import { NamedNode } from '@rdfjs/types'
 import { dash } from '@tpluscode/rdf-ns-builders/strict'
 import type { BlankNode } from 'rdf-js'
-import { Renderer, RoadshowView } from './index'
+import { RenderFunc, RoadshowView } from './index'
 import { RenderersController } from './RenderersController'
 import { ViewersController, ViewerScore } from './ViewersController'
 import { ShapesController } from './ShapesController'
@@ -15,7 +15,7 @@ import * as fallback from './lib/fallbackSlots'
 import { isResource } from './lib/clownface'
 
 export class RoadshowController implements ReactiveController {
-  private __render: Renderer['render'] | undefined
+  private __render: RenderFunc | undefined
 
   rootContext: ViewContext<ResourceViewState> | null = null
 

@@ -23,7 +23,7 @@ export default class ResourceViewContext extends ViewContextBase<ResourceViewSta
 
   show({ property, resource, viewer, shape }: Show): unknown {
     if (isGraphPointer(resource)) {
-      return this.parent.show({ property, resource, viewer, shape })
+      // return this.parent.show({ property, resource, viewer, shape })
     }
 
     let propertyKey: string | undefined
@@ -47,7 +47,7 @@ export default class ResourceViewContext extends ViewContextBase<ResourceViewSta
       propertyState = context.state
       this.state.properties[propertyKey] = propertyState
       context.initRenderer({
-        viewer: propertyShape?.viewer?.id || viewer,
+        viewer: viewer || propertyShape?.viewer?.id,
         shape,
         property,
       })

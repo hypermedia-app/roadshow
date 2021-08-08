@@ -43,7 +43,7 @@ export default class PropertyViewContext extends ViewContextBase<PropertyViewSta
       objectState = childContext.state
 
       childContext.initRenderer({
-        viewer: this.state.shape?.viewer?.id || viewer,
+        viewer: viewer || this.state.shape?.viewer?.id,
         property,
         shape,
       })
@@ -58,7 +58,13 @@ export default class PropertyViewContext extends ViewContextBase<PropertyViewSta
       ? shape?.property.find(propShape => propShape.pointer.has(sh.path, property).term)
       : property
 
+    this.state.shape = propertyShape
     if (this.state.render) {
+      return
+    }
+    if (typeof viewer === 'function') {
+      this.state.render = () => viewer.call(this, resource)
+
       return
     }
 

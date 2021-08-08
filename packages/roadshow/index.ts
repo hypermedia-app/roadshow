@@ -10,15 +10,19 @@ import type { ViewContext } from './lib/ViewContext'
 export { html, css } from 'lit'
 export type { LocalState } from './lib/state'
 
+export interface RenderFunc<S extends ViewState = ViewState, T = unknown> {
+  (this: ViewContext<S, T>, resource: GraphPointer, shape?: NodeShape): TemplateResult | string
+}
+
 export interface Show {
   resource: MultiPointer
   shape?: NodeShape
   property: PropertyShape | NamedNode
-  viewer?: Term
+  viewer?: Term | RenderFunc
 }
 
 export interface InitRenderer {
-  viewer?: Term
+  viewer?: Term | RenderFunc
   shape?: NodeShape
   property: PropertyShape | NamedNode
 }

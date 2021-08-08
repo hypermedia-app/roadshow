@@ -44,6 +44,11 @@ export default abstract class ViewContextBase<T extends CoreState, TParent = any
     const objectState = this.state
 
     objectState.applicableViewers = this.viewers.findApplicableViewers({ object: objectState.pointer })
+    if (typeof viewer === 'function') {
+      objectState.render = () => viewer.call(this as any, objectState.pointer, shape)
+      return
+    }
+
     if (viewer) {
       objectState.applicableViewers.unshift({
         pointer: this.viewers.get(viewer), score: null,

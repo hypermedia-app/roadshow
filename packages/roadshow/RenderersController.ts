@@ -2,7 +2,7 @@ import { ReactiveController } from 'lit'
 import { NamedNode } from '@rdfjs/types'
 import TermMap from '@rdf-esm/term-map'
 import type { GraphPointer } from 'clownface'
-import { Renderer } from './index'
+import { Renderer, RenderFunc } from './index'
 import * as defaultRenderers from './renderers'
 
 export class RenderersController implements ReactiveController {
@@ -25,7 +25,7 @@ export class RenderersController implements ReactiveController {
     }
   }
 
-  get(viewer: NamedNode | undefined): Renderer['render'] {
+  get(viewer: NamedNode | undefined): RenderFunc {
     return (viewer && (this.renderers.get(viewer)?.render || this.__renderWarning(viewer))) || this.__renderRaw
   }
 
