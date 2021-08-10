@@ -1,5 +1,5 @@
-import { html } from 'lit'
-import { Renderer, ViewerMatchInit } from '@hydrofoil/roadshow'
+/* import { html } from 'lit'
+import { Renderer, ViewerMatcher } from '@hydrofoil/roadshow'
 import { findNodes } from 'clownface-shacl-path'
 import { hydra, sh, rdf, dash } from '@tpluscode/rdf-ns-builders'
 import { namedNode } from '@rdf-esm/data-model'
@@ -12,7 +12,7 @@ import wikibusBrochure from '../shapes/wikibus-Brochure.ttl'
 import { runFactory } from '../resources/runFactory'
 import brochures from '../resources/wikibus-brochures.trig'
 
-const collectionViewer: ViewerMatchInit = {
+const collectionViewer: ViewerMatcher = {
   viewer: dash.HydraCollectionViewer,
   match({ resource }) {
     return resource.has(rdf.type, hydra.Collection).terms.length ? 50 : 0
@@ -90,3 +90,4 @@ AddressBookTable.args = {
   viewers: [collectionViewer],
   renderers: [tableView],
 }
+*/

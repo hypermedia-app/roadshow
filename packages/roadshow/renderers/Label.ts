@@ -7,6 +7,6 @@ export const Label: Renderer = {
   render(resource) {
     const [label] = resource.out([rdfs.label, skos.prefLabel, schema.name], { language: '*' }).values
 
-    return html`<a href="${resource.value}">${label || resource.value}</a>`
+    return html`<a href="${resource.value!}">${label || resource.value}</a>`
   },
 }

@@ -1,7 +1,7 @@
 import { dash } from '@tpluscode/rdf-ns-builders'
-import { ViewerMatchInit } from '../index'
+import { ViewerMatcher } from '../index'
 
-export const ValueTableViewer: ViewerMatchInit = {
+export const ValueTableViewer: ViewerMatcher = {
   viewer: dash.ValueTableViewer,
   match() {
     return null

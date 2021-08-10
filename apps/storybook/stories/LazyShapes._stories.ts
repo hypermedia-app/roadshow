@@ -1,4 +1,4 @@
-import { html } from 'lit'
+/* import { html } from 'lit'
 import { Renderer, ViewerMatchInit } from '@hydrofoil/roadshow'
 import { findNodes } from 'clownface-shacl-path'
 import { hydra, sh, rdf, dash } from '@tpluscode/rdf-ns-builders'
@@ -128,3 +128,4 @@ AddressBookTable.args = {
   viewers: [collectionViewer],
   renderers: [tableView],
 }
+*/

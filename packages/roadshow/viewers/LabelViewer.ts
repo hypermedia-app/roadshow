@@ -1,7 +1,7 @@
 import { dash } from '@tpluscode/rdf-ns-builders'
-import { ViewerMatchInit } from '../index'
+import { ViewerMatcher } from '../index'
 
-export const LabelViewer: ViewerMatchInit = {
+export const LabelViewer: ViewerMatcher = {
   viewer: dash.LabelViewer,
   match({ resource }) {
     return resource.term.termType === 'NamedNode' ? 5 : 0

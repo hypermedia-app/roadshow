@@ -1,12 +1,18 @@
 PREFIX dash: <http://datashapes.org/dash#>
 PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
 PREFIX sh: <http://www.w3.org/ns/shacl#>
+PREFIX hex: <https://w3id.org/hydra/extension#>
 
 <>
   sh:targetClass hydra:Collection ;
   sh:property
     [
       sh:path hydra:member ;
-      dash:viewer dash:HydraMemberViewer ;
+      dash:viewer hex:MembersViewer ;
+      sh:order 0 ;
+    ],
+    [
+      sh:path hydra:view ;
+      sh:order 1 ;
     ] ;
 .

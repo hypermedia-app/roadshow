@@ -1,54 +1,46 @@
 import { ReactiveController } from 'lit'
-import { NodeShape } from '@rdfine/shacl'
 import type { GraphPointer, MultiPointer } from 'clownface'
-import { NamedNode, Term } from '@rdfjs/types'
 import { fromPointer } from '@rdfine/shacl/lib/NodeShape'
-import { RoadshowView } from './index'
-import { suitableShape } from './lib/shape'
-
-interface FindShapeForResource<T extends Term> {
-  resource: GraphPointer<T>
-}
-
-interface FindShapeForClass {
-  class: MultiPointer | NamedNode
-}
-
-type FindShape<T extends Term = Term> = FindShapeForResource<T> | FindShapeForClass
+import type { RoadshowView } from './index'
+import { createPropertyState, FocusNodeState, PropertyState } from './lib/state'
 
 export interface ShapesLoader {
-  (arg: FindShape<NamedNode>): Promise<Array<GraphPointer>>
-}
-
-function isUriResource(arg: FindShape): arg is (FindShapeForResource<NamedNode> | FindShapeForClass) {
-  return 'class' in arg || ('resource' in arg && arg.resource.term.termType === 'NamedNode')
+  (arg: MultiPointer): Promise<Array<GraphPointer>>
 }
 
 export class ShapesController implements ReactiveController {
-  shapes: NodeShape[] = []
-  private _load?: ShapesLoader
-
   constructor(private host: RoadshowView) {
+    host.addController(this)
   }
 
   hostConnected(): void {
-    this.shapes = this.host.shapes
-    this._load = this.host.shapesLoader
+    //
   }
 
-  async findApplicableShape(applicableTo: FindShape): Promise<NodeShape[]> {
-    if (this._load && isUriResource(applicableTo)) {
-      const pointers = await this._load(applicableTo)
-
-      if (pointers.length) {
-        return pointers.map((ptr: any) => fromPointer(ptr))
-      }
+  async loadShapes(state: FocusNodeState | PropertyState, focusNode: MultiPointer): Promise<void> {
+    if (!this.host.shapesLoader || state.shapesLoaded) {
+      return
     }
 
-    if ('resource' in applicableTo) {
-      return this.shapes.filter(suitableShape(applicableTo.resource))
+    state.shapesLoaded = true
+
+    const shapePointers = await this.host.shapesLoader(focusNode)
+    if (shapePointers.length === 0) {
+      return
+    }
+    if (!state.shape) {
+      state.applicableShapes = shapePointers.map((ptr: any) => fromPointer(ptr));
+      [state.shape] = state.applicableShapes
+    } else {
+      state.applicableShapes = [
+        state.shape,
+        ...shapePointers.map((ptr: any) => fromPointer(ptr)).filter(found => !found.equals(state.shape)),
+      ]
+    }
+    if ('properties' in state) {
+      state.properties = state.shape.property.reduce(createPropertyState, [])
     }
 
-    return []
+    this.host.requestUpdate()
   }
 }

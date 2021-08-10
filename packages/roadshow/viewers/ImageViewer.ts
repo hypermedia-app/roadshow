@@ -1,7 +1,7 @@
 import { dash } from '@tpluscode/rdf-ns-builders'
-import { ViewerMatchInit } from '../index'
+import { ViewerMatcher } from '../index'
 
-interface ImageViewerMatchInit extends ViewerMatchInit {
+interface ImageViewerMatchInit extends ViewerMatcher {
   extensions: string[]
 }
 

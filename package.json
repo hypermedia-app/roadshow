@@ -4,6 +4,7 @@
   "description": "Rendering app layouts using SHACL and lit-html",
   "scripts": {
     "lint": "eslint . --ext .ts --quiet --ignore-path .gitignore --ignore-path .eslintignore",
+    "test": "wtr",
     "postinstall": "husky install",
     "release": "changeset publish"
   },
@@ -14,6 +15,7 @@
     "@tpluscode/eslint-config": "^0.1.1",
     "@typescript-eslint/eslint-plugin": "^4.15.1",
     "@typescript-eslint/parser": "^4.15.1",
+    "@web/test-runner": "^0.13.15",
     "eslint": "^7.12.0",
     "eslint-config-standard": "^15.0.0",
     "eslint-plugin-babel": "^5.3.1",

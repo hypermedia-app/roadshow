@@ -1,16 +1,14 @@
 import { css, LitElement, PropertyValues } from 'lit'
 import { property } from 'lit/decorators.js'
-import type { GraphPointer } from 'clownface'
-import type { BlankNode, NamedNode } from '@rdfjs/types'
-import type { NodeShape } from '@rdfine/shacl'
-import RdfResource from '@tpluscode/rdfine'
-import { NodeShapeBundle, PropertyShapeBundle } from '@rdfine/shacl/bundles'
-import { NodeShapeMixinEx, PropertyShapeMixinEx } from '@rdfine/dash/extensions/sh'
+import type { MultiPointer } from 'clownface'
+import type { NamedNode } from '@rdfjs/types'
 import { RoadshowController } from './RoadshowController'
-import type { RoadshowView, Renderer, ViewerMatchInit } from './index'
+import type { RoadshowView, Renderer, ViewerMatcher } from './index'
 import type { ResourceLoader } from './ResourcesController'
 import { ShapesLoader } from './ShapesController'
-import { ResourceViewState } from './lib/state'
+import { render } from './lib/render'
+import './lib/rdfine'
+import { FocusNodeState } from './lib/state'
 
 export class RoadshowViewElement extends LitElement implements RoadshowView {
   static get styles() {
@@ -22,7 +20,7 @@ export class RoadshowViewElement extends LitElement implements RoadshowView {
   private roadshow: RoadshowController
 
   @property({ type: Object })
-  resource: GraphPointer<NamedNode | BlankNode> | undefined
+  resource: MultiPointer | undefined
 
   @property({ type: Object })
   resourceId: NamedNode | undefined
@@ -30,12 +28,12 @@ export class RoadshowViewElement extends LitElement implements RoadshowView {
   @property({ type: Object })
   params: unknown = {}
 
-  shapes: NodeShape[] = []
-
   @property({ type: Array })
   renderers: Renderer[] = []
 
-  viewers: ViewerMatchInit[] = []
+  @property({ type: Array })
+  viewers: ViewerMatcher[] = []
+
   resourceLoader?: ResourceLoader
   shapesLoader?: ShapesLoader
 
@@ -44,13 +42,20 @@ export class RoadshowViewElement extends LitElement implements RoadshowView {
     this.roadshow = new RoadshowController(this)
   }
 
-  get state(): ResourceViewState | undefined {
-    return this.roadshow.rootContext?.state
+  get state(): FocusNodeState | null {
+    return this.roadshow.state
   }
 
-  protected updated(_changedProperties: PropertyValues): void {
-    if (_changedProperties.has('resource') || _changedProperties.has('resourceId')) {
-      this.roadshow.prepareViewState()
+  protected async updated(_changedProperties: PropertyValues): Promise<void> {
+    if (_changedProperties.has('resourceId') && this.resourceId) {
+      const resource = await this.roadshow.resources.load(this.resourceId)
+      if (resource) {
+        this.resource = resource
+      }
+    }
+
+    if (_changedProperties.has('resource')) {
+      this.roadshow.prepareState()
     }
 
     if (_changedProperties.has('renderers')) {
@@ -59,7 +64,15 @@ export class RoadshowViewElement extends LitElement implements RoadshowView {
   }
 
   render(): unknown {
-    return this.roadshow.render()
+    if (!(this.resource && this.roadshow.state)) {
+      return ''
+    }
+
+    return render({
+      state: this.roadshow.state,
+      controller: this.roadshow,
+      focusNode: this.resource,
+    })
   }
 }
 
@@ -70,6 +83,3 @@ declare global {
 }
 
 customElements.define('roadshow-view', RoadshowViewElement)
-
-RdfResource.factory.addMixin(...NodeShapeBundle, ...PropertyShapeBundle)
-RdfResource.factory.addMixin(NodeShapeMixinEx, PropertyShapeMixinEx)

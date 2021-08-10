@@ -1,4 +1,3 @@
-import { ReactiveController } from 'lit'
 import { NamedNode, Term } from '@rdfjs/types'
 import type { GraphPointer } from 'clownface'
 import TermMap from '@rdf-esm/term-map'
@@ -8,44 +7,23 @@ export interface ResourceLoader {
   (term: NamedNode): Promise<GraphPointer | null | undefined>
 }
 
-export class ResourcesController implements ReactiveController {
+export class ResourcesController {
   private resources: Map<Term, GraphPointer>
-  private _load?: ResourceLoader
 
   constructor(private host: RoadshowView) {
     this.resources = new TermMap()
   }
 
-  async hostConnected(): Promise<void> {
-    this._load = this.host.resourceLoader
-
-    let resource: GraphPointer
-    if (this.host.resource) {
-      resource = this.host.resource
-      this.resources.set(resource.term, resource)
-    } else if (this.host.resourceId) {
-      await this.load(this.host.resourceId)
-    } else {
-      return
-    }
-
-    this.host.requestUpdate()
-  }
-
-  async load(term: NamedNode) {
-    if (!this._load) {
+  async load(term: NamedNode): Promise<GraphPointer<NamedNode> | null | undefined> {
+    if (!this.host.resourceLoader) {
       throw new Error('Resource loader not set')
     }
 
-    const resource = await this._load(term)
+    const resource = await this.host.resourceLoader(term)
     if (resource) {
       this.resources.set(term, resource)
     }
 
-    return resource
-  }
-
-  get(term: NamedNode): GraphPointer<NamedNode> | undefined {
-    return this.resources.get(term) as any
+    return resource as any
   }
 }

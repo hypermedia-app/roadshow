@@ -1,62 +1,37 @@
 import type { ReactiveControllerHost, TemplateResult } from 'lit'
 import type { GraphPointer, MultiPointer } from 'clownface'
-import type { BlankNode, NamedNode, Term } from '@rdfjs/types'
-import type { NodeShape, PropertyShape } from '@rdfine/shacl'
+import type { NamedNode, Term } from '@rdfjs/types'
 import type { ShapesLoader } from './ShapesController'
 import type { ResourceLoader } from './ResourcesController'
-import type { PropertyViewState, ViewState } from './lib/state'
-import type { ViewContext } from './lib/ViewContext'
+import type { PropertyViewContext, ViewContext } from './lib/ViewContext'
 
 export { html, css } from 'lit'
-export type { LocalState } from './lib/state'
 
-export interface RenderFunc<S extends ViewState = ViewState, T = unknown> {
-  (this: ViewContext<S, T>, resource: GraphPointer, shape?: NodeShape): TemplateResult | string
+export interface RenderFunc<S extends ViewContext<unknown>> {
+  (this: S, resource: MultiPointer): TemplateResult | string
 }
 
-export interface Show {
-  resource: MultiPointer
-  shape?: NodeShape
-  property: PropertyShape | NamedNode
-  viewer?: Term | RenderFunc
+export interface Renderer<S extends ViewContext<any> = ViewContext<any>> {
+  viewer: Term
+  render: RenderFunc<S>
 }
 
-export interface InitRenderer {
-  viewer?: Term | RenderFunc
-  shape?: NodeShape
-  property: PropertyShape | NamedNode
-}
+export type MultiRenderer = Renderer<PropertyViewContext>
 
-export interface Renderer<S extends ViewState = ViewState, T = unknown> {
-  viewer: NamedNode
-  render(this: ViewContext<S, T>, resource: GraphPointer, shape?: NodeShape): TemplateResult | string
-}
-
-export interface MultiRenderer<T = unknown> {
-  viewer: NamedNode
-  render(this: ViewContext<PropertyViewState, T>, resources: MultiPointer): TemplateResult | string
-}
-
-export interface ViewerMatch {
+export interface ViewerMatchFunc {
   (arg: { resource: GraphPointer }): number | null
 }
 
-export interface MultiViewerMatch {
-  (arg: { resources: MultiPointer; state: PropertyViewState }): number | null
-}
-
-export interface ViewerMatchInit {
+export interface ViewerMatcher {
   viewer: NamedNode
-  match?: ViewerMatch
-  matchMulti?: MultiViewerMatch
+  match: ViewerMatchFunc
 }
 
 export interface RoadshowView extends ReactiveControllerHost {
-  resource: GraphPointer<NamedNode | BlankNode> | undefined
+  resource: MultiPointer | undefined
   resourceId: NamedNode | undefined
-  shapes: NodeShape[]
   renderers: Renderer[]
-  viewers: ViewerMatchInit[]
+  viewers: ViewerMatcher[]
   resourceLoader?: ResourceLoader
   shapesLoader?: ShapesLoader
   params: any
@@ -64,6 +39,5 @@ export interface RoadshowView extends ReactiveControllerHost {
 
 export interface Viewer {
   pointer: GraphPointer<NamedNode>
-  match?: ViewerMatch
-  matchMulti?: MultiViewerMatch
+  match: ViewerMatchFunc
 }

@@ -5,6 +5,8 @@ import { Renderer } from '../index'
 export const URI: Renderer = {
   viewer: dash.URIViewer,
   render(resource) {
-    return html`<a href="${resource.value}">${resource.value}</a>`
+    const [value] = resource.values
+
+    return html`<a href="${value}">${value}</a>`
   },
 }

@@ -1,23 +1,16 @@
 import { ReactiveController } from 'lit'
-import type { GraphPointer } from 'clownface'
-import { NamedNode } from '@rdfjs/types'
-import { dash } from '@tpluscode/rdf-ns-builders/strict'
-import type { BlankNode } from 'rdf-js'
-import { RenderFunc, RoadshowView } from './index'
+import { dash, sh } from '@tpluscode/rdf-ns-builders/strict'
+import { fromPointer, NodeShape } from '@rdfine/shacl/lib/NodeShape'
+import { RoadshowView } from './index'
+import { create, FocusNodeState } from './lib/state'
 import { RenderersController } from './RenderersController'
-import { ViewersController, ViewerScore } from './ViewersController'
+import { ViewersController } from './ViewersController'
 import { ShapesController } from './ShapesController'
 import { ResourcesController } from './ResourcesController'
-import { ResourceViewState } from './lib/state'
-import type { ViewContext } from './lib/ViewContext'
-import RootContext from './lib/ViewContext/RootContext'
-import * as fallback from './lib/fallbackSlots'
 import { isResource } from './lib/clownface'
 
 export class RoadshowController implements ReactiveController {
-  private __render: RenderFunc | undefined
-
-  rootContext: ViewContext<ResourceViewState> | null = null
+  state: FocusNodeState | null = null
 
   constructor(
     public host: RoadshowView,
@@ -26,78 +19,38 @@ export class RoadshowController implements ReactiveController {
     public viewers = new ViewersController(host),
     public shapes = new ShapesController(host),
   ) {
-    this.host.addController(renderers)
-    this.host.addController(viewers)
-    this.host.addController(shapes)
-    this.host.addController(resources)
     this.host.addController(this)
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
   hostConnected(): void {
+    this.refreshRenderers()
+    this.prepareState()
   }
 
-  async prepareViewState(): Promise<void> {
-    const { resourceId } = this.host
-    let resource: GraphPointer<NamedNode | BlankNode> | undefined | null
-    if (this.host.resource) {
-      resource = this.host.resource
-    } else if (resourceId) {
-      const loaded = await this.resources.load?.(resourceId)
-      if (isResource(loaded)) {
-        resource = loaded
+  async prepareState(): Promise<void> {
+    if (!this.host.resource) {
+      return
+    }
+
+    const [dashShape] = this.host.resource.out(dash.shape).toArray().filter(isResource)
+    let shape: NodeShape | undefined
+    if (dashShape) {
+      if (dashShape.out(sh.property).terms.length) {
+        shape = fromPointer(dashShape)
+      } else if (dashShape.term.termType === 'NamedNode') {
+        const loaded = await this.resources.load(dashShape.term)
+        if (loaded) {
+          shape = fromPointer(loaded)
+        }
       }
     }
 
-    if (!resource) {
-      this.rootContext = null
-      return this.host.requestUpdate()
-    }
-
-    let applicableViewers: ViewerScore[] = []
-    let viewer: GraphPointer<NamedNode> | undefined
-    const applicableShapes = await this.shapes.findApplicableShape({ resource })
-    const [shape] = applicableShapes
-
-    if (shape) {
-      applicableViewers = this.viewers.findApplicableViewers({ object: resource })
-      applicableViewers = [...applicableViewers, { pointer: this.viewers.get(dash.DetailsViewer), score: null }]
-      const [dashViewer] = shape.pointer.out(dash.viewer).toArray()
-      if (dashViewer) {
-        applicableViewers.unshift({
-          pointer: dashViewer as any,
-          score: null,
-        })
-      }
-      viewer = applicableViewers[0]?.pointer
-      this.__render = this.renderers.get(viewer.term)
-    }
-
-    this.rootContext = new RootContext(this, {
-      pointer: resource,
-      applicableShapes,
+    this.state = create({
       shape,
-      properties: {},
-      applicableViewers,
-      viewer,
-      locals: {},
+      viewer: dash.DetailsViewer,
     })
 
-    return this.host.requestUpdate()
-  }
-
-  render(): unknown {
-    if (!this.rootContext?.state.pointer) {
-      return fallback.renderLoadingSlot()
-    }
-    if (!this.rootContext?.state.shape) {
-      return fallback.renderNoShapeSlot()
-    }
-    if (!this.__render) {
-      return fallback.renderNoRendererSlot()
-    }
-
-    return this.__render.call(this.rootContext, this.rootContext.state.pointer, this.rootContext.state.shape)
+    await this.host.requestUpdate()
   }
 
   refreshRenderers(): void {

@@ -1,95 +1,89 @@
 import { html } from 'lit'
-import { MultiRenderer, Renderer, ViewerMatchInit } from '@hydrofoil/roadshow'
+import { MultiRenderer, Renderer, ViewerMatcher } from '@hydrofoil/roadshow'
 import '@hydrofoil/roadshow/roadshow-view'
-import { findNodes } from 'clownface-shacl-path'
-import { hydra, sh, rdf, schema, dash, rdfs } from '@tpluscode/rdf-ns-builders'
-import { fromPointer } from '@rdfine/shacl/lib/NodeShape'
+import { hydra, sh, rdf, schema, dash } from '@tpluscode/rdf-ns-builders/strict'
 import { NamedNode } from 'rdf-js'
 import type { MultiPointer } from 'clownface'
-import type { Literal } from '@rdfjs/types'
+import { ViewersController } from '@hydrofoil/roadshow/ViewersController'
+import { PropertyState } from '@hydrofoil/roadshow/lib/state'
+import { isLiteral } from '@hydrofoil/roadshow/lib/clownface'
 import { template } from '../lib/template'
 import addressBook, { QuadArrayFactory } from '../resources/hydra-collection.ttl'
 import hydraCollectionShape from '../shapes/hydra-collection.ttl'
+import hydraPartialCollectionViewShape from '../shapes/hydra-PartialCollectionView.ttl'
 import schemaPerson from '../shapes/schema-person.ttl'
 import { runFactory } from '../resources/runFactory'
+import { ex, hex } from '../lib/ns'
+import { FocusNodeViewContext } from '../../../packages/roadshow/lib/ViewContext/index'
 
-const collectionViewer: ViewerMatchInit = {
-  viewer: dash.HydraCollectionViewer,
-  match({ resource }) {
-    return resource.has(rdf.type, hydra.Collection).terms.length ? 50 : 0
-  },
-}
-
-const pagerViewer: ViewerMatchInit = {
-  viewer: dash.HydraPartialCollectionViewViewer,
+const pagerViewer: ViewerMatcher = {
+  viewer: hex.PartialCollectionViewViewer,
   match({ resource }) {
     return resource.has(rdf.type, hydra.PartialCollectionView).terms.length ? 50 : 0
   },
 }
 
-const localizedLabelViewer: ViewerMatchInit = {
-  viewer: dash.LocalLabelViewer,
-  matchMulti({ state }) {
-    return state.path?.term?.equals(rdfs.label) ? 1 : 0
-  },
-}
-
-const localizedLabel: MultiRenderer<any> = {
-  viewer: dash.LocalLabelViewer,
-  render(resources: MultiPointer<Literal>) {
-    const arr = resources.toArray()
+const localizedLabel: MultiRenderer = {
+  viewer: ex.LocalLabelViewer,
+  render(resources: MultiPointer) {
+    const arr = resources.toArray().filter(isLiteral)
     const label = arr.find(r => r.term.language === this.params.language) || arr.find(r => r.term.language === 'en')
 
-    return label ? html`${this.show({ property: rdfs.label, resource: label, viewer: dash.LiteralViewer })}` : ''
+    if (!label) {
+      return ''
+    }
+
+    return this.object(label, { })
   },
 }
 
-const tableView: Renderer = {
-  viewer: dash.HydraCollectionViewer,
-  render(collection, shape) {
-    const memberTypes = collection
-      .out(hydra.manages)
-      .has(hydra.property, rdf.type)
-      .out(hydra.object)
+const tableView: MultiRenderer = {
+  viewer: hex.MembersViewer,
+  render(members) {
+    this.controller.shapes.loadShapes(this.state, members)
 
-    const memberShape = this.shapes.shapes
-      .find(shape => shape.pointer.has(sh.targetClass, memberTypes).terms.length)
-    const memberPropertyShape = shape?.property.find(({ pointer }) => hydra.member.equals(pointer.out(sh.path).term))
-    const viewPropertyShape = shape?.property.find(({ pointer }) => hydra.view.equals(pointer.out(sh.path).term))
+    const propertyShapes = this.state.shape?.property
+      .filter(p => !p.hidden) || []
+
+    const memberRows = members.map(member => this.object(member, {
+      resource() {
+        const rowData = propertyShapes
+          .reduce((previous, shape) => {
+            const found = this.state.properties.find(property => property.path.term.equals(shape.pointer.out(sh.path).term))
+            if (found) {
+              return [...previous, found]
+            }
+            return previous
+          }, [] as PropertyState[])
+          .map(property => html`<td>${this.show({ property })}</td>`)
+
+        return html`<tr>${rowData}</tr>`
+      },
+    }))
 
     return html`<table>
       <thead>
         <tr>
-          ${memberShape?.property.filter(p => !p.hidden).map(prop => html`<td>${prop.name}</td>`)}
+          ${propertyShapes.map(prop => html`<td>${prop.name}</td>`)}
         </tr>
       </thead>
       <tbody>
-        ${collection.out(hydra.member).map(resource => html`<tr>${this.show({
-    resource,
-    shape: memberShape,
-    property: memberPropertyShape || hydra.member,
-  })}</tr>`)}
+        ${memberRows}
       </tbody>
-    </table>
-
-    ${collection.out(hydra.view).map(view => this.show({
-    resource: view,
-    property: viewPropertyShape || hydra.view,
-  }))}`
+    </table>`
   },
 }
 
-const pagerView: Renderer = {
-  viewer: dash.HydraPartialCollectionViewViewer,
-  render(resource) {
-    const link = (property: NamedNode) => {
-      const page = resource.out(property).toArray()[0]
-      return !page
-        ? ''
-        : this.show({
-          resource: page,
-          property,
-        })
+const pagerView: Renderer<FocusNodeViewContext> = {
+  viewer: hex.PartialCollectionViewViewer,
+  render() {
+    const link = (predicate: NamedNode) => {
+      const property = this.state.properties.find(({ path }) => predicate.equals(path.term))
+      if (property) {
+        return this.show({ property })
+      }
+
+      return ''
     }
 
     return html`<div>
@@ -101,61 +95,30 @@ const pagerView: Renderer = {
   },
 }
 
-const tableRowView: Renderer = {
-  viewer: dash.HydraMemberViewer,
-  render(member, memberShape) {
-    return html`
-      ${memberShape?.property.filter(({ hidden }) => !hidden).map(property => html`<td>
-        ${findNodes(member, property.pointer.out(sh.path)).map(resource => html`
-          ${this.show({ resource, shape: memberShape, property })}
-        `)}
-      </td>`)}
-    `
+ViewersController.viewerMeta
+  .node(hex.MembersViewer)
+  .addOut(rdf.type, dash.MultiViewer)
+
+const galleryMemberView: MultiRenderer = {
+  viewer: hex.MembersViewer,
+  render(members) {
+    return html`${members.map(member => this.object(member, {
+      resource() {
+        return html`${this.state.properties.filter(({ path }) => schema.image.equals(path.term)).map(property => this.show({ property }))}`
+      },
+    }))}`
   },
 }
 
-const galleryView: Renderer = {
-  viewer: dash.HydraCollectionViewer,
-  render(collection) {
-    const memberTypes = collection
-      .out(hydra.manages)
-      .has(hydra.property, rdf.type)
-      .out(hydra.object)
-
-    const memberShape = this.shapes.shapes
-      .find(shape => shape.pointer.has(sh.targetClass, memberTypes).terms.length)
-
-    return html`<div>
-      ${collection.out(hydra.member).map(resource => this.show({
-    resource,
-    shape: memberShape,
-    property: hydra.member,
-    viewer: dash.HydraMemberViewer,
-  }))}
-    </div>`
-  },
-}
-
-const galleryMemberView: Renderer = {
-  viewer: dash.HydraMemberViewer,
-  render(member) {
-    const images = member.out(schema.image).toArray()
-
-    return html`${images.map(image => html`<div>
-      ${this.show({ resource: image, property: schema.image })}
-    </div>`)}`
-  },
-}
-
-const imageViewer: ViewerMatchInit = {
-  viewer: dash.SchemaImageViewer,
+const imageViewer: ViewerMatcher = {
+  viewer: ex.SchemaImageViewer,
   match({ resource }) {
     return resource.has(rdf.type, schema.ImageObject).terms.length ? 50 : 0
   },
 }
 
 const imageView: Renderer = {
-  viewer: dash.SchemaImageViewer,
+  viewer: ex.SchemaImageViewer,
   render(image) {
     return html`<div>
         <img src="${image.out(schema.contentUrl).value || ''}" alt="${image.out(schema.caption).value || ''}">
@@ -169,38 +132,45 @@ export default {
 
 interface ViewStoryParams {
   resource: QuadArrayFactory
-  viewers: ViewerMatchInit[]
-  renderers: Array<Renderer | MultiRenderer>
+  viewers: ViewerMatcher[]
+  renderers: Array<Renderer<any> | MultiRenderer>
   language?: string
 }
 
-const Template = template<ViewStoryParams>(({ resource, viewers, renderers, ...params }) => {
-  const shapes = [
-    hydraCollectionShape,
-    schemaPerson,
-  ].map(runFactory).map(p => fromPointer(p))
+async function selectShape(arg: MultiPointer) {
+  if (arg.has(rdf.type, hydra.Collection).terms.length) {
+    return [runFactory(hydraCollectionShape)]
+  }
+  if (arg.has(rdf.type, schema.Person).terms.length) {
+    return [runFactory(schemaPerson)]
+  }
+  if (arg.has(rdf.type, hydra.PartialCollectionView).terms.length) {
+    return [runFactory(hydraPartialCollectionViewShape)]
+  }
 
-  return html`
+  return []
+}
+
+const Template = template<ViewStoryParams>(({ resource, viewers, renderers, ...params }) => html`
     <roadshow-view .resource="${runFactory(resource)}"
-                   .shapes="${shapes}"
+                   .shapesLoader="${selectShape}"
                    .viewers="${viewers}"
                    .renderers="${renderers}"
                    .params="${params}"
     ></roadshow-view>
-    `
-})
+    `)
 
 export const AddressBookTable = Template.bind({})
 AddressBookTable.args = {
   resource: addressBook,
-  viewers: [collectionViewer, pagerViewer, localizedLabelViewer],
-  renderers: [tableView, tableRowView, pagerView, localizedLabel],
+  viewers: [pagerViewer],
+  renderers: [tableView, pagerView, localizedLabel],
   language: '',
 }
 
 export const ProfileGallery = Template.bind({})
 ProfileGallery.args = {
   resource: addressBook,
-  viewers: [collectionViewer, imageViewer],
-  renderers: [galleryView, galleryMemberView, imageView],
+  viewers: [imageViewer],
+  renderers: [galleryMemberView, imageView],
 }
