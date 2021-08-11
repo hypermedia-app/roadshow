@@ -1,7 +1,7 @@
 /* eslint-disable no-use-before-define */
 import { NodeShape, PropertyShape } from '@rdfine/shacl'
 import { GraphPointer } from 'clownface'
-import { NamedNode, Term } from '@rdfjs/types'
+import { BlankNode, NamedNode, Term } from '@rdfjs/types'
 import { dash, sh } from '@tpluscode/rdf-ns-builders/strict'
 import TermMap from '@rdf-esm/term-map'
 import { fromPointer } from '@rdfine/shacl/lib/NodeShape'
@@ -30,6 +30,8 @@ export interface PropertyState extends ShapedNodeState {
 }
 
 export interface FocusNodeState extends ShapedNodeState {
+  term: Term
+  pointer?: GraphPointer<BlankNode | NamedNode>
   properties: PropertyState[]
   applicableViewers: ViewerScore[]
   viewer: Term
@@ -59,9 +61,11 @@ export function createPropertyState(arr: PropertyState[], shape: PropertyShape):
 interface Create {
   shape?: NodeShape
   viewer?: Term
+  term: Term
+  pointer?: GraphPointer<NamedNode | BlankNode>
 }
 
-export function create({ shape, viewer = dash.DetailsViewer }: Create): FocusNodeState {
+export function create({ term, pointer, shape, viewer = dash.DetailsViewer }: Create): FocusNodeState {
   return {
     shape,
     applicableShapes: [],
@@ -69,5 +73,7 @@ export function create({ shape, viewer = dash.DetailsViewer }: Create): FocusNod
     shapesLoaded: false,
     properties: shape?.property.reduce(createPropertyState, []) || [],
     viewer,
+    term,
+    pointer,
   }
 }

@@ -1,6 +1,7 @@
 import sinon from 'sinon'
 import { expect } from '@open-wc/testing'
 import { fromPointer } from '@rdfine/shacl/lib/NodeShape'
+import { resources } from '@tpluscode/rdfine/lib/compare'
 import { ShapesController } from '../ShapesController'
 import { RoadshowView } from '../index'
 import { blankNode, namedNode } from './_support/clownface'
@@ -23,7 +24,7 @@ describe('@hydrofoil/roadshow/ShapesController', () => {
   describe('.findApplicableShapes', () => {
     it('sets flag if no shape is returned', async () => {
       // given
-      const controller = new ShapesController(host)
+      const controller = new ShapesController(host, resources)
       const state = {
         ...focusNodeState(),
       }
@@ -37,7 +38,7 @@ describe('@hydrofoil/roadshow/ShapesController', () => {
 
     it('does nothing if already loaded', async () => {
       // given
-      const controller = new ShapesController(host)
+      const controller = new ShapesController(host, resources)
       const state = {
         ...focusNodeState(),
         shapesLoaded: true,
@@ -53,7 +54,7 @@ describe('@hydrofoil/roadshow/ShapesController', () => {
 
     it('does not replace preselected shape', async () => {
       // given
-      const controller = new ShapesController(host)
+      const controller = new ShapesController(host, resources)
       const state = {
         ...focusNodeState(),
         shape: fromPointer(namedNode(ex.foo)),
@@ -72,7 +73,7 @@ describe('@hydrofoil/roadshow/ShapesController', () => {
 
     it('does not duplicate same shape is previously preselected', async () => {
       // given
-      const controller = new ShapesController(host)
+      const controller = new ShapesController(host, resources)
       const state = {
         ...focusNodeState(),
         shape: fromPointer(namedNode(ex.foo)),

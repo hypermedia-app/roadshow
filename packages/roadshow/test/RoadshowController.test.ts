@@ -33,7 +33,7 @@ describe('@hydrofoil/roadshow/RoadshowController', () => {
       const controller = new RoadshowController(view)
 
       // when
-      await controller.prepareState()
+      await controller.initState()
 
       // then
       expect(controller.state?.shape?.id).to.deep.eq(ex.FooShape)
@@ -44,7 +44,7 @@ describe('@hydrofoil/roadshow/RoadshowController', () => {
       const controller = new RoadshowController(view)
 
       // when
-      await controller.prepareState()
+      await controller.initState()
 
       // then
       expect(controller.state?.shape).to.be.undefined

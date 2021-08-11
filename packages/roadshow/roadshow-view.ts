@@ -1,7 +1,7 @@
 import { css, LitElement, PropertyValues } from 'lit'
 import { property } from 'lit/decorators.js'
-import type { MultiPointer } from 'clownface'
-import type { NamedNode } from '@rdfjs/types'
+import type { GraphPointer } from 'clownface'
+import type { BlankNode, NamedNode } from '@rdfjs/types'
 import { RoadshowController } from './RoadshowController'
 import type { RoadshowView, Renderer, ViewerMatcher } from './index'
 import type { ResourceLoader } from './ResourcesController'
@@ -20,7 +20,7 @@ export class RoadshowViewElement extends LitElement implements RoadshowView {
   private roadshow: RoadshowController
 
   @property({ type: Object })
-  resource: MultiPointer | undefined
+  resource: GraphPointer<BlankNode | NamedNode> | undefined
 
   @property({ type: Object })
   resourceId: NamedNode | undefined
@@ -48,14 +48,11 @@ export class RoadshowViewElement extends LitElement implements RoadshowView {
 
   protected async updated(_changedProperties: PropertyValues): Promise<void> {
     if (_changedProperties.has('resourceId') && this.resourceId) {
-      const resource = await this.roadshow.resources.load(this.resourceId)
-      if (resource) {
-        this.resource = resource
-      }
+      await this.roadshow.initState()
     }
 
     if (_changedProperties.has('resource')) {
-      this.roadshow.prepareState()
+      this.roadshow.initState()
     }
 
     if (_changedProperties.has('renderers')) {
@@ -64,14 +61,10 @@ export class RoadshowViewElement extends LitElement implements RoadshowView {
   }
 
   render(): unknown {
-    if (!(this.resource && this.roadshow.state)) {
-      return ''
-    }
-
     return render({
       state: this.roadshow.state,
       controller: this.roadshow,
-      focusNode: this.resource,
+      focusNode: this.roadshow.state.pointer,
     })
   }
 }

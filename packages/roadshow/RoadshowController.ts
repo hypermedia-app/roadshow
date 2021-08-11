@@ -1,55 +1,60 @@
 import { ReactiveController } from 'lit'
-import { dash, sh } from '@tpluscode/rdf-ns-builders/strict'
-import { fromPointer, NodeShape } from '@rdfine/shacl/lib/NodeShape'
+import { dash, rdf } from '@tpluscode/rdf-ns-builders/strict'
+import { roadshow } from '@hydrofoil/vocabularies/builders'
 import { RoadshowView } from './index'
 import { create, FocusNodeState } from './lib/state'
 import { RenderersController } from './RenderersController'
 import { ViewersController } from './ViewersController'
 import { ShapesController } from './ShapesController'
 import { ResourcesController } from './ResourcesController'
-import { isResource } from './lib/clownface'
 
 export class RoadshowController implements ReactiveController {
-  state: FocusNodeState | null = null
+  state: FocusNodeState
+  public shapes: ShapesController;
 
   constructor(
     public host: RoadshowView,
     public resources = new ResourcesController(host),
     public renderers = new RenderersController(),
     public viewers = new ViewersController(host),
-    public shapes = new ShapesController(host),
+    shapes?: ShapesController,
   ) {
     this.host.addController(this)
+
+    this.shapes = shapes || new ShapesController(host, resources)
+    this.state = create({
+      term: rdf.nil,
+    })
   }
 
   hostConnected(): void {
     this.refreshRenderers()
-    this.prepareState()
   }
 
-  async prepareState(): Promise<void> {
-    if (!this.host.resource) {
+  async initState(): Promise<void> {
+    if (this.host.resourceId && !this.host.resource) {
+      this.state = create({
+        viewer: roadshow.LoadingViewer,
+        term: this.host.resourceId,
+      })
+      await this.resources.updateState(this.state)
+    } else if (this.host.resource) {
+      const shape = await this.shapes.loadDashShape(this.host.resource)
+      this.state = create({
+        shape,
+        viewer: roadshow.LoadingViewer,
+        term: this.host.resource.term,
+      })
+      this.state.pointer = this.host.resource
+      await this.host.requestUpdate()
+    } else {
       return
     }
 
-    const [dashShape] = this.host.resource.out(dash.shape).toArray().filter(isResource)
-    let shape: NodeShape | undefined
-    if (dashShape) {
-      if (dashShape.out(sh.property).terms.length) {
-        shape = fromPointer(dashShape)
-      } else if (dashShape.term.termType === 'NamedNode') {
-        const loaded = await this.resources.load(dashShape.term)
-        if (loaded) {
-          shape = fromPointer(loaded)
-        }
-      }
-    }
+    await this.shapes.loadShapes(this.state, this.state.pointer!)
 
-    this.state = create({
-      shape,
-      viewer: dash.DetailsViewer,
-    })
-
+    await this.host.requestUpdate()
+    this.state.viewer = dash.DetailsViewer
     await this.host.requestUpdate()
   }
 

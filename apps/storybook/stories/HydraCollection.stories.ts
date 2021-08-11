@@ -7,6 +7,7 @@ import type { MultiPointer } from 'clownface'
 import { ViewersController } from '@hydrofoil/roadshow/ViewersController'
 import { PropertyState } from '@hydrofoil/roadshow/lib/state'
 import { isLiteral } from '@hydrofoil/roadshow/lib/clownface'
+import { FocusNodeViewContext } from '@hydrofoil/roadshow/lib/ViewContext/index'
 import { template } from '../lib/template'
 import addressBook, { QuadArrayFactory } from '../resources/hydra-collection.ttl'
 import hydraCollectionShape from '../shapes/hydra-collection.ttl'
@@ -14,7 +15,6 @@ import hydraPartialCollectionViewShape from '../shapes/hydra-PartialCollectionVi
 import schemaPerson from '../shapes/schema-person.ttl'
 import { runFactory } from '../resources/runFactory'
 import { ex, hex } from '../lib/ns'
-import { FocusNodeViewContext } from '../../../packages/roadshow/lib/ViewContext/index'
 
 const pagerViewer: ViewerMatcher = {
   viewer: hex.PartialCollectionViewViewer,

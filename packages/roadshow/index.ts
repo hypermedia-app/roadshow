@@ -1,6 +1,6 @@
 import type { ReactiveControllerHost, TemplateResult } from 'lit'
 import type { GraphPointer, MultiPointer } from 'clownface'
-import type { NamedNode, Term } from '@rdfjs/types'
+import type { BlankNode, NamedNode, Term } from '@rdfjs/types'
 import type { ShapesLoader } from './ShapesController'
 import type { ResourceLoader } from './ResourcesController'
 import type { PropertyViewContext, ViewContext } from './lib/ViewContext'
@@ -28,7 +28,7 @@ export interface ViewerMatcher {
 }
 
 export interface RoadshowView extends ReactiveControllerHost {
-  resource: MultiPointer | undefined
+  resource: GraphPointer<NamedNode | BlankNode> | undefined
   resourceId: NamedNode | undefined
   renderers: Renderer[]
   viewers: ViewerMatcher[]
