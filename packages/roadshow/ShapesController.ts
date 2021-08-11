@@ -1,13 +1,14 @@
 import { ReactiveController } from 'lit'
 import type { GraphPointer, MultiPointer } from 'clownface'
 import { fromPointer } from '@rdfine/shacl/lib/NodeShape'
-import { roadshow } from '@hydrofoil/vocabularies/builders'
 import { BlankNode, NamedNode } from '@rdfjs/types'
 import { dash, sh } from '@tpluscode/rdf-ns-builders/strict'
 import type { RoadshowView } from './index'
 import { createPropertyState, FocusNodeState, PropertyState } from './lib/state'
 import { isResource } from './lib/clownface'
 import { ResourcesController } from './ResourcesController'
+
+const LOADER_KEY = 'shapes'
 
 export interface ShapesLoader {
   (arg: MultiPointer): Promise<Array<GraphPointer<NamedNode | BlankNode>>>
@@ -29,11 +30,10 @@ export class ShapesController implements ReactiveController {
     }
 
     state.shapesLoaded = true
-    const { viewer } = state
+    state.loading.add(LOADER_KEY)
 
     const loadShapes = () => shapesLoader(focusNode)
     if (!state.shape) {
-      state.viewer = roadshow.LoadingViewer
       await this.host.requestUpdate()
 
       const shapePointers = await loadShapes()
@@ -51,7 +51,7 @@ export class ShapesController implements ReactiveController {
       state.properties = state.shape?.property.reduce(createPropertyState, []) || []
     }
 
-    state.viewer = viewer
+    state.loading.delete(LOADER_KEY)
     await this.host.requestUpdate()
   }
 

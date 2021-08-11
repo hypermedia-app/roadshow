@@ -1,9 +1,10 @@
 import { NamedNode, Term } from '@rdfjs/types'
 import type { GraphPointer } from 'clownface'
 import TermMap from '@rdf-esm/term-map'
-import { roadshow } from '@hydrofoil/vocabularies/builders'
 import { RoadshowView } from './index'
 import { FocusNodeState } from './lib/state'
+
+const LOADER_KEY = 'representation'
 
 export interface ResourceLoader {
   (term: NamedNode): Promise<GraphPointer | null | undefined>
@@ -29,21 +30,20 @@ export class ResourcesController {
     return resource as any
   }
 
-  async updateState(state: FocusNodeState): Promise<void> {
+  async loadToState(state: FocusNodeState): Promise<void> {
     if (state.term.termType !== 'NamedNode' || typeof state.pointer !== 'undefined') {
       return
     }
 
-    const selectedViewer = state.viewer
-    state.viewer = roadshow.LoadingViewer
+    state.loading.add(LOADER_KEY)
     await this.host.requestUpdate()
 
     const loaded = await this.load(state.term)
+    state.loading.delete(LOADER_KEY)
     if (loaded) {
       state.pointer = loaded
-      state.viewer = selectedViewer
     } else {
-      state.viewer = roadshow.LoadingFailedViewer
+      state.loadingFailed.add(LOADER_KEY)
     }
     await this.host.requestUpdate()
   }

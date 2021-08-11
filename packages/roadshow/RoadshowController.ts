@@ -1,6 +1,5 @@
 import { ReactiveController } from 'lit'
 import { dash, rdf } from '@tpluscode/rdf-ns-builders/strict'
-import { roadshow } from '@hydrofoil/vocabularies/builders'
 import { RoadshowView } from './index'
 import { create, FocusNodeState } from './lib/state'
 import { RenderersController } from './RenderersController'
@@ -34,15 +33,13 @@ export class RoadshowController implements ReactiveController {
   async initState(): Promise<void> {
     if (this.host.resourceId && !this.host.resource) {
       this.state = create({
-        viewer: roadshow.LoadingViewer,
         term: this.host.resourceId,
       })
-      await this.resources.updateState(this.state)
+      await this.resources.loadToState(this.state)
     } else if (this.host.resource) {
       const shape = await this.shapes.loadDashShape(this.host.resource)
       this.state = create({
         shape,
-        viewer: roadshow.LoadingViewer,
         term: this.host.resource.term,
       })
       this.state.pointer = this.host.resource

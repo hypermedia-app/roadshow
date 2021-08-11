@@ -20,12 +20,14 @@ interface ShapedNodeState {
   shape?: NodeShape
   applicableShapes: NodeShape[]
   shapesLoaded?: boolean
+  loading: Set<string>
+  loadingFailed: Set<string>
 }
 
 export interface PropertyState extends ShapedNodeState {
   propertyShape: PropertyShape
   path: GraphPointer
-  viewer: Term | undefined
+  viewer?: Term
   objects: Map<Term, ObjectState | FocusNodeState>
 }
 
@@ -55,6 +57,8 @@ export function createPropertyState(arr: PropertyState[], shape: PropertyShape):
     objects: new TermMap(),
     viewer: shape.viewer?.id,
     applicableShapes: [],
+    loading: new Set(),
+    loadingFailed: new Set(),
   }]
 }
 
@@ -68,6 +72,8 @@ interface Create {
 export function create({ term, pointer, shape, viewer = dash.DetailsViewer }: Create): FocusNodeState {
   return {
     shape,
+    loading: new Set(),
+    loadingFailed: new Set(),
     applicableShapes: [],
     applicableViewers: [],
     shapesLoaded: false,

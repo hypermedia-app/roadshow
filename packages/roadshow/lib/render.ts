@@ -47,7 +47,7 @@ function objectState<T extends Literal | NamedNode | BlankNode>(state: PropertyS
       }
       if (TRUE.equals(state.propertyShape?.pointer.out(roadshow.dereference).term)) {
         delete newState.pointer
-        controller.resources.updateState(newState)
+        controller.resources.loadToState(newState)
       }
       state.objects.set(object.term, newState)
       return newState as any
@@ -98,7 +98,10 @@ function showProperty(this: FocusNodeViewContext, { property }: { property: Prop
 
   const objects = findNodes(this.node, property.path)
   if (property.viewer && this.controller.viewers.isMultiViewer(property.viewer)) {
-    const renderer = this.controller.renderers.get(property.viewer)
+    this.controller.shapes.loadShapes(property, objects)
+
+    const renderer = this.controller.renderers.get(property)
+
     const context: PropertyViewContext = {
       depth: this.depth + 1,
       controller: this.controller,
@@ -109,8 +112,7 @@ function showProperty(this: FocusNodeViewContext, { property }: { property: Prop
         if (isResource(object) && render.resource) {
           const context = createChildContext(this, this.state, object)
           if (!context.state.shape) {
-            this.controller.shapes.loadShapes(context.state, object)
-            return ''
+            context.state.shape = property.shape
           }
 
           return render.resource.call(context)
@@ -132,7 +134,7 @@ function showProperty(this: FocusNodeViewContext, { property }: { property: Prop
       return 'No viewer found'
     }
 
-    const renderer = this.controller.renderers.get(context.state.viewer)
+    const renderer = this.controller.renderers.get(context.state)
 
     if ('properties' in context.state) {
       this.controller.shapes.loadShapes(context.state, object)
@@ -147,7 +149,7 @@ function showProperty(this: FocusNodeViewContext, { property }: { property: Prop
 }
 
 function renderState({ state, focusNode, controller }: Required<Render>): TemplateResult | string {
-  const renderer = controller.renderers.get(state.viewer)
+  const renderer = controller.renderers.get(state)
 
   const context: FocusNodeViewContext = {
     depth: 0,
