@@ -15,8 +15,6 @@ import { hex, wbo } from '../lib/ns'
 const tableView: MultiRenderer = {
   viewer: hex.MembersViewer,
   render(members) {
-    this.controller.shapes.loadShapes(this.state, members)
-
     const propertyShapes = this.state.shape?.property
       .filter(p => !p.hidden) || []
 
@@ -43,14 +41,14 @@ const tableView: MultiRenderer = {
       </tr>
       </thead>
       <tbody>
-      ${memberRows}
+        ${memberRows}
       </tbody>
     </table>`
   },
 }
 
 export default {
-  title: 'Lazy loading',
+  title: 'Lazy loading resources',
 }
 
 interface ViewStoryParams {

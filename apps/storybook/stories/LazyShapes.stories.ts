@@ -4,8 +4,6 @@ import { hydra, sh, rdf } from '@tpluscode/rdf-ns-builders'
 import { ShapesLoader } from '@hydrofoil/roadshow/ShapesController'
 import type { GraphPointer } from 'clownface'
 import { ResourceLoader } from '@hydrofoil/roadshow/ResourcesController'
-import clownface from 'clownface'
-import type { NodeShape } from '@rdfine/shacl'
 import { PropertyState } from '@hydrofoil/roadshow/lib/state'
 import TermMap from '@rdf-esm/term-map'
 import type { Term } from '@rdfjs/types'
@@ -15,14 +13,6 @@ import wikibusBrochure from '../shapes/wikibus-Brochure.ttl'
 import { runFactory } from '../resources/runFactory'
 import brochures from '../resources/wikibus-brochures.trig'
 import { ex, hex, wbo } from '../lib/ns'
-
-declare module '@hydrofoil/roadshow' {
-  interface LocalState {
-    memberShape?: NodeShape
-    memberShapeLoading?: boolean
-    applicableMemberShapes?: NodeShape[]
-  }
-}
 
 const tableView: MultiRenderer = {
   viewer: hex.MembersViewer,
@@ -60,7 +50,7 @@ const tableView: MultiRenderer = {
 }
 
 export default {
-  title: 'Loading shapes on demand',
+  title: 'Lazy loading shapes',
 }
 
 interface ViewStoryParams {
@@ -69,41 +59,38 @@ interface ViewStoryParams {
   renderers: Array<Renderer<any> | MultiRenderer>
 }
 
-const shapeCache = new TermMap()
+const resourceCache = new TermMap()
 
-async function fakeCachedRequest<T>(id: Term, shape: T) {
-  if (!shapeCache.has(id)) {
+async function fakeCachedRequest<T>(id: Term, representation: T) {
+  if (!resourceCache.has(id)) {
     await new Promise((resolve) => {
       setTimeout(resolve, Math.random() * 100 + 1000)
     })
   }
 
-  shapeCache.set(id, shape)
+  resourceCache.set(id, representation)
 
-  return [shape]
+  return representation
 }
 
 const load: ShapesLoader = async (resource) => {
   if (resource.has(rdf.type, hydra.Collection).terms.length) {
-    return fakeCachedRequest(ex.CollectionShape, runFactory(hydraCollectionShape))
+    return [await fakeCachedRequest(ex.CollectionShape, runFactory(hydraCollectionShape))]
   } if (resource.has(rdf.type, wbo.Brochure).terms.length) {
-    return fakeCachedRequest(ex.BrochureShape, runFactory(wikibusBrochure))
+    return [await fakeCachedRequest(ex.BrochureShape, runFactory(wikibusBrochure))]
   }
 
   return []
 }
 
-const { dataset } = runFactory(brochures)
 const loadResource: ResourceLoader = async (id) => {
-  await new Promise((resolve) => {
-    setTimeout(resolve, Math.random() * 100 + 1000)
-  })
+  const graph = await fakeCachedRequest(id, runFactory(brochures))
 
-  return clownface({ dataset, graph: id }).namedNode(id)
+  return graph.namedNode(id)
 }
 
 const Template = template<ViewStoryParams>(({ resource, viewers = [], renderers }) => {
-  shapeCache.clear()
+  resourceCache.clear()
   return html`
     <roadshow-view .resource="${resource}"
                    .viewers="${viewers}"
