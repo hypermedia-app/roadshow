@@ -27,7 +27,7 @@ export interface FocusNodeViewContext extends ViewContext<FocusNodeState> {
 
 export interface PropertyViewContext extends ViewContext<PropertyState> {
   object(object: GraphPointer, render: {
-    literal?(this: ViewContext<ObjectState>): TemplateResult | string
+    literal?(this: ViewContext<ObjectState>, content: TemplateResult | string): TemplateResult | string
     resource?(this: FocusNodeViewContext): TemplateResult | string
   }): TemplateResult | string
 }

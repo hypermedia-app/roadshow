@@ -129,7 +129,10 @@ function showProperty(this: FocusNodeViewContext, show: Show) {
         }
 
         if (isLiteral(object) && render.literal) {
-          return 'literal rendered'
+          const childContext = createChildContext(this, this.state, object)
+          const renderer = this.controller.renderers.get(childContext.state)
+          const result = renderer.call(childContext, object)
+          return render.literal.call(childContext, result)
         }
 
         return ''
