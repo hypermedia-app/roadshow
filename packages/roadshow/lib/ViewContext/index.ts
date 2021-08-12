@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-empty-interface */
 import type { GraphPointer, MultiPointer } from 'clownface'
 import { TemplateResult } from 'lit'
+import { PropertyShape } from '@rdfine/shacl'
+import { NamedNode } from '@rdfjs/types'
 import type { RoadshowController } from '../../RoadshowController'
 import type { FocusNodeState, ObjectState, PropertyState } from '../state'
 
@@ -15,8 +17,12 @@ export interface ViewContext<S> {
   controller: RoadshowController
 }
 
+export interface Show {
+  property: PropertyState | PropertyShape | NamedNode
+}
+
 export interface FocusNodeViewContext extends ViewContext<FocusNodeState> {
-  show(params: { property: PropertyState }): unknown
+  show(params: Show): unknown
 }
 
 export interface PropertyViewContext extends ViewContext<PropertyState> {

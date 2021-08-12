@@ -3,12 +3,14 @@ import { html, TemplateResult } from 'lit'
 import { findNodes } from 'clownface-shacl-path'
 import { BlankNode, Literal, NamedNode, Term } from '@rdfjs/types'
 import { roadshow } from '@hydrofoil/vocabularies/builders'
+import { sh } from '@tpluscode/rdf-ns-builders/strict'
 import { dataset } from '@rdf-esm/dataset'
 import { create, FocusNodeState, ObjectState, PropertyState } from './state'
 import {
   FocusNodeViewContext,
   ObjectViewContext,
   PropertyViewContext,
+  Show,
   ViewContext,
 } from './ViewContext/index'
 import { RoadshowController } from '../RoadshowController'
@@ -89,8 +91,20 @@ function createChildContext<T extends Term>(parent: ViewContext<any>, state: any
   } as any
 }
 
-function showProperty(this: FocusNodeViewContext, { property }: { property: PropertyState }) {
-  if (!this.state.properties.find(p => p === property)) {
+function showProperty(this: FocusNodeViewContext, show: Show) {
+  const property = this.state.properties.find((p) => {
+    if ('id' in show.property) {
+      return p.propertyShape.equals(show.property)
+    }
+
+    if ('termType' in show.property) {
+      return p.propertyShape.pointer.has(sh.path, show.property).term
+    }
+
+    return p === show.property
+  })
+
+  if (!property) {
     // eslint-disable-next-line no-console
     console.warn('Property not found in state')
     return ''
@@ -110,12 +124,7 @@ function showProperty(this: FocusNodeViewContext, { property }: { property: Prop
       node: objects,
       object(object, render) {
         if (isResource(object) && render.resource) {
-          const context = createChildContext(this, this.state, object)
-          if (!context.state.shape) {
-            context.state.shape = property.shape
-          }
-
-          return render.resource.call(context)
+          return render.resource.call(createChildContext(this, this.state, object))
         }
 
         if (isLiteral(object) && render.literal) {

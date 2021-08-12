@@ -1,10 +1,9 @@
 import { html } from 'lit'
 import { MultiRenderer, Renderer, ViewerMatcher } from '@hydrofoil/roadshow'
-import { hydra, sh, rdf } from '@tpluscode/rdf-ns-builders'
+import { hydra, rdf } from '@tpluscode/rdf-ns-builders'
 import { ShapesLoader } from '@hydrofoil/roadshow/ShapesController'
 import type { GraphPointer } from 'clownface'
 import { ResourceLoader } from '@hydrofoil/roadshow/ResourcesController'
-import { PropertyState } from '@hydrofoil/roadshow/lib/state'
 import TermMap from '@rdf-esm/term-map'
 import type { Term } from '@rdfjs/types'
 import { template } from '../lib/template'
@@ -20,21 +19,11 @@ const tableView: MultiRenderer = {
     const propertyShapes = this.state.shape?.property
       .filter(p => !p.hidden) || []
 
-    const memberRows = members.map(member => this.object(member, {
+    const memberRows = members.map(member => html`<tr>${this.object(member, {
       resource() {
-        const rowData = propertyShapes
-          .reduce((previous, shape) => {
-            const found = this.state.properties.find(property => property.path.term.equals(shape.pointer.out(sh.path).term))
-            if (found) {
-              return [...previous, found]
-            }
-            return previous
-          }, [] as PropertyState[])
-          .map(property => html`<td>${this.show({ property })}</td>`)
-
-        return html`<tr>${rowData}</tr>`
+        return html`${propertyShapes.map(property => html`<td>${this.show({ property })}</td>`)}`
       },
-    }))
+    })}</tr>`)
 
     return html`<table>
       <thead>
