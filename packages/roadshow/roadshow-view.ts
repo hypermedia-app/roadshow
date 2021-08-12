@@ -9,6 +9,7 @@ import { ShapesLoader } from './ShapesController'
 import { render } from './lib/render'
 import './lib/rdfine'
 import { FocusNodeState } from './lib/state'
+import { Params } from './lib/ViewContext/index'
 
 export class RoadshowViewElement extends LitElement implements RoadshowView {
   static get styles() {
@@ -26,7 +27,7 @@ export class RoadshowViewElement extends LitElement implements RoadshowView {
   resourceId: NamedNode | undefined
 
   @property({ type: Object })
-  params: unknown = {}
+  params: Params = {}
 
   @property({ type: Array })
   renderers: Renderer[] = []
@@ -65,6 +66,7 @@ export class RoadshowViewElement extends LitElement implements RoadshowView {
       state: this.roadshow.state,
       controller: this.roadshow,
       focusNode: this.roadshow.state.pointer,
+      params: this.params,
     })
   }
 }

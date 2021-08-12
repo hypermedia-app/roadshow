@@ -43,4 +43,8 @@ export class RenderersController implements ReactiveController {
 
     return renderer.render
   }
+
+  has(viewer: NamedNode): boolean {
+    return this.renderers.has(viewer)
+  }
 }
