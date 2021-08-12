@@ -1,5 +1,5 @@
 import { ReactiveController } from 'lit'
-import { Term } from '@rdfjs/types'
+import { NamedNode, Term } from '@rdfjs/types'
 import TermMap from '@rdf-esm/term-map'
 import { roadshow } from '@hydrofoil/vocabularies/builders'
 import { Renderer, RenderFunc } from './index'
@@ -25,8 +25,8 @@ export class RenderersController implements ReactiveController {
     }
   }
 
-  get(state: ObjectState | FocusNodeState | PropertyState): RenderFunc<any> {
-    let render: RenderFunc<any> = () => ''
+  get(state: ObjectState | FocusNodeState | PropertyState | { viewer: NamedNode }): RenderFunc<any> {
+    const renderer = this.renderers.get(roadshow.RendererNotFoundViewer)!
     let { viewer } = state
     if ('loading' in state) {
       if (state.loading.size) {
@@ -38,12 +38,9 @@ export class RenderersController implements ReactiveController {
     }
 
     if (viewer) {
-      const renderer = this.renderers.get(viewer)
-      if (renderer) {
-        render = renderer.render
-      }
+      return (this.renderers.get(viewer) || renderer).render
     }
 
-    return render
+    return renderer.render
   }
 }

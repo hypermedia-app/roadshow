@@ -3,7 +3,7 @@ import { html, TemplateResult } from 'lit'
 import { findNodes } from 'clownface-shacl-path'
 import { BlankNode, Literal, NamedNode, Term } from '@rdfjs/types'
 import { roadshow } from '@hydrofoil/vocabularies/builders'
-import { sh } from '@tpluscode/rdf-ns-builders/strict'
+import { rdfs, sh } from '@tpluscode/rdf-ns-builders/strict'
 import { dataset } from '@rdf-esm/dataset'
 import { create, FocusNodeState, ObjectState, PropertyState } from './state'
 import {
@@ -105,9 +105,10 @@ function showProperty(this: FocusNodeViewContext, show: Show) {
   })
 
   if (!property) {
-    // eslint-disable-next-line no-console
-    console.warn('Property not found in state')
-    return ''
+    const details = clownface({ dataset: dataset() })
+      .blankNode()
+      .addOut(rdfs.label, 'Property not found in state')
+    return this.controller.renderers.get({ viewer: roadshow.ErrorRenderer }).call(this, details)
   }
 
   const objects = findNodes(this.node, property.path)
@@ -117,7 +118,7 @@ function showProperty(this: FocusNodeViewContext, show: Show) {
     const renderer = this.controller.renderers.get(property)
 
     const context: PropertyViewContext = {
-      depth: this.depth + 1,
+      depth: this.depth,
       controller: this.controller,
       params: this.params,
       state: property,
