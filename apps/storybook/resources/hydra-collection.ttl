@@ -4,34 +4,37 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 @prefix schema: <http://schema.org/> .
 
 <> a hydra:Collection ;
-   hydra:member
-     [
-       a schema:Person ;
-       schema:familyName "Doe" ;
-       schema:givenName "John" ;
-       schema:telephone "123456789" ;
-       schema:image [
-                      a schema:ImageObject ;
-                      schema:contentUrl <https://www.placecage.com/320/240> ;
-                      schema:caption "John's profile image" ;
-                    ]
-     ], [
-          a schema:Person ;
-          schema:familyName "Doe" ;
-          schema:givenName "Jane" ;
-          schema:telephone "555666777" ;
-          schema:image
-            [
-              a schema:ImageObject ;
-              schema:contentUrl <https://placeimg.com/320/240/face> ;
-              schema:caption "Jane's profile image" ;
-            ]
-        ] ;
-   hydra:manages
-     [
-       hydra:property rdf:type ;
-       hydra:object schema:Person ;
-     ] ;
+  hydra:title "Addressbook"@en, "Książka adresowa"@pl ;
+  hydra:member
+    [
+      a schema:Person ;
+      schema:familyName "Doe" ;
+      schema:givenName "John" ;
+      schema:telephone "123456789" ;
+      schema:image
+        [
+          a schema:ImageObject ;
+          schema:contentUrl <https://www.placecage.com/320/240> ;
+          schema:caption "John's profile image" ;
+        ]
+    ],
+    [
+      a schema:Person ;
+      schema:familyName "Doe" ;
+      schema:givenName "Jane" ;
+      schema:telephone "555666777" ;
+      schema:image
+        [
+          a schema:ImageObject ;
+          schema:contentUrl <https://placeimg.com/320/240/face> ;
+          schema:caption "Jane's profile image" ;
+        ]
+    ] ;
+  hydra:manages
+    [
+      hydra:property rdf:type ;
+      hydra:object schema:Person ;
+    ] ;
   hydra:view
     [
       a hydra:PartialCollectionView ;

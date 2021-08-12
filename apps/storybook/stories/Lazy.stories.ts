@@ -9,32 +9,10 @@ import hydraCollectionShape from '../shapes/hydra-collection.ttl'
 import wikibusBrochure from '../shapes/wikibus-Brochure.ttl'
 import { runFactory } from '../resources/runFactory'
 import brochures from '../resources/wikibus-brochures.trig'
-import { hex, wbo } from '../lib/ns'
-
-const tableView: MultiRenderer = {
-  viewer: hex.MembersViewer,
-  render(members) {
-    const propertyShapes = this.state.shape?.property
-      .filter(p => !p.hidden) || []
-
-    const memberRows = members.map(member => html`<tr>${this.object(member, {
-      resource() {
-        return html`${propertyShapes.map(property => html`<td>${this.show({ property })}</td>`)}`
-      },
-    })}</tr>`)
-
-    return html`<table>
-      <thead>
-      <tr>
-        ${propertyShapes.map(prop => html`<td>${prop.name}</td>`)}
-      </tr>
-      </thead>
-      <tbody>
-        ${memberRows}
-      </tbody>
-    </table>`
-  },
-}
+import { wbo } from '../lib/ns'
+import { tableView } from '../viewers/hydra-MembersViewer/table'
+import { localizedLabel } from '../viewers/ex-LocalLabelViewer'
+import * as pagerViewer from '../viewers/hydra-PartialCollectionViewer'
 
 export default {
   title: 'Lazy loading resources',
@@ -79,5 +57,6 @@ const Template = template<ViewStoryParams>(({ resource, viewers = [], renderers 
 export const AddressBookTable = Template.bind({})
 AddressBookTable.args = {
   resource: 'https://sources.wikibus.org/brochures',
-  renderers: [tableView],
+  renderers: [tableView, localizedLabel, pagerViewer.renderer],
+  viewers: [pagerViewer.matcher],
 }
