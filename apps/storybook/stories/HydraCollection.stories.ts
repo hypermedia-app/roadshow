@@ -23,7 +23,6 @@ interface ViewStoryParams {
   resource: QuadArrayFactory
   viewers: ViewerMatcher[]
   renderers: Array<Renderer<any> | MultiRenderer>
-  language?: string
 }
 
 async function selectShape(arg: MultiPointer) {
@@ -40,12 +39,11 @@ async function selectShape(arg: MultiPointer) {
   return []
 }
 
-const Template = template<ViewStoryParams>(({ resource, viewers, renderers, ...params }) => html`
+const Template = template<ViewStoryParams>(({ resource, viewers, renderers }) => html`
     <roadshow-view .resource="${runFactory(resource)}"
                    .shapesLoader="${selectShape}"
                    .viewers="${viewers}"
                    .renderers="${renderers}"
-                   .params="${params}"
     ></roadshow-view>
     `)
 
@@ -54,7 +52,6 @@ AddressBookTable.args = {
   resource: addressBook,
   viewers: [pagerViewer.matcher],
   renderers: [tableView, pagerViewer.renderer, localizedLabel],
-  language: '',
 }
 
 export const ProfileGallery = Template.bind({})

@@ -7,6 +7,7 @@ import type { RoadshowController } from '../../RoadshowController'
 import type { FocusNodeState, ObjectState, PropertyState } from '../state'
 
 export interface Params extends Record<string, any> {
+  language: string
 }
 
 export interface ViewContext<S> {

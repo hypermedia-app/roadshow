@@ -27,7 +27,7 @@ export class RoadshowViewElement extends LitElement implements RoadshowView {
   resourceId: NamedNode | undefined
 
   @property({ type: Object })
-  params: Params = {}
+  params: Partial<Params> = {}
 
   @property({ type: Array })
   renderers: Renderer[] = []
@@ -66,7 +66,10 @@ export class RoadshowViewElement extends LitElement implements RoadshowView {
       state: this.roadshow.state,
       controller: this.roadshow,
       focusNode: this.roadshow.state.pointer,
-      params: this.params,
+      params: {
+        language: navigator.language,
+        ...this.params,
+      },
     })
   }
 }

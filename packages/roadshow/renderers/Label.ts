@@ -5,8 +5,8 @@ import { Renderer } from '../index'
 export const Label: Renderer = {
   viewer: dash.LabelViewer,
   render(resource) {
-    const [label] = resource.out([rdfs.label, skos.prefLabel, schema.name], { language: '*' }).values
+    const [label] = resource.out([rdfs.label, skos.prefLabel, schema.name], { language: [this.params.language, '*'] }).values
 
-    return html`<a href="${resource.value!}">${label || resource.value}</a>`
+    return html`<a href="${resource.values[0]}">${label || resource.value}</a>`
   },
 }
