@@ -1,8 +1,6 @@
 import { expect, fixture } from '@open-wc/testing'
 import { fromPointer } from '@rdfine/shacl/lib/NodeShape'
 import { NodeShape } from '@rdfine/shacl'
-import { NamedNode } from '@rdfjs/types'
-import TermMap from '@rdf-esm/term-map'
 import { html } from 'lit'
 import sinon from 'sinon'
 import { dash, foaf, rdfs, sh } from '@tpluscode/rdf-ns-builders/strict'
@@ -11,23 +9,24 @@ import { render } from '../../lib/render'
 import { blankNode, namedNode } from '../_support/clownface'
 import { ex } from '../_support/ns'
 import { RoadshowController } from '../../RoadshowController'
-import { RenderFunc } from '../../index'
 import { ShapesController } from '../../ShapesController'
 import { focusNodeState } from '../_support/state'
 import { create, FocusNodeState } from '../../lib/state'
-import { FocusNodeViewContext, PropertyViewContext } from '../../lib/ViewContext/index'
+import { FocusNodeViewContext, Params, PropertyViewContext } from '../../lib/ViewContext/index'
 import '../../lib/rdfine'
+import { TestRenderersController } from '../_support/TestRenderersController'
 
 describe('@hydrofoil/roadshow/lib/render', () => {
   function createShape(init?: Initializer<NodeShape>) {
     return fromPointer(blankNode(), init)
   }
-  let renderers: Map<NamedNode, RenderFunc<any>>
+  let renderers: TestRenderersController
   let loadShapes: ShapesController['loadShapes']
   let controller: RoadshowController
+  let params: Params
 
   beforeEach(() => {
-    renderers = new TermMap<NamedNode, RenderFunc<any>>([
+    renderers = new TestRenderersController([
       [dash.DetailsViewer, function render(this: FocusNodeViewContext) {
         return html`${this.state.properties.map(property => html`${this.show({ property })}`)}`
       }],
@@ -44,6 +43,9 @@ describe('@hydrofoil/roadshow/lib/render', () => {
         loadShapes,
       },
     } as any
+    params = {
+      language: 'en',
+    }
   })
 
   describe('render', () => {
@@ -54,23 +56,10 @@ describe('@hydrofoil/roadshow/lib/render', () => {
       renderers.set(ex.FooViewer, ({ value }) => html`<div>Resource ${value}</div>`)
 
       // when
-      const result = await fixture(render({ state, focusNode, controller }))
+      const result = await fixture(render({ state, focusNode, controller, params }))
 
       // then
       expect(result.textContent).to.eq('Resource /foo/bar')
-    })
-
-    it('initializes shapes being loaded', async () => {
-      // given
-      const state = { ...focusNodeState(), shape: createShape() }
-      const focusNode = namedNode('/foo/bar')
-      renderers.set(ex.FooViewer, ({ value }) => html`<div>Resource ${value}</div>`)
-
-      // when
-      await fixture(render({ state, focusNode, controller }))
-
-      // then
-      expect(loadShapes).to.have.been.called
     })
 
     describe('multi viewer', async () => {
@@ -82,16 +71,16 @@ describe('@hydrofoil/roadshow/lib/render', () => {
             viewer: ex.FooViewer,
           }],
         })
-        const state: FocusNodeState = create({ shape })
         sinon.stub(controller.viewers, 'isMultiViewer').returns(true)
         const focusNode = namedNode('/foo/bar')
           .addOut(rdfs.label, 'foo')
           .addOut(rdfs.label, 'bar')
           .addOut(rdfs.label, 'baz')
+        const state: FocusNodeState = create({ shape, term: focusNode.term, pointer: focusNode })
         renderers.set(ex.FooViewer, ptr => html`<div>Count: ${ptr.terms.length}</div>`)
 
         // when
-        const result = await fixture(render({ state, focusNode, controller }))
+        const result = await fixture(render({ state, focusNode, controller, params }))
 
         // then
         expect(result.textContent).to.eq('Count: 3')
@@ -117,12 +106,12 @@ describe('@hydrofoil/roadshow/lib/render', () => {
             },
           }],
         })
-        const state: FocusNodeState = create({ shape })
         sinon.stub(controller.viewers, 'isMultiViewer').returns(true)
         const focusNode = namedNode('/foo/bar')
           .addOut(foaf.knows, friend => friend.addOut(rdfs.label, 'Foo').addOut(rdfs.comment, 'foo comment'))
           .addOut(foaf.knows, friend => friend.addOut(rdfs.label, 'Bar').addOut(rdfs.comment, 'bar comment'))
           .addOut(foaf.knows, friend => friend.addOut(rdfs.label, 'Baz').addOut(rdfs.comment, 'baz comment'))
+        const state: FocusNodeState = create({ shape, term: focusNode.term, pointer: focusNode })
         renderers.set(ex.FriendsViewer, function render(this: PropertyViewContext, friends) {
           return html`
             <table>${friends.toArray().map(object => html`
@@ -138,7 +127,7 @@ describe('@hydrofoil/roadshow/lib/render', () => {
         renderers.set(dash.LiteralViewer, (obj: any) => obj.value)
 
         // when
-        const result = await fixture(render({ state, focusNode, controller }))
+        const result = await fixture(render({ state, focusNode, controller, params }))
 
         // then
         const cells = [...result.querySelectorAll('td')]

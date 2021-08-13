@@ -1,16 +1,17 @@
 import sinon from 'sinon'
 import { expect } from '@open-wc/testing'
 import { fromPointer } from '@rdfine/shacl/lib/NodeShape'
-import { resources } from '@tpluscode/rdfine/lib/compare'
 import { ShapesController } from '../ShapesController'
 import { RoadshowView } from '../index'
 import { blankNode, namedNode } from './_support/clownface'
 import { focusNodeState } from './_support/state'
 import { ex } from './_support/ns'
+import { ResourcesController } from '../ResourcesController'
 
 describe('@hydrofoil/roadshow/ShapesController', () => {
   let host: RoadshowView
   let shapesLoader: sinon.SinonStub
+  let resources: ResourcesController
 
   beforeEach(() => {
     shapesLoader = sinon.stub().resolves([])

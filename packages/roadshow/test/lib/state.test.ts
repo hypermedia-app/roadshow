@@ -4,6 +4,7 @@ import { dash, rdf, rdfs, schema, sh } from '@tpluscode/rdf-ns-builders/strict'
 import { blankNode } from '../_support/clownface'
 import { create } from '../../lib/state'
 import '../../lib/rdfine'
+import { ex } from '../_support/ns'
 
 describe('@hydrofoil/roadshow/lib/state', () => {
   describe('create', () => {
@@ -12,7 +13,7 @@ describe('@hydrofoil/roadshow/lib/state', () => {
       const shape = fromPointer(blankNode())
 
       // when
-      const state = create({ shape })
+      const state = create({ shape, term: ex.foo })
 
       // then
       expect(state.viewer).to.deep.eq(dash.DetailsViewer)
@@ -37,7 +38,7 @@ describe('@hydrofoil/roadshow/lib/state', () => {
       })
 
       // when
-      const state = create({ shape })
+      const state = create({ shape, term: ex.foo })
 
       // then
       expect(state.properties).to.have.length(4)
@@ -53,7 +54,7 @@ describe('@hydrofoil/roadshow/lib/state', () => {
       })
 
       // when
-      const state = create({ shape })
+      const state = create({ shape, term: ex.foo })
 
       // then
       expect(state.properties).to.have.length(0)

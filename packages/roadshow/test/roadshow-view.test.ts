@@ -111,22 +111,4 @@ describe('@hydrofoil/roadshow/roadshow-view', () => {
     expect(loadShape).to.have.been.calledWith(ex.FooShape)
     expect(view.renderRoot.textContent).to.eq('Foo')
   })
-
-  it('loads root resource from provider', async () => {
-    // given
-    const graph = clownface()
-    const resource = graph.namedNode('foo')
-      .addOut(rdfs.label, 'Foo Resource')
-    async function loadResource() {
-      return resource
-    }
-
-    // when
-    const view = await fixture<RoadshowViewElement>(html`<roadshow-view .resourceId="${resource.term}"
-                                                                        .resourceLoader="${loadResource}"></roadshow-view>`)
-    await view.updateComplete
-
-    // then
-    expect(view.resource?.term).to.deep.eq(resource.term)
-  })
 })
