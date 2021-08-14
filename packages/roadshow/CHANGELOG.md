@@ -1,5 +1,15 @@
 # @hydrofoil/roadshow
 
+## 0.3.0
+
+### Minor Changes
+
+- abefa91: Redesign the state and rendering process
+
+### Patch Changes
+
+- c3ec710: Ability to select multi-viewer to render multiple properties
+
 ## 0.2.3
 
 ### Patch Changes
