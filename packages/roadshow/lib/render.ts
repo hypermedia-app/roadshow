@@ -80,6 +80,7 @@ function createChildContext<T extends Term>(parent: ViewContext<any>, state: any
       node: pointer,
       show: showProperty,
       state: childState,
+      parent: state,
     } as any
   }
 
@@ -90,6 +91,7 @@ function createChildContext<T extends Term>(parent: ViewContext<any>, state: any
     params: parent.params,
     state: childState,
     node: pointer,
+    parent: state,
   } as any
 }
 
@@ -172,6 +174,7 @@ function showProperty(this: FocusNodeViewContext, show: Show) {
       state: property,
       node: objects,
       object: renderMultiRenderObject,
+      parent: this.state,
     }
     return renderer.call(context, objects)
   }
@@ -189,6 +192,7 @@ function renderState({ state, focusNode, controller, params }: Required<Render>)
     controller,
     node: focusNode,
     show: showProperty,
+    parent: undefined,
   }
 
   return renderer.call(context, focusNode)

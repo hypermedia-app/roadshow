@@ -10,10 +10,11 @@ export interface Params extends Record<string, any> {
   language: string
 }
 
-export interface ViewContext<S> {
+export interface ViewContext<S, P = any> {
   depth: number
   node: MultiPointer
   state: S
+  readonly parent: Readonly<P> | undefined
   params: Params
   controller: RoadshowController
 }
@@ -22,17 +23,17 @@ export interface Show {
   property: PropertyState | PropertyShape | NamedNode
 }
 
-export interface FocusNodeViewContext extends ViewContext<FocusNodeState> {
+export interface FocusNodeViewContext extends ViewContext<FocusNodeState, PropertyState> {
   show(params: Show): unknown
 }
 
-export interface PropertyViewContext extends ViewContext<PropertyState> {
+export interface PropertyViewContext extends ViewContext<PropertyState, FocusNodeState> {
   object(object: GraphPointer, render?: {
     literal?(this: ViewContext<ObjectState>, content: TemplateResult | string): TemplateResult | string
     resource?(this: FocusNodeViewContext): TemplateResult | string
   }): TemplateResult | string
 }
 
-export interface ObjectViewContext extends ViewContext<ObjectState> {
+export interface ObjectViewContext extends ViewContext<ObjectState, PropertyState> {
 
 }
