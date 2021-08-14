@@ -6,6 +6,7 @@
     "lint": "eslint . --ext .ts --quiet --ignore-path .gitignore --ignore-path .eslintignore",
     "test": "wtr",
     "postinstall": "husky install",
+    "build": "wsrun -m -c prepack",
     "release": "changeset publish"
   },
   "devDependencies": {
