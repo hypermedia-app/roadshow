@@ -1,18 +1,13 @@
 import { ReactiveController } from 'lit'
-import type { GraphPointer, MultiPointer } from 'clownface'
+import clownface, { AnyPointer, GraphPointer } from 'clownface'
 import TermMap from '@rdf-esm/term-map'
 import { NamedNode, Term } from '@rdfjs/types'
-import clownface, { AnyPointer } from 'clownface'
-import { dataset } from '@rdf-esm/dataset'
-import { RoadshowView, Viewer, ViewerMatchInit } from './index'
+import * as $rdf from '@rdf-esm/dataset'
+import Dash from '@zazuko/rdf-vocabularies/datasets/dash'
+import { dash, rdf } from '@tpluscode/rdf-ns-builders/strict'
+import { RoadshowView, Viewer, ViewerMatcher } from './index'
 import * as defaultViewers from './viewers'
-import { isGraphPointer } from './lib/clownface'
-import { PropertyViewState } from './lib/state'
-
-export interface ViewerScore {
-  pointer: GraphPointer<NamedNode>
-  score: number | null
-}
+import { ViewerScore } from './lib/state'
 
 function suitableViewers(resource: GraphPointer) {
   return (matched: ViewerScore[], { pointer, match }: Viewer): ViewerScore[] => {
@@ -28,55 +23,29 @@ function suitableViewers(resource: GraphPointer) {
   }
 }
 
-function suitableMultiViewers(resources: MultiPointer, state: PropertyViewState) {
-  return (matched: ViewerScore[], { pointer, matchMulti }: Viewer): ViewerScore[] => {
-    const score = matchMulti?.({ resources, state }) || 0
-    if (score === 0) {
-      return matched
-    }
-
-    return [...matched, {
-      pointer,
-      score,
-    }]
-  }
-}
-
 function byScore(left: ViewerScore, right: ViewerScore) {
   return (right.score || -1) - (left.score || -1)
 }
 
-interface FindSingleViewers {
-  object: GraphPointer
-  state?: never
-}
-
-interface FindMultiViewers {
-  object: MultiPointer
-  state: PropertyViewState
-}
-
-type FindApplicableViewers = FindSingleViewers | FindMultiViewers
-
 export class ViewersController implements ReactiveController {
-  static readonly defaultViewers: Array<ViewerMatchInit> = Object.values(defaultViewers)
-  static readonly viewerMeta: AnyPointer = clownface({ dataset: dataset() })
+  static readonly defaultViewers: Array<ViewerMatcher> = Object.values(defaultViewers)
+  static readonly viewerMeta: AnyPointer = clownface({ dataset: $rdf.dataset(Dash($rdf)) })
 
   viewers: Map<NamedNode, Viewer>
 
   constructor(private host: RoadshowView) {
     this.viewers = new TermMap()
+    host.addController(this)
   }
 
   hostConnected(): void {
     const mapInit = [
       ...ViewersController.defaultViewers,
       ...this.host.viewers,
-    ].map<[NamedNode, Viewer]>(({ viewer, match, matchMulti }) => {
+    ].map<[NamedNode, Viewer]>(({ viewer, match }) => {
       const impl = {
         pointer: ViewersController.viewerMeta.node(viewer),
         match,
-        matchMulti,
       }
       return [viewer, impl]
     })
@@ -84,15 +53,9 @@ export class ViewersController implements ReactiveController {
     this.viewers = new TermMap(mapInit)
   }
 
-  findApplicableViewers({ object, state }: FindApplicableViewers): ViewerScore[] {
-    if (isGraphPointer(object)) {
-      return [...this.viewers.values()]
-        .reduce(suitableViewers(object), [])
-        .sort(byScore)
-    }
-
+  findApplicableViewers(object: GraphPointer): ViewerScore[] {
     return [...this.viewers.values()]
-      .reduce(suitableMultiViewers(object, state!), [])
+      .reduce(suitableViewers(object), [])
       .sort(byScore)
   }
 
@@ -102,5 +65,9 @@ export class ViewersController implements ReactiveController {
     }
 
     return ViewersController.viewerMeta.node(viewer)
+  }
+
+  isMultiViewer(viewer: Term): boolean {
+    return ViewersController.viewerMeta.node(viewer).has(rdf.type, dash.MultiViewer).terms.length > 0
   }
 }

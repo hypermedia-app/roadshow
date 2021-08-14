@@ -1,35 +1,85 @@
 /* eslint-disable no-use-before-define */
-import type { NodeShape, PropertyShape } from '@rdfine/shacl'
-import type { BlankNode, Literal, NamedNode } from '@rdfjs/types'
-import type { GraphPointer, MultiPointer } from 'clownface'
-import type { TemplateResult } from 'lit'
-import type { ViewerScore } from '../ViewersController'
+import { NodeShape, PropertyShape } from '@rdfine/shacl'
+import { GraphPointer } from 'clownface'
+import { BlankNode, NamedNode, Term } from '@rdfjs/types'
+import { dash, sh } from '@tpluscode/rdf-ns-builders/strict'
+import TermMap from '@rdf-esm/term-map'
+import { fromPointer } from '@rdfine/shacl/lib/NodeShape'
+import { isResource, isGraphPointer } from './clownface'
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface LocalState {
-
+export interface ViewerScore {
+  pointer: GraphPointer<NamedNode>
+  score: number | null
 }
-
-export interface CoreState<T extends any = any> {
-  pointer: T
+export interface ObjectState {
   applicableViewers: ViewerScore[]
-  viewer?: GraphPointer<NamedNode>
-  render?(): TemplateResult | string
-  locals: LocalState
+  viewer: Term
 }
 
-export interface PropertyViewState extends CoreState<never> {
-  shape?: PropertyShape
-  objects: Record<string, ViewState>
-  path?: MultiPointer
-}
-
-export type LiteralViewState = CoreState<GraphPointer<Literal>>
-
-export interface ResourceViewState extends CoreState<GraphPointer<BlankNode | NamedNode>> {
+interface ShapedNodeState {
   shape?: NodeShape
   applicableShapes: NodeShape[]
-  properties: Partial<Record<string, PropertyViewState>>
+  shapesLoaded?: boolean
+  loading: Set<string>
+  loadingFailed: Set<string>
 }
 
-export type ViewState = LiteralViewState | ResourceViewState
+export interface PropertyState extends ShapedNodeState {
+  propertyShape: PropertyShape
+  path: GraphPointer
+  viewer?: Term
+  objects: Map<Term, ObjectState | FocusNodeState>
+}
+
+export interface FocusNodeState extends ShapedNodeState {
+  term: Term
+  pointer?: GraphPointer<BlankNode | NamedNode>
+  properties: PropertyState[]
+  applicableViewers: ViewerScore[]
+  viewer: Term
+}
+
+export function createPropertyState(arr: PropertyState[], shape: PropertyShape): PropertyState[] {
+  const path = shape.pointer.out(sh.path)
+  if (!isGraphPointer(path)) {
+    // eslint-disable-next-line no-console
+    console.warn(`Skipping property ${shape.name || shape.id.value}. It does not have a valid sh:path`)
+    return arr
+  }
+
+  const [shNode] = shape.pointer.out(sh.node).toArray()
+  const nodeShape = isResource(shNode) ? fromPointer(shNode) : undefined
+
+  return [...arr, {
+    propertyShape: shape,
+    shape: nodeShape,
+    path,
+    objects: new TermMap(),
+    viewer: shape.viewer?.id,
+    applicableShapes: [],
+    loading: new Set(),
+    loadingFailed: new Set(),
+  }]
+}
+
+interface Create {
+  shape?: NodeShape
+  viewer?: Term
+  term: Term
+  pointer?: GraphPointer<NamedNode | BlankNode>
+}
+
+export function create({ term, pointer, shape, viewer = dash.DetailsViewer }: Create): FocusNodeState {
+  return {
+    shape,
+    loading: new Set(),
+    loadingFailed: new Set(),
+    applicableShapes: [],
+    applicableViewers: [],
+    shapesLoaded: false,
+    properties: shape?.property.reduce(createPropertyState, []) || [],
+    viewer,
+    term,
+    pointer,
+  }
+}

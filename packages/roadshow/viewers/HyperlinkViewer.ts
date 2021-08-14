@@ -1,7 +1,7 @@
 import { dash, xsd } from '@tpluscode/rdf-ns-builders'
-import { ViewerMatchInit } from '../index'
+import { ViewerMatcher } from '../index'
 
-export const HyperlinkViewer: ViewerMatchInit = {
+export const HyperlinkViewer: ViewerMatcher = {
   viewer: dash.HyperlinkViewer,
   match({ resource }) {
     if (resource.term.termType === 'Literal') {

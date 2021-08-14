@@ -1,7 +1,7 @@
 import { dash } from '@tpluscode/rdf-ns-builders'
-import { ViewerMatchInit } from '../index'
+import { ViewerMatcher } from '../index'
 
-export const LiteralViewer: ViewerMatchInit = {
+export const LiteralViewer: ViewerMatcher = {
   viewer: dash.LiteralViewer,
   match({ resource }) {
     return resource.term.termType === 'Literal' ? 1 : 0

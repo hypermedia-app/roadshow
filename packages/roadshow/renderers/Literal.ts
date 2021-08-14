@@ -4,6 +4,6 @@ import { Renderer } from '../index'
 export const Literal: Renderer = {
   viewer: dash.LiteralViewer,
   render(resource) {
-    return resource.value
+    return resource.values[0]
   },
 }

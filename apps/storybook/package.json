@@ -13,6 +13,7 @@
     "@rdf-esm/dataset": "^0.5.1",
     "@rdf-esm/formats-common": "^0.5",
     "@rdf-esm/namespace": "^0.5",
+    "@rdf-esm/term-map": "^0.5.1",
     "@rdf-esm/term-set": "^0.5",
     "@rdfine/hydra": "^0.7.1",
     "@rdfine/schema": "^0.6.5",

@@ -1,7 +1,7 @@
 import { dash } from '@tpluscode/rdf-ns-builders'
-import { ViewerMatchInit } from '../index'
+import { ViewerMatcher } from '../index'
 
-export const DetailsViewer: ViewerMatchInit = {
+export const DetailsViewer: ViewerMatcher = {
   viewer: dash.DetailsViewer,
   match({ resource }) {
     return resource.term.termType === 'BlankNode' || resource.term.termType === 'NamedNode' ? null : 0

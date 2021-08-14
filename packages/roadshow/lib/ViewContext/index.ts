@@ -1,22 +1,38 @@
-import { GraphPointer } from 'clownface'
-import type { ShapesController } from '../../ShapesController'
-import type { ViewersController, ViewerScore } from '../../ViewersController'
-import type { RenderersController } from '../../RenderersController'
-import type { ResourcesController } from '../../ResourcesController'
-import type { InitRenderer, LocalState, Show } from '../../index'
+/* eslint-disable @typescript-eslint/no-empty-interface */
+import type { GraphPointer, MultiPointer } from 'clownface'
+import { TemplateResult } from 'lit'
+import { PropertyShape } from '@rdfine/shacl'
+import { NamedNode } from '@rdfjs/types'
+import type { RoadshowController } from '../../RoadshowController'
+import type { FocusNodeState, ObjectState, PropertyState } from '../state'
 
-export interface ViewContext<S, T = unknown> {
+export interface Params extends Record<string, any> {
+  language: string
+}
+
+export interface ViewContext<S> {
   depth: number
-  parent?: ViewContext<any, T>
-  state: S & { locals: LocalState }
-  params: T
-  shapes: ShapesController
-  viewers: ViewersController
-  renderers: RenderersController
-  resources: ResourcesController
-  initRenderer(overrides: InitRenderer): void
+  node: MultiPointer
+  state: S
+  params: Params
+  controller: RoadshowController
+}
+
+export interface Show {
+  property: PropertyState | PropertyShape | NamedNode
+}
+
+export interface FocusNodeViewContext extends ViewContext<FocusNodeState> {
   show(params: Show): unknown
-  requestUpdate(): void
-  findApplicableViewers(ptr: GraphPointer): ViewerScore[]
-  create(parent: ViewContext<any>, pointer: GraphPointer, state?: any): ViewContext<any>
+}
+
+export interface PropertyViewContext extends ViewContext<PropertyState> {
+  object(object: GraphPointer, render?: {
+    literal?(this: ViewContext<ObjectState>, content: TemplateResult | string): TemplateResult | string
+    resource?(this: FocusNodeViewContext): TemplateResult | string
+  }): TemplateResult | string
+}
+
+export interface ObjectViewContext extends ViewContext<ObjectState> {
+
 }

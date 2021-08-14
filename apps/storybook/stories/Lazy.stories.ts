@@ -1,61 +1,27 @@
 import { html } from 'lit'
-import { Renderer, ViewerMatchInit } from '@hydrofoil/roadshow'
-import { findNodes } from 'clownface-shacl-path'
-import { hydra, sh, rdf, dash } from '@tpluscode/rdf-ns-builders'
+import { MultiRenderer, Renderer, ViewerMatcher } from '@hydrofoil/roadshow'
+import { hydra, rdf } from '@tpluscode/rdf-ns-builders/strict'
 import { namedNode } from '@rdf-esm/data-model'
 import { ResourceLoader } from '@hydrofoil/roadshow/ResourcesController'
-import clownface from 'clownface'
-import { fromPointer } from '@rdfine/shacl/lib/NodeShape'
+import clownface, { MultiPointer } from 'clownface'
 import { template } from '../lib/template'
 import hydraCollectionShape from '../shapes/hydra-collection.ttl'
 import wikibusBrochure from '../shapes/wikibus-Brochure.ttl'
 import { runFactory } from '../resources/runFactory'
 import brochures from '../resources/wikibus-brochures.trig'
-
-const collectionViewer: ViewerMatchInit = {
-  viewer: dash.HydraCollectionViewer,
-  match({ resource }) {
-    return resource.has(rdf.type, hydra.Collection).terms.length ? 50 : 0
-  },
-}
-
-const tableView: Renderer = {
-  viewer: dash.HydraCollectionViewer,
-  render(collection) {
-    const memberTypes = collection
-      .out(hydra.manages)
-      .has(hydra.property, rdf.type)
-      .out(hydra.object)
-
-    const memberShape = this.shapes.shapes
-      .find(shape => shape.pointer.has(sh.targetClass, memberTypes).terms.length)
-
-    return html`<table>
-      <thead>
-        <tr>
-          ${memberShape?.property.map(prop => html`<td>${prop.name}</td>`)}
-        </tr>
-      </thead>
-      <tbody>
-        ${collection.out(hydra.member).map(member => html`<tr>
-          ${memberShape?.property.filter(({ hidden }) => !hidden).map(property => html`
-          <td>
-            ${findNodes(member, property.pointer.out(sh.path).toArray()[0]).map(resource => html`${this.show({ resource, property })}`)}
-          </td>`)}
-        </tr>`)}
-      </tbody>
-    </table>`
-  },
-}
+import { wbo } from '../lib/ns'
+import { tableView } from '../viewers/hydra-MembersViewer/table'
+import { localizedLabel } from '../viewers/ex-LocalLabelViewer'
+import * as pagerViewer from '../viewers/hydra-PartialCollectionViewer'
 
 export default {
-  title: 'Lazy loading',
+  title: 'Lazy loading resources',
 }
 
 interface ViewStoryParams {
   resource: string
-  viewers: ViewerMatchInit[]
-  renderers: Renderer[]
+  viewers: ViewerMatcher[]
+  renderers: Array<Renderer<any> | MultiRenderer>
 }
 
 const { dataset } = runFactory(brochures)
@@ -68,25 +34,29 @@ const load: ResourceLoader = async (id) => {
   return clownface({ dataset, graph: id }).namedNode(id)
 }
 
-const Template = template<ViewStoryParams>(({ resource, viewers, renderers }) => {
-  const shapes = [
-    hydraCollectionShape,
-    wikibusBrochure,
-  ].map(runFactory).map(p => fromPointer(p))
+async function selectShape(arg: MultiPointer) {
+  if (arg.has(rdf.type, hydra.Collection).terms.length) {
+    return [runFactory(hydraCollectionShape)]
+  }
+  if (arg.has(rdf.type, wbo.Brochure).terms.length) {
+    return [runFactory(wikibusBrochure)]
+  }
 
-  return html`
+  return []
+}
+
+const Template = template<ViewStoryParams>(({ resource, viewers = [], renderers }) => html`
     <roadshow-view .resourceId="${namedNode(resource)}"
-                   .shapes="${shapes}"
+                   .shapesLoader="${selectShape}"
                    .viewers="${viewers}"
                    .resourceLoader="${load}"
                    .renderers="${renderers}"
     ></roadshow-view>
-    `
-})
+    `)
 
 export const AddressBookTable = Template.bind({})
 AddressBookTable.args = {
   resource: 'https://sources.wikibus.org/brochures',
-  viewers: [collectionViewer],
-  renderers: [tableView],
+  renderers: [tableView, localizedLabel, pagerViewer.renderer],
+  viewers: [pagerViewer.matcher],
 }

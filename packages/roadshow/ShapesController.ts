@@ -1,54 +1,76 @@
 import { ReactiveController } from 'lit'
-import { NodeShape } from '@rdfine/shacl'
 import type { GraphPointer, MultiPointer } from 'clownface'
-import { NamedNode, Term } from '@rdfjs/types'
 import { fromPointer } from '@rdfine/shacl/lib/NodeShape'
-import { RoadshowView } from './index'
-import { suitableShape } from './lib/shape'
+import { BlankNode, NamedNode } from '@rdfjs/types'
+import { dash, sh } from '@tpluscode/rdf-ns-builders/strict'
+import type { RoadshowView } from './index'
+import { createPropertyState, FocusNodeState, PropertyState } from './lib/state'
+import { isResource } from './lib/clownface'
+import { ResourcesController } from './ResourcesController'
 
-interface FindShapeForResource<T extends Term> {
-  resource: GraphPointer<T>
-}
-
-interface FindShapeForClass {
-  class: MultiPointer | NamedNode
-}
-
-type FindShape<T extends Term = Term> = FindShapeForResource<T> | FindShapeForClass
+const LOADER_KEY = 'shapes'
 
 export interface ShapesLoader {
-  (arg: FindShape<NamedNode>): Promise<Array<GraphPointer>>
-}
-
-function isUriResource(arg: FindShape): arg is (FindShapeForResource<NamedNode> | FindShapeForClass) {
-  return 'class' in arg || ('resource' in arg && arg.resource.term.termType === 'NamedNode')
+  (arg: MultiPointer): Promise<Array<GraphPointer<NamedNode | BlankNode>>>
 }
 
 export class ShapesController implements ReactiveController {
-  shapes: NodeShape[] = []
-  private _load?: ShapesLoader
-
-  constructor(private host: RoadshowView) {
+  constructor(private host: RoadshowView, private resources: ResourcesController) {
+    host.addController(this)
   }
 
   hostConnected(): void {
-    this.shapes = this.host.shapes
-    this._load = this.host.shapesLoader
+    //
   }
 
-  async findApplicableShape(applicableTo: FindShape): Promise<NodeShape[]> {
-    if (this._load && isUriResource(applicableTo)) {
-      const pointers = await this._load(applicableTo)
+  async loadShapes(state: FocusNodeState | PropertyState, focusNode: MultiPointer): Promise<void> {
+    const { shapesLoader } = this.host
+    if (!shapesLoader || state.shapesLoaded) {
+      return
+    }
 
-      if (pointers.length) {
-        return pointers.map((ptr: any) => fromPointer(ptr))
+    state.shapesLoaded = true
+    state.loading.add(LOADER_KEY)
+
+    const loadShapes = () => shapesLoader(focusNode)
+    if (!state.shape) {
+      await this.host.requestUpdate()
+
+      const shapePointers = await loadShapes()
+
+      state.applicableShapes = shapePointers.map(ptr => fromPointer(ptr));
+      [state.shape] = state.applicableShapes
+    } else {
+      const shapePointers = await loadShapes()
+      state.applicableShapes = [
+        state.shape,
+        ...shapePointers.map(ptr => fromPointer(ptr)).filter(found => !found.equals(state.shape)),
+      ]
+    }
+    if ('properties' in state) {
+      state.properties = state.shape?.property.reduce(createPropertyState, []) || []
+    }
+
+    state.loading.delete(LOADER_KEY)
+    await this.host.requestUpdate()
+  }
+
+  async loadDashShape(resource: GraphPointer) {
+    const [dashShape] = resource.out(dash.shape).toArray().filter(isResource)
+
+    if (dashShape) {
+      if (dashShape.out(sh.property).terms.length) {
+        return fromPointer(dashShape)
+      }
+
+      if (dashShape.term.termType === 'NamedNode') {
+        const loaded = await this.resources.load(dashShape.term)
+        if (loaded) {
+          return fromPointer(loaded)
+        }
       }
     }
 
-    if ('resource' in applicableTo) {
-      return this.shapes.filter(suitableShape(applicableTo.resource))
-    }
-
-    return []
+    return undefined
   }
 }
