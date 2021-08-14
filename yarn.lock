@@ -1444,6 +1444,14 @@
     "@rdf-esm/to-ntriples" "^0.5.0"
     "@rdfjs/term-map" "^1.0.0"
 
+"@rdf-esm/term-map@^0.5.1":
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/@rdf-esm/term-map/-/term-map-0.5.1.tgz#79b4236d58d52d88a3713e3386bb139faf9f45aa"
+  integrity sha512-Yq/5hBFt90q/eru2i9NVBxAayaGI/oWTPH1+6VoFueiaKSVl4Pf4lMX98/Hg/si5Ql0gG4B4wqBbFItl4LDI0A==
+  dependencies:
+    "@rdf-esm/to-ntriples" "^0.6.0"
+    "@rdfjs/term-map" "^1.0.0"
+
 "@rdf-esm/term-set@^0.5", "@rdf-esm/term-set@^0.5.0":
   version "0.5.0"
   resolved "https://registry.yarnpkg.com/@rdf-esm/term-set/-/term-set-0.5.0.tgz#a4f0dae0de23f5e639aeb9dd8e1423c38bef4d4d"
@@ -1456,6 +1464,13 @@
   version "0.5.0"
   resolved "https://registry.yarnpkg.com/@rdf-esm/to-ntriples/-/to-ntriples-0.5.0.tgz#4a2c294e6d740509571e3b0efde8277c4824b928"
   integrity sha512-VIcqRv68V/s0NS6bFy58CcsHwV0UCM/DHhAc1MYLB/yue1nyhKsX4uyu/SB5gbbY2r4BIH4G6O+arxf59KzgwQ==
+
+"@rdf-esm/to-ntriples@^0.6.0":
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/@rdf-esm/to-ntriples/-/to-ntriples-0.6.0.tgz#ae4fc377f5af79e024cbb63cd601c7c21b64b73b"
+  integrity sha512-984lPZhKmFuLuJ74Q8SqtwzDDS43V98QXjpvu6jmlXEF2xQHwItmQk0AZ9Cyf26f3EiTVfLn3JHGWwkB0AK8IQ==
+  dependencies:
+    "@rdfjs/to-ntriples" "^2.0.0"
 
 "@rdfine/dash@^0.2.1":
   version "0.2.1"
@@ -1626,6 +1641,11 @@
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/@rdfjs/to-ntriples/-/to-ntriples-1.0.2.tgz#c2fe8f6e8d8010c2315c0a816d1cd42a4447965e"
   integrity sha512-ngw5XAaGHjgGiwWWBPGlfdCclHftonmbje5lMys4G2j4NvfExraPIuRZgjSnd5lg4dnulRVUll8tRbgKO+7EDA==
+
+"@rdfjs/to-ntriples@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@rdfjs/to-ntriples/-/to-ntriples-2.0.0.tgz#ad70822e2ddf068fd1291b505e5c678c17af7a30"
+  integrity sha512-nDhpfhx6W6HKsy4HjyLp3H1nbrX1CiUCWhWQwKcYZX1s9GOjcoQTwY7GUUbVec0hzdJDQBR6gnjxtENBDt482Q==
 
 "@rdfjs/types@*":
   version "1.0.0"
