@@ -1,5 +1,12 @@
 # @hydrofoil/roadshow
 
+## 0.3.1
+
+### Patch Changes
+
+- 4d20302: rdfine extensions were not exported and thus not visible
+- 83327ac: Make it possible to access parent state
+
 ## 0.3.0
 
 ### Minor Changes
