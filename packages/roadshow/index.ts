@@ -4,6 +4,7 @@ import type { BlankNode, NamedNode, Term } from '@rdfjs/types'
 import type { ShapesLoader } from './ShapesController'
 import type { ResourceLoader } from './ResourcesController'
 import type { PropertyViewContext, ViewContext } from './lib/ViewContext'
+import './lib/rdfine'
 
 export { html, css } from 'lit'
 
