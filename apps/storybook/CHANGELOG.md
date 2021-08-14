@@ -1,5 +1,13 @@
 # storybook
 
+## 0.1.6
+
+### Patch Changes
+
+- Updated dependencies [4d20302]
+- Updated dependencies [83327ac]
+  - @hydrofoil/roadshow@0.3.1
+
 ## 0.1.5
 
 ### Patch Changes
