@@ -28,7 +28,7 @@ export interface ViewerMatcher {
   match: ViewerMatchFunc
 }
 
-export interface RoadshowView extends ReactiveControllerHost {
+export interface RoadshowView extends ReactiveControllerHost, EventTarget {
   resource: GraphPointer<NamedNode | BlankNode> | undefined
   resourceId: NamedNode | undefined
   renderers: Renderer[]
