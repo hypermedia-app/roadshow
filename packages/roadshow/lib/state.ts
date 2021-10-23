@@ -11,27 +11,29 @@ export interface ViewerScore {
   pointer: GraphPointer<NamedNode>
   score: number | null
 }
-export interface ObjectState {
+export interface ObjectState<R = unknown> {
   applicableViewers: ViewerScore[]
   viewer: Term
+  locals: R
 }
 
-interface ShapedNodeState {
+interface ShapedNodeState<R = unknown> {
   shape?: NodeShape
   applicableShapes: NodeShape[]
   shapesLoaded?: boolean
   loading: Set<string>
   loadingFailed: Set<string>
+  locals: R
 }
 
-export interface PropertyState extends ShapedNodeState {
+export interface PropertyState<R = unknown> extends ShapedNodeState<R> {
   propertyShape: PropertyShape
   path: GraphPointer
   viewer?: Term
   objects: Map<Term, ObjectState | FocusNodeState>
 }
 
-export interface FocusNodeState extends ShapedNodeState {
+export interface FocusNodeState<R = unknown> extends ShapedNodeState<R> {
   term: Term
   pointer?: GraphPointer<BlankNode | NamedNode>
   properties: PropertyState[]
@@ -59,6 +61,7 @@ export function createPropertyState(arr: PropertyState[], shape: PropertyShape):
     applicableShapes: [],
     loading: new Set(),
     loadingFailed: new Set(),
+    locals: {},
   }]
 }
 
@@ -81,5 +84,6 @@ export function create({ term, pointer, shape, viewer = dash.DetailsViewer }: Cr
     viewer,
     term,
     pointer,
+    locals: {},
   }
 }

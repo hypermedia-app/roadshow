@@ -10,5 +10,6 @@ export function focusNodeState(term = ex.foo, viewer = ex.FooViewer): FocusNodeS
     term,
     loading: new Set(),
     loadingFailed: new Set(),
+    locals: {},
   }
 }

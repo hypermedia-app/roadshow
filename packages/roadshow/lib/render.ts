@@ -60,6 +60,7 @@ function objectState<T extends Literal | NamedNode | BlankNode>(state: PropertyS
     const newState: ObjectState = {
       applicableViewers,
       viewer,
+      locals: {},
     }
 
     state.objects.set(object.term, newState)
@@ -81,6 +82,7 @@ function createChildContext<T extends Term>(parent: ViewContext<any>, state: any
       show: showProperty,
       state: childState,
       parent: state,
+      rendererState: {},
     } as any
   }
 
@@ -92,6 +94,7 @@ function createChildContext<T extends Term>(parent: ViewContext<any>, state: any
     state: childState,
     node: pointer,
     parent: state,
+    rendererState: {},
   } as any
 }
 
