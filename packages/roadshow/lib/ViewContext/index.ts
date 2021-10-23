@@ -23,17 +23,17 @@ export interface Show {
   property: PropertyState | PropertyShape | NamedNode
 }
 
-export interface FocusNodeViewContext extends ViewContext<FocusNodeState, PropertyState> {
+export interface FocusNodeViewContext<R = unknown> extends ViewContext<FocusNodeState<R>, PropertyState> {
   show(params: Show): unknown
 }
 
-export interface PropertyViewContext extends ViewContext<PropertyState, FocusNodeState> {
+export interface PropertyViewContext<R = unknown> extends ViewContext<PropertyState<R>, FocusNodeState> {
   object(object: GraphPointer, render?: {
     literal?(this: ViewContext<ObjectState>, content: TemplateResult | string): TemplateResult | string
     resource?(this: FocusNodeViewContext): TemplateResult | string
   }): TemplateResult | string
 }
 
-export interface ObjectViewContext extends ViewContext<ObjectState, PropertyState> {
+export interface ObjectViewContext<R = unknown> extends ViewContext<ObjectState<R>, PropertyState> {
 
 }
