@@ -61,6 +61,8 @@ function objectState<T extends Literal | NamedNode | BlankNode>(state: PropertyS
       applicableViewers,
       viewer,
       locals: {},
+      loading: new Set(),
+      loadingFailed: new Set(),
     }
 
     state.objects.set(object.term, newState)
@@ -106,7 +108,7 @@ function renderMultiRenderObject(this: PropertyViewContext, ...args: Parameters<
   if (isLiteral(object)) {
     const childContext = createChildContext(this, this.state, object)
     const renderer = this.controller.renderers.get(childContext.state)
-    const result = renderer.call(childContext, object)
+    const result = renderer.render.call(childContext, object)
     if (render?.literal) {
       return render.literal.call(childContext, result)
     }
@@ -124,17 +126,17 @@ function renderPropertyObjectsIndividually(parent: FocusNodeViewContext, propert
       return 'No viewer found'
     }
 
-    const renderer = parent.controller.renderers.get(context.state)
+    const { render } = parent.controller.renderers.get(context.state)
 
     if ('properties' in context.state) {
       parent.controller.shapes.loadShapes(context.state, object)
     }
 
     if ('pointer' in context.state) {
-      return renderer.call(context, context.state.pointer || object)
+      return render.call(context, context.state.pointer || object)
     }
 
-    return renderer.call(context, object)
+    return render.call(context, object)
   }
 }
 
@@ -159,14 +161,15 @@ function showProperty(this: FocusNodeViewContext, show: Show) {
     const details = clownface({ dataset: dataset() })
       .blankNode()
       .addOut(rdfs.label, 'Property not found in state')
-    return this.controller.renderers.get({ viewer: roadshow.ErrorRenderer }).call(this, details)
+    this.state.viewer = roadshow.ErrorRenderer
+    return this.controller.renderers.get(this.state).render.call(this, details)
   }
 
   const objects = findNodes(this.node, property.path)
   if (property.viewer && this.controller.viewers.isMultiViewer(property.viewer)) {
     this.controller.shapes.loadShapes(property, objects)
 
-    const renderer = this.controller.renderers.get(property)
+    const { render } = this.controller.renderers.get(property)
 
     const context: PropertyViewContext = {
       depth: this.depth,
@@ -177,14 +180,14 @@ function showProperty(this: FocusNodeViewContext, show: Show) {
       object: renderMultiRenderObject,
       parent: this.state,
     }
-    return renderer.call(context, objects)
+    return render.call(context, objects)
   }
 
   return html`${objects.map(renderPropertyObjectsIndividually(this, property))}`
 }
 
 function renderState({ state, focusNode, controller, params }: Required<Render>): TemplateResult | string {
-  const renderer = controller.renderers.get(state)
+  const { render } = controller.renderers.get(state)
 
   const context: FocusNodeViewContext = {
     depth: 0,
@@ -196,7 +199,7 @@ function renderState({ state, focusNode, controller, params }: Required<Render>)
     parent: undefined,
   }
 
-  return renderer.call(context, focusNode)
+  return render.call(context, focusNode)
 }
 
 export function render({ focusNode, ...rest }: Render): TemplateResult | string {
