@@ -1,5 +1,13 @@
 # @hydrofoil/roadshow
 
+## 0.3.2
+
+### Patch Changes
+
+- 7473589: `RoadshowView` could not have been used to dispatch events
+- a24fb73: Add state to specific renderer instance
+- 4e4d138: Optional renderer initialisation functions
+
 ## 0.3.1
 
 ### Patch Changes
