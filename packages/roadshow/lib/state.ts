@@ -15,6 +15,8 @@ export interface ObjectState<R = unknown> {
   applicableViewers: ViewerScore[]
   viewer: Term
   locals: R
+  loading: Set<string>
+  loadingFailed: Set<string>
 }
 
 interface ShapedNodeState<R = unknown> {

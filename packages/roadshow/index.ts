@@ -15,6 +15,7 @@ export interface RenderFunc<S extends ViewContext<unknown>> {
 export interface Renderer<S extends ViewContext<any> = ViewContext<any>> {
   viewer: Term
   render: RenderFunc<S>
+  init?: () => Promise<void>
 }
 
 export type MultiRenderer = Renderer<PropertyViewContext>

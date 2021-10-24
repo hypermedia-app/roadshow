@@ -14,7 +14,7 @@ export class RoadshowController implements ReactiveController {
   constructor(
     public host: RoadshowView,
     public resources = new ResourcesController(host),
-    public renderers = new RenderersController(),
+    public renderers = new RenderersController(host),
     public viewers = new ViewersController(host),
     shapes?: ShapesController,
   ) {

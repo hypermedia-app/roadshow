@@ -10,7 +10,7 @@ export class TestRenderersController {
   }
 
   get(state: { viewer: NamedNode }) {
-    return this.renderers.get(state.viewer)!.render
+    return this.renderers.get(state.viewer)!
   }
 
   has(viewer: NamedNode): boolean {
