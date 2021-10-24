@@ -38,9 +38,19 @@ describe('@hydrofoil/roadshow/RenderersController', () => {
     }])
   })
 
+  describe('get', () => {
+    it('returns "renderer not found" when viewer not found', async () => {
+      // when
+      const beforeLoad = renderers.get(state)
+
+      // then
+      expect(beforeLoad.viewer).to.deep.eq(roadshow.RendererNotFoundViewer)
+    })
+  })
+
   describe('initializable renderers', () => {
     describe('get', () => {
-      it('returns loading viewer until initilized', async () => {
+      it('returns loading viewer until initialized', async () => {
         // given
         renderers.set([{
           init: () => Promise.resolve(),
@@ -57,6 +67,25 @@ describe('@hydrofoil/roadshow/RenderersController', () => {
 
         const afterLoad = renderers.get(state)
         expect(afterLoad.viewer).to.deep.eq(dash.ValueTableViewer)
+      })
+
+      it('returns loading failed viewer when init fails', async () => {
+        // given
+        renderers.set([{
+          init: () => Promise.reject(),
+          viewer: dash.ValueTableViewer,
+          render: () => '',
+        }])
+
+        // when
+        const beforeLoad = renderers.get(state)
+        expect(beforeLoad.viewer).to.deep.eq(roadshow.LoadingViewer)
+        await host.updateComplete
+
+        // then
+
+        const afterLoad = renderers.get(state)
+        expect(afterLoad.viewer).to.deep.eq(roadshow.LoadingFailedViewer)
       })
     })
   })

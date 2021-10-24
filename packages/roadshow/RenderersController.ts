@@ -55,7 +55,7 @@ export class RenderersController implements ReactiveController {
       renderer.init().then(() => {
         renderer.initialized = true
       }).catch(() => {
-        state?.loadingFailed.add(renderer.viewer.value)
+        state.loadingFailed.add(LOADER_KEY)
       }).finally(() => {
         state.loading.delete(LOADER_KEY)
         this.host.requestUpdate()
