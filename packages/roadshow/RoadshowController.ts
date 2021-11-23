@@ -31,6 +31,8 @@ export class RoadshowController implements ReactiveController {
   }
 
   async initState(): Promise<void> {
+    await this.viewers.loadDash()
+
     if (this.host.resourceId && !this.host.resource) {
       this.state = create({
         term: this.host.resourceId,

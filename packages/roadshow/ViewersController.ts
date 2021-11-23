@@ -3,7 +3,6 @@ import clownface, { AnyPointer, GraphPointer } from 'clownface'
 import TermMap from '@rdf-esm/term-map'
 import { NamedNode, Term } from '@rdfjs/types'
 import * as $rdf from '@rdf-esm/dataset'
-import Dash from '@zazuko/rdf-vocabularies/datasets/dash'
 import { dash, rdf } from '@tpluscode/rdf-ns-builders/strict'
 import { RoadshowView, Viewer, ViewerMatcher } from './index'
 import * as defaultViewers from './viewers'
@@ -29,13 +28,20 @@ function byScore(left: ViewerScore, right: ViewerScore) {
 
 export class ViewersController implements ReactiveController {
   static readonly defaultViewers: Array<ViewerMatcher> = Object.values(defaultViewers)
-  static readonly viewerMeta: AnyPointer = clownface({ dataset: $rdf.dataset(Dash($rdf)) })
+  static readonly viewerMeta: AnyPointer = clownface({ dataset: $rdf.dataset() })
 
   viewers: Map<NamedNode, Viewer>
 
   constructor(private host: RoadshowView) {
     this.viewers = new TermMap()
     host.addController(this)
+  }
+
+  async loadDash(): Promise<void> {
+    const Dash = await import('@zazuko/rdf-vocabularies/datasets/dash')
+    for (const quad of Dash.default($rdf)) {
+      ViewersController.viewerMeta.dataset.add(quad)
+    }
   }
 
   hostConnected(): void {
