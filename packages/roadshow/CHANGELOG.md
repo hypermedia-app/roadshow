@@ -1,5 +1,11 @@
 # @hydrofoil/roadshow
 
+## 0.3.3
+
+### Patch Changes
+
+- 4d46793: Loading DASH vocabulary lazily to reduce bundle size
+
 ## 0.3.2
 
 ### Patch Changes
