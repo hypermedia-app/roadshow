@@ -1,4 +1,4 @@
-import { aTimeout, expect, fixture } from '@open-wc/testing'
+import { aTimeout, expect, fixture, waitUntil } from '@open-wc/testing'
 import { dash, rdfs } from '@tpluscode/rdf-ns-builders/strict'
 import { html } from 'lit'
 import { fromPointer } from '@rdfine/shacl/lib/NodeShape'
@@ -38,7 +38,7 @@ describe('@hydrofoil/roadshow/roadshow-view', () => {
     // when
     const view = await fixture<RoadshowViewElement>(html`<roadshow-view .resource="${resource}"
                                                                         .renderers="${renderers}"></roadshow-view>`)
-    await view.updateComplete
+    await waitUntil(() => !!view.state?.pointer)
 
     // then
     expect(view.renderRoot.querySelector('span')?.textContent).to.eq('Foo Resource')
@@ -74,7 +74,7 @@ describe('@hydrofoil/roadshow/roadshow-view', () => {
     const view = await fixture<RoadshowViewElement>(html`<roadshow-view .resource="${resource}"
                                                                         .renderers="${renderers}"
                                                                         .shapesLoader="${loadShape}"></roadshow-view>`)
-    await view.updateComplete
+    await waitUntil(() => !!view.state?.pointer)
 
     // then
     expect(view.renderRoot.querySelector('span')?.textContent).to.eq('Foo Resource')
