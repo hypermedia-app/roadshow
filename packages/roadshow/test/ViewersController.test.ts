@@ -14,9 +14,10 @@ describe('@hydrofoil/roadshow/ViewersController', () => {
   })
 
   describe('.get', () => {
-    it('marks multiviewer when it has that type', () => {
+    it('marks multiviewer when it has that type', async () => {
       // given
       const controller = new ViewersController(host)
+      await controller.loadDash()
 
       // when
       const isMultiViewer = controller.isMultiViewer(dash.ValueTableViewer)
