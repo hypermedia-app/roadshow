@@ -1,6 +1,6 @@
 {
   "name": "@hydrofoil/roadshow",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "author": "Tomasz Pluskiewicz <awesome@hypermedia.app>",
   "license": "MIT",
   "main": "index.js",
