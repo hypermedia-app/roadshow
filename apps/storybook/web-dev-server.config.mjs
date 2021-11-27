@@ -10,18 +10,11 @@ export default {
   open: false,
   nodeResolve: true,
   rootDir: '../..',
+  mimeTypes: {
+    '**/*.ttl': 'js',
+    '**/*.trig': 'js',
+  },
   plugins: [
-    {
-      transform ({ path }) {
-        if (path.endsWith('ttl') || path.endsWith('trig')) {
-          return {
-            headers: {
-              'content-type': 'application/javascript',
-            },
-          }
-        }
-      },
-    },
     esbuildPlugin({ ts: true }),
     storybookPlugin({ type: 'web-components' }),
     rdfjs,
