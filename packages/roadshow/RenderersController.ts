@@ -4,16 +4,22 @@ import TermMap from '@rdf-esm/term-map'
 import { roadshow } from '@hydrofoil/vocabularies/builders'
 import { Renderer, RoadshowView } from './index'
 import * as defaultRenderers from './renderers'
+import { RendererNotFoundViewer } from './renderers'
 import { FocusNodeState, ObjectState, PropertyState } from './lib/state'
 
 const LOADER_KEY = 'renderer'
 
 type InitializedRenderer = Renderer & { initialized: true }
-type UnitializedRenderer = Renderer & { initialized: boolean; init: () => Promise<void> }
+type UninitializedRenderer = Renderer & { initialized: boolean; init: () => Promise<void> }
+
+const notFound: [InitializedRenderer] = [{
+  ...RendererNotFoundViewer,
+  initialized: true,
+}]
 
 export class RenderersController implements ReactiveController {
   static readonly defaultRenderers: Array<Renderer<any>> = Object.values(defaultRenderers)
-  private renderers: Map<Term, InitializedRenderer | UnitializedRenderer> = new Map()
+  private renderers: Map<Term, Array<InitializedRenderer | UninitializedRenderer>> = new Map()
 
   constructor(private host: RoadshowView) {
     this.renderers = new TermMap()
@@ -26,50 +32,53 @@ export class RenderersController implements ReactiveController {
 
   set(renderers: Renderer[]): void {
     for (const renderer of renderers) {
+      const array = this.renderers.get(renderer.viewer) || []
+
       if ('init' in renderer) {
-        this.renderers.set(renderer.viewer, {
+        array.push({
           ...renderer,
           init: renderer.init!,
           initialized: false,
         })
       } else {
-        this.renderers.set(renderer.viewer, {
+        array.push({
           ...renderer,
           initialized: true,
         })
       }
+
+      this.renderers.set(renderer.viewer, array)
     }
   }
 
-  get(state: ObjectState | FocusNodeState | PropertyState): Renderer<any> {
-    const notFound = this.renderers.get(roadshow.RendererNotFoundViewer)!
-    const { viewer } = state
-
-    const renderer = viewer && this.renderers.get(viewer)
-    if (!renderer) {
-      return notFound
+  get(viewer: Term | undefined): Array<InitializedRenderer | UninitializedRenderer> {
+    const renderers = viewer && this.renderers.get(viewer)
+    if (!renderers?.length) {
+      return this.renderers.get(roadshow.RendererNotFoundViewer) || notFound
     }
+
+    return renderers
+  }
+
+  beginInitialize(state: ObjectState | FocusNodeState | PropertyState): void {
+    const renderer = state.renderer as InitializedRenderer | UninitializedRenderer
 
     if (!renderer.initialized && !state.loadingFailed.has(LOADER_KEY)) {
-      state.loading.add(LOADER_KEY)
-      renderer.init().then(() => {
-        renderer.initialized = true
-      }).catch(() => {
-        state.loadingFailed.add(LOADER_KEY)
-      }).finally(() => {
-        state.loading.delete(LOADER_KEY)
+      (async () => {
+        state.loading.add('renderer')
         this.host.requestUpdate()
-      })
-    }
 
-    if (state.loading.size) {
-      return this.renderers.get(roadshow.LoadingViewer) || notFound
+        try {
+          await renderer.init()
+          renderer.initialized = true
+        } catch (e) {
+          state.loadingFailed.add(LOADER_KEY)
+        } finally {
+          state.loading.delete(LOADER_KEY)
+          this.host.requestUpdate()
+        }
+      })()
     }
-    if (state.loadingFailed.size) {
-      return this.renderers.get(roadshow.LoadingFailedViewer) || notFound
-    }
-
-    return renderer
   }
 
   has(viewer: NamedNode): boolean {

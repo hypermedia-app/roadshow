@@ -30,7 +30,7 @@ function renderRow(this: PropertyViewContext, member: GraphPointer) {
 export const tableView: MultiRenderer = {
   viewer: hex.MembersViewer,
   render(members) {
-    this.controller.shapes.loadShapes(this.state, members)
+    this.controller.initShapes(this.state, members)
 
     const propertyShapes = this.state.shape?.property.filter(p => !p.hidden) || []
 

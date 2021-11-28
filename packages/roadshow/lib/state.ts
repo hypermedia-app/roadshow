@@ -6,12 +6,20 @@ import { dash, sh } from '@tpluscode/rdf-ns-builders/strict'
 import TermMap from '@rdf-esm/term-map'
 import { fromPointer } from '@rdfine/shacl/lib/NodeShape'
 import { isResource, isGraphPointer } from './clownface'
+import { Renderer } from '../index'
+import { FocusNodeViewContext, ObjectViewContext, PropertyViewContext, ViewContext } from './ViewContext/index'
 
 export interface ViewerScore {
   pointer: GraphPointer<NamedNode>
   score: number | null
 }
-export interface ObjectState<R = unknown> {
+
+export interface RendererState<VC extends ViewContext<any>> {
+  renderers: Array<Renderer<VC>>
+  renderer?: Renderer<VC>
+}
+
+export interface ObjectState<R = unknown> extends RendererState<ObjectViewContext>{
   applicableViewers: ViewerScore[]
   viewer: Term
   locals: R
@@ -28,14 +36,14 @@ interface ShapedNodeState<R = unknown> {
   locals: R
 }
 
-export interface PropertyState<R = unknown> extends ShapedNodeState<R> {
+export interface PropertyState<R = unknown> extends ShapedNodeState<R>, RendererState<PropertyViewContext> {
   propertyShape: PropertyShape
   path: GraphPointer
   viewer?: Term
   objects: Map<Term, ObjectState | FocusNodeState>
 }
 
-export interface FocusNodeState<R = unknown> extends ShapedNodeState<R> {
+export interface FocusNodeState<R = unknown> extends ShapedNodeState<R>, RendererState<FocusNodeViewContext> {
   term: Term
   pointer?: GraphPointer<BlankNode | NamedNode>
   properties: PropertyState[]
@@ -60,6 +68,7 @@ export function createPropertyState(arr: PropertyState[], shape: PropertyShape):
     path,
     objects: new TermMap(),
     viewer: shape.viewer?.id,
+    renderers: [],
     applicableShapes: [],
     loading: new Set(),
     loadingFailed: new Set(),
@@ -84,6 +93,7 @@ export function create({ term, pointer, shape, viewer = dash.DetailsViewer }: Cr
     shapesLoaded: false,
     properties: shape?.property.reduce(createPropertyState, []) || [],
     viewer,
+    renderers: [],
     term,
     pointer,
     locals: {},

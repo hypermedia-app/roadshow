@@ -4,11 +4,9 @@ import { roadshow } from '@hydrofoil/vocabularies/builders'
 import sinon from 'sinon'
 import { RenderersController } from '../RenderersController'
 import { RoadshowView } from '..'
-import { ObjectState } from '../lib/state'
 
 describe('@hydrofoil/roadshow/RenderersController', () => {
   let host: RoadshowView
-  let state: ObjectState
   let renderers: RenderersController
 
   beforeEach(() => {
@@ -18,13 +16,6 @@ describe('@hydrofoil/roadshow/RenderersController', () => {
         return nextFrame()
       },
     } as any
-    state = {
-      viewer: dash.ValueTableViewer,
-      loading: new Set(),
-      loadingFailed: new Set(),
-      applicableViewers: [],
-      locals: {},
-    }
     renderers = new RenderersController(host)
     renderers.set([{
       viewer: roadshow.LoadingViewer,
@@ -41,7 +32,7 @@ describe('@hydrofoil/roadshow/RenderersController', () => {
   describe('get', () => {
     it('returns "renderer not found" when viewer not found', async () => {
       // when
-      const beforeLoad = renderers.get(state)
+      const [beforeLoad] = renderers.get(dash.ValueTableViewer)
 
       // then
       expect(beforeLoad.viewer).to.deep.eq(roadshow.RendererNotFoundViewer)
@@ -59,13 +50,13 @@ describe('@hydrofoil/roadshow/RenderersController', () => {
         }])
 
         // when
-        const beforeLoad = renderers.get(state)
+        const [beforeLoad] = renderers.get(dash.ValueTableViewer)
         expect(beforeLoad.viewer).to.deep.eq(roadshow.LoadingViewer)
         await host.updateComplete
 
         // then
 
-        const afterLoad = renderers.get(state)
+        const [afterLoad] = renderers.get(dash.ValueTableViewer)
         expect(afterLoad.viewer).to.deep.eq(dash.ValueTableViewer)
       })
 
@@ -78,13 +69,13 @@ describe('@hydrofoil/roadshow/RenderersController', () => {
         }])
 
         // when
-        const beforeLoad = renderers.get(state)
+        const [beforeLoad] = renderers.get(dash.ValueTableViewer)
         expect(beforeLoad.viewer).to.deep.eq(roadshow.LoadingViewer)
         await host.updateComplete
 
         // then
 
-        const afterLoad = renderers.get(state)
+        const [afterLoad] = renderers.get(dash.ValueTableViewer)
         expect(afterLoad.viewer).to.deep.eq(roadshow.LoadingFailedViewer)
       })
     })
