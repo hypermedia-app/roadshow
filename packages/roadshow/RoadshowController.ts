@@ -2,13 +2,14 @@ import { ReactiveController } from 'lit'
 import { dash, rdf } from '@tpluscode/rdf-ns-builders/strict'
 import { MultiPointer } from 'clownface'
 import { roadshow } from '@hydrofoil/vocabularies/builders'
-import { Renderer, RoadshowView } from './index'
+import type { RoadshowView } from './index'
 import { create, createPropertyState, FocusNodeState, PropertyState } from './lib/state'
 import { RenderersController } from './RenderersController'
 import { ViewersController } from './ViewersController'
 import { ShapesController } from './ShapesController'
 import { ResourcesController } from './ResourcesController'
 import { ViewContext } from './lib/ViewContext/index'
+import type { Renderer } from './lib/render'
 
 function isFocusNodeState(state: any): state is FocusNodeState {
   return 'properties' in state && state.properties
@@ -77,11 +78,9 @@ export class RoadshowController implements ReactiveController {
   }
 
   initRenderer<VC extends ViewContext<any>>({ state }: VC): Renderer<VC> {
-    const { renderer } = state
-
-    if (!renderer) {
-      state.renderers = this.renderers.get(state.viewer);
-      ([state.renderer] = state.renderers)
+    if (!state.renderer) {
+      state.renderers = this.renderers.get(state.viewer)
+      state.renderer = this.renderers.decorate(state.renderers[0], state)
     }
 
     this.renderers.beginInitialize(state)
@@ -93,10 +92,10 @@ export class RoadshowController implements ReactiveController {
       return this.renderers.get(roadshow.LoadingFailedViewer)[0]
     }
 
-    return state.renderer!
+    return state.renderer
   }
 
   refreshRenderers(): void {
-    this.renderers.set(this.host.renderers)
+    this.renderers.set(this.host.renderers, this.host.decorators)
   }
 }

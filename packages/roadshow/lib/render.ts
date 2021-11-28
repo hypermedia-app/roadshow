@@ -5,7 +5,7 @@ import { BlankNode, Literal, NamedNode, Term } from '@rdfjs/types'
 import { roadshow } from '@hydrofoil/vocabularies/builders'
 import { rdfs, sh } from '@tpluscode/rdf-ns-builders/strict'
 import { dataset } from '@rdf-esm/dataset'
-import { create, FocusNodeState, ObjectState, PropertyState } from './state'
+import { create, FocusNodeState, ObjectState, PropertyState, RendererState } from './state'
 import {
   FocusNodeViewContext,
   ObjectViewContext,
@@ -16,12 +16,21 @@ import {
 } from './ViewContext/index'
 import type { RoadshowController } from '../RoadshowController'
 import { isLiteral, isResource, TRUE } from './clownface'
+import { RenderFunc } from '../index'
 
 interface Render {
   state: FocusNodeState
   focusNode?: MultiPointer
   controller: RoadshowController
   params: Params
+}
+
+export interface Renderer<VC extends ViewContext<any> = ViewContext<any>> {
+  readonly id: Term
+  meta: GraphPointer
+  viewer: Term
+  render: RenderFunc<VC>
+  init?: () => Promise<void>
 }
 
 function findViewers(state: PropertyState, object: GraphPointer, { viewers, renderers }: RoadshowController) {
@@ -36,6 +45,10 @@ function findViewers(state: PropertyState, object: GraphPointer, { viewers, rend
   const viewer = applicableViewers.find(vr => renderers.has(vr.pointer.term))?.pointer.term || roadshow.RendererNotFoundViewer
 
   return { applicableViewers, viewer }
+}
+
+function setRenderer<S extends RendererState<any>>(this: ViewContext<any>, renderer: Renderer<ViewContext<S>>) {
+  this.state.renderer = this.controller.renderers.decorate(renderer, this.state)
 }
 
 function objectState<T extends Literal | NamedNode | BlankNode>(state: PropertyState, object: GraphPointer<T>, controller: RoadshowController): T extends Literal ? ObjectState : FocusNodeState {
@@ -83,6 +96,7 @@ function createChildContext<T extends Term>(parent: ViewContext<any>, state: any
       controller: parent.controller,
       node: pointer,
       show: showProperty,
+      setRenderer,
       state: childState,
       parent: state,
     } as any
@@ -96,6 +110,7 @@ function createChildContext<T extends Term>(parent: ViewContext<any>, state: any
     state: childState,
     node: pointer,
     parent: state,
+    setRenderer,
   } as any
 }
 
@@ -179,6 +194,7 @@ function showProperty(this: FocusNodeViewContext, show: Show) {
       node: objects,
       object: renderMultiRenderObject,
       parent: this.state,
+      setRenderer,
     }
 
     const { render } = this.controller.initRenderer(context)
@@ -196,6 +212,7 @@ function renderState({ state, focusNode, controller, params }: Required<Render>)
     controller,
     node: focusNode,
     show: showProperty,
+    setRenderer,
     parent: undefined,
   }
 

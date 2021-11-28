@@ -3,7 +3,7 @@ import { property } from 'lit/decorators.js'
 import type { GraphPointer } from 'clownface'
 import type { BlankNode, NamedNode } from '@rdfjs/types'
 import { RoadshowController } from './RoadshowController'
-import type { RoadshowView, Renderer, ViewerMatcher } from './index'
+import type { RoadshowView, Renderer, ViewerMatcher, Decorators } from './index'
 import type { ResourceLoader } from './ResourcesController'
 import { ShapesLoader } from './ShapesController'
 import { render } from './lib/render'
@@ -32,6 +32,9 @@ export class RoadshowViewElement extends LitElement implements RoadshowView {
   @property({ type: Array })
   renderers: Renderer[] = []
 
+  @property({ type: Object })
+  decorators: Decorators | undefined
+
   @property({ type: Array })
   viewers: ViewerMatcher[] = []
 
@@ -56,7 +59,7 @@ export class RoadshowViewElement extends LitElement implements RoadshowView {
       this.roadshow.initState()
     }
 
-    if (_changedProperties.has('renderers')) {
+    if (_changedProperties.has('renderers') || _changedProperties.has('decorators')) {
       this.roadshow.refreshRenderers()
     }
   }

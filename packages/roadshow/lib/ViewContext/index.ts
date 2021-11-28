@@ -5,6 +5,7 @@ import { PropertyShape } from '@rdfine/shacl'
 import { NamedNode } from '@rdfjs/types'
 import type { RoadshowController } from '../../RoadshowController'
 import type { FocusNodeState, ObjectState, PropertyState } from '../state'
+import type { Renderer } from '../render'
 
 export interface Params extends Record<string, any> {
   language: string
@@ -17,6 +18,7 @@ export interface ViewContext<S, P = any> {
   readonly parent: Readonly<P> | undefined
   params: Params
   controller: RoadshowController
+  setRenderer(renderer: Renderer<any>): void
 }
 
 export interface Show {

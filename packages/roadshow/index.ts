@@ -14,6 +14,8 @@ export interface RenderFunc<S extends ViewContext<unknown>> {
 }
 
 export interface Renderer<VC extends ViewContext<any> = ViewContext<any>> {
+  id?: NamedNode
+  meta?(ptr: GraphPointer): void
   viewer: Term
   render: RenderFunc<VC>
   init?: () => Promise<void>
@@ -30,10 +32,27 @@ export interface ViewerMatcher {
   match: ViewerMatchFunc
 }
 
+export interface Decorator<S, VC extends ViewContext<S>> {
+  appliesTo(state: S): boolean
+  init?: () => Promise<void>
+  decorate(this: VC, render: () => ReturnType<RenderFunc<VC>>): ReturnType<RenderFunc<VC>>
+}
+
+export type FocusNodeDecorator<Locals = unknown> = Decorator<FocusNodeState<Locals>, FocusNodeViewContext<Locals>>
+export type ObjectDecorator<Locals = unknown> = Decorator<ObjectState<Locals>, ObjectViewContext<Locals>>
+export type PropertyDecorator<Locals = unknown> = Decorator<PropertyState<Locals>, PropertyViewContext<Locals>>
+
+export interface Decorators {
+  focusNode?: Array<FocusNodeDecorator>
+  property?: Array<PropertyDecorator>
+  object?: Array<ObjectDecorator>
+}
+
 export interface RoadshowView extends ReactiveControllerHost, EventTarget {
   resource: GraphPointer<NamedNode | BlankNode> | undefined
   resourceId: NamedNode | undefined
   renderers: Renderer[]
+  decorators: Decorators | undefined
   viewers: ViewerMatcher[]
   resourceLoader?: ResourceLoader
   shapesLoader?: ShapesLoader
@@ -43,20 +62,4 @@ export interface RoadshowView extends ReactiveControllerHost, EventTarget {
 export interface Viewer {
   pointer: GraphPointer<NamedNode>
   match: ViewerMatchFunc
-}
-
-interface Decorator<S, VC extends ViewContext<S>> {
-  appliesTo(state: S): boolean
-  init?: () => Promise<void>
-  render(render: () => ReturnType<RenderFunc<VC>>): RenderFunc<VC>
-}
-
-export type FocusNodeDecorator = Decorator<FocusNodeState, FocusNodeViewContext>
-export type ObjectDecorator = Decorator<ObjectState, ObjectViewContext>
-export type PropertyDecorator = Decorator<PropertyState, PropertyViewContext>
-
-export interface Decorators {
-  focusNode?: Array<FocusNodeDecorator>
-  property?: Array<PropertyDecorator>
-  object?: Array<ObjectDecorator>
 }

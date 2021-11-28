@@ -4,7 +4,7 @@ import { GraphPointer } from 'clownface'
 import { FocusNodeViewContext, PropertyViewContext } from '@hydrofoil/roadshow/lib/ViewContext/index'
 import { MultiRenderer } from '@hydrofoil/roadshow/index'
 import { ViewersController } from '@hydrofoil/roadshow/ViewersController'
-import { dash, rdf } from '@tpluscode/rdf-ns-builders/strict'
+import { dash, rdf, rdfs } from '@tpluscode/rdf-ns-builders/strict'
 import { hex } from '../../lib/ns'
 
 ViewersController.viewerMeta
@@ -28,6 +28,9 @@ function renderRow(this: PropertyViewContext, member: GraphPointer) {
 }
 
 export const tableView: MultiRenderer = {
+  meta(ptr) {
+    ptr.addOut(rdfs.label, 'table')
+  },
   viewer: hex.MembersViewer,
   render(members) {
     this.controller.initShapes(this.state, members)

@@ -6,7 +6,7 @@ import { dash, sh } from '@tpluscode/rdf-ns-builders/strict'
 import TermMap from '@rdf-esm/term-map'
 import { fromPointer } from '@rdfine/shacl/lib/NodeShape'
 import { isResource, isGraphPointer } from './clownface'
-import { Renderer } from '../index'
+import type { Renderer } from './render'
 import { FocusNodeViewContext, ObjectViewContext, PropertyViewContext, ViewContext } from './ViewContext/index'
 
 export interface ViewerScore {
