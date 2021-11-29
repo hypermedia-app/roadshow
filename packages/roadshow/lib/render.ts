@@ -5,7 +5,9 @@ import { BlankNode, Literal, NamedNode, Term } from '@rdfjs/types'
 import { roadshow } from '@hydrofoil/vocabularies/builders'
 import { rdfs, sh } from '@tpluscode/rdf-ns-builders/strict'
 import { dataset } from '@rdf-esm/dataset'
-import { create, FocusNodeState, ObjectState, PropertyState, RendererState } from './state'
+import { NodeShape } from '@rdfine/shacl'
+import { ResourceIdentifier } from '@tpluscode/rdfine'
+import { create, createPropertyState, FocusNodeState, ObjectState, PropertyState, RendererState } from './state'
 import {
   FocusNodeViewContext,
   ObjectViewContext,
@@ -15,8 +17,8 @@ import {
   ViewContext,
 } from './ViewContext/index'
 import type { RoadshowController } from '../RoadshowController'
-import { isLiteral, isResource, TRUE } from './clownface'
-import { RenderFunc } from '../index'
+import { isGraphPointer, isLiteral, isResource, TRUE } from './clownface'
+import { Decorator, RenderFunc } from '../index'
 
 interface Render {
   state: FocusNodeState
@@ -33,7 +35,14 @@ export interface Renderer<VC extends ViewContext<any> = ViewContext<any>> {
   init?: () => Promise<void>
 }
 
-function findViewers(state: PropertyState, object: GraphPointer, { viewers, renderers }: RoadshowController) {
+function findViewers(state: PropertyState | FocusNodeState, object: MultiPointer, { viewers, renderers }: RoadshowController) {
+  if (!isGraphPointer(object)) {
+    return {
+      applicableViewers: [],
+      viewer: roadshow.RendererNotFoundViewer,
+    }
+  }
+
   let applicableViewers = viewers.findApplicableViewers(object)
   if (state.viewer && !viewers.isMultiViewer(state.viewer)) {
     applicableViewers = [
@@ -48,7 +57,15 @@ function findViewers(state: PropertyState, object: GraphPointer, { viewers, rend
 }
 
 function setRenderer<S extends RendererState<any>>(this: ViewContext<any>, renderer: Renderer<ViewContext<S>>) {
-  this.state.renderer = this.controller.renderers.decorate(renderer, this.state)
+  this.state.renderer = renderer
+  this.controller.host.requestUpdate()
+}
+
+function renderFinal(final: Renderer, context: ViewContext<any>, pointer: MultiPointer) {
+  const decorators = context.state.decorators as Array<Decorator<any, any>>
+
+  const actualRendering = final.render.call(context, pointer)
+  return decorators.reduceRight((inner, { decorate }) => decorate(inner, context), actualRendering)
 }
 
 function objectState<T extends Literal | NamedNode | BlankNode>(state: PropertyState, object: GraphPointer<T>, controller: RoadshowController): T extends Literal ? ObjectState : FocusNodeState {
@@ -74,6 +91,7 @@ function objectState<T extends Literal | NamedNode | BlankNode>(state: PropertyS
       applicableViewers,
       viewer,
       renderers: [],
+      decorators: [],
       locals: {},
       loading: new Set(),
       loadingFailed: new Set(),
@@ -84,6 +102,18 @@ function objectState<T extends Literal | NamedNode | BlankNode>(state: PropertyS
   }
 
   return objectState as any
+}
+
+function setShape(this: FocusNodeViewContext, shape: NodeShape | ResourceIdentifier) {
+  const found = this.state.applicableShapes.find(ns => ns.equals(shape))
+  if (found) {
+    this.state.shape = found
+    const { applicableViewers, viewer } = findViewers(this.state, this.node, this.controller)
+    this.state.applicableViewers = applicableViewers
+    this.state.viewer = viewer
+    this.state.properties = found.property.reduce(createPropertyState, [])
+    this.controller.host.requestUpdate()
+  }
 }
 
 function createChildContext<T extends Term>(parent: ViewContext<any>, state: any, pointer: GraphPointer<T>) : T extends Literal ? ObjectViewContext : FocusNodeViewContext {
@@ -97,6 +127,7 @@ function createChildContext<T extends Term>(parent: ViewContext<any>, state: any
       node: pointer,
       show: showProperty,
       setRenderer,
+      setShape,
       state: childState,
       parent: state,
     } as any
@@ -124,7 +155,7 @@ function renderMultiRenderObject(this: PropertyViewContext, ...args: Parameters<
   if (isLiteral(object)) {
     const childContext = createChildContext(this, this.state, object)
     const renderer = this.controller.initRenderer(childContext)
-    const result = renderer.render.call(childContext, object)
+    const result = renderFinal(renderer, childContext, object)
     if (render?.literal) {
       return render.literal.call(childContext, result)
     }
@@ -142,17 +173,17 @@ function renderPropertyObjectsIndividually(parent: FocusNodeViewContext, propert
       return 'No viewer found'
     }
 
-    const { render } = parent.controller.initRenderer(context)
+    const renderer = parent.controller.initRenderer(context)
 
     if ('properties' in context.state) {
       parent.controller.initShapes(context.state, object)
     }
 
     if ('pointer' in context.state) {
-      return render.call(context, context.state.pointer || object)
+      return renderFinal(renderer, context, context.state.pointer || object)
     }
 
-    return render.call(context, object)
+    return renderFinal(renderer, context, object)
   }
 }
 
@@ -178,8 +209,8 @@ function showProperty(this: FocusNodeViewContext, show: Show) {
       .blankNode()
       .addOut(rdfs.label, 'Property not found in state')
     this.state.viewer = roadshow.ErrorRenderer
-    const { render } = this.controller.initRenderer(this)
-    return render.call(this, details)
+    const renderer = this.controller.initRenderer(this)
+    return renderFinal(renderer, this, details)
   }
 
   const objects = findNodes(this.node, property.path)
@@ -197,8 +228,8 @@ function showProperty(this: FocusNodeViewContext, show: Show) {
       setRenderer,
     }
 
-    const { render } = this.controller.initRenderer(context)
-    return render.call(context, objects)
+    const renderer = this.controller.initRenderer(context)
+    return renderFinal(renderer, context, objects)
   }
 
   return html`${objects.map(renderPropertyObjectsIndividually(this, property))}`
@@ -213,11 +244,12 @@ function renderState({ state, focusNode, controller, params }: Required<Render>)
     node: focusNode,
     show: showProperty,
     setRenderer,
+    setShape,
     parent: undefined,
   }
 
-  const { render } = controller.initRenderer(context)
-  return render.call(context, focusNode)
+  const renderer = controller.initRenderer(context)
+  return renderFinal(renderer, context, focusNode)
 }
 
 export function render({ focusNode, ...rest }: Render): TemplateResult | string {

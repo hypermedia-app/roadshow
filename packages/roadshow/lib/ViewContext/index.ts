@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-empty-interface */
 import type { GraphPointer, MultiPointer } from 'clownface'
 import { TemplateResult } from 'lit'
-import { PropertyShape } from '@rdfine/shacl'
+import { NodeShape, PropertyShape } from '@rdfine/shacl'
 import { NamedNode } from '@rdfjs/types'
 import type { RoadshowController } from '../../RoadshowController'
 import type { FocusNodeState, ObjectState, PropertyState } from '../state'
@@ -27,6 +27,7 @@ export interface Show {
 
 export interface FocusNodeViewContext<R = unknown> extends ViewContext<FocusNodeState<R>, PropertyState> {
   show(params: Show): unknown
+  setShape(shape: NodeShape): void
 }
 
 export interface PropertyViewContext<R = unknown> extends ViewContext<PropertyState<R>, FocusNodeState> {

@@ -7,7 +7,8 @@ import TermMap from '@rdf-esm/term-map'
 import { fromPointer } from '@rdfine/shacl/lib/NodeShape'
 import { isResource, isGraphPointer } from './clownface'
 import type { Renderer } from './render'
-import { FocusNodeViewContext, ObjectViewContext, PropertyViewContext, ViewContext } from './ViewContext/index'
+import type { FocusNodeViewContext, ObjectViewContext, PropertyViewContext, ViewContext } from './ViewContext/index'
+import type { Decorator } from '../index'
 
 export interface ViewerScore {
   pointer: GraphPointer<NamedNode>
@@ -15,11 +16,12 @@ export interface ViewerScore {
 }
 
 export interface RendererState<VC extends ViewContext<any>> {
+  decorators: Array<Decorator<any, VC>>
   renderers: Array<Renderer<VC>>
   renderer?: Renderer<VC>
 }
 
-export interface ObjectState<R = unknown> extends RendererState<ObjectViewContext>{
+export interface ObjectState<R = unknown> extends RendererState<ObjectViewContext> {
   applicableViewers: ViewerScore[]
   viewer: Term
   locals: R
@@ -69,6 +71,7 @@ export function createPropertyState(arr: PropertyState[], shape: PropertyShape):
     objects: new TermMap(),
     viewer: shape.viewer?.id,
     renderers: [],
+    decorators: [],
     applicableShapes: [],
     loading: new Set(),
     loadingFailed: new Set(),
@@ -94,6 +97,7 @@ export function create({ term, pointer, shape, viewer = dash.DetailsViewer }: Cr
     properties: shape?.property.reduce(createPropertyState, []) || [],
     viewer,
     renderers: [],
+    decorators: [],
     term,
     pointer,
     locals: {},

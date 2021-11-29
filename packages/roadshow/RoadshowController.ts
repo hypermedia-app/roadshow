@@ -9,7 +9,6 @@ import { ViewersController } from './ViewersController'
 import { ShapesController } from './ShapesController'
 import { ResourcesController } from './ResourcesController'
 import { ViewContext } from './lib/ViewContext/index'
-import type { Renderer } from './lib/render'
 
 function isFocusNodeState(state: any): state is FocusNodeState {
   return 'properties' in state && state.properties
@@ -74,13 +73,15 @@ export class RoadshowController implements ReactiveController {
     if (isFocusNodeState(state)) {
       state.properties = (state.shape?.property.reduce(createPropertyState, []) || [])
     }
+    delete state.renderer
     this.host.requestUpdate()
   }
 
-  initRenderer<VC extends ViewContext<any>>({ state }: VC): Renderer<VC> {
+  initRenderer<VC extends ViewContext<any>>({ state }: VC) {
     if (!state.renderer) {
-      state.renderers = this.renderers.get(state.viewer)
-      state.renderer = this.renderers.decorate(state.renderers[0], state)
+      state.renderers = this.renderers.get(state.viewer);
+      ([state.renderer] = state.renderers)
+      state.decorators = this.renderers.getDecorators(state)
     }
 
     this.renderers.beginInitialize(state)

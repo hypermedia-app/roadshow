@@ -9,8 +9,8 @@ import './lib/rdfine'
 
 export { html, css } from 'lit'
 
-export interface RenderFunc<S extends ViewContext<unknown>> {
-  (this: S, resource: MultiPointer): TemplateResult | string
+export interface RenderFunc<VC extends ViewContext<unknown>> {
+  (this: VC, resource: MultiPointer): TemplateResult | string
 }
 
 export interface Renderer<VC extends ViewContext<any> = ViewContext<any>> {
@@ -35,7 +35,7 @@ export interface ViewerMatcher {
 export interface Decorator<S, VC extends ViewContext<S>> {
   appliesTo(state: S): boolean
   init?: () => Promise<void>
-  decorate(this: VC, render: () => ReturnType<RenderFunc<VC>>): ReturnType<RenderFunc<VC>>
+  decorate(inner: ReturnType<RenderFunc<VC>>, context: VC): ReturnType<RenderFunc<VC>>
 }
 
 export type FocusNodeDecorator<Locals = unknown> = Decorator<FocusNodeState<Locals>, FocusNodeViewContext<Locals>>

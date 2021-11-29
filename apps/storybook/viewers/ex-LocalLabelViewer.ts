@@ -1,4 +1,3 @@
-import { MultiPointer } from 'clownface'
 import { MultiRenderer } from '@hydrofoil/roadshow/index'
 import { isLiteral } from '@hydrofoil/roadshow/lib/clownface'
 import { ViewersController } from '@hydrofoil/roadshow/ViewersController'
@@ -11,7 +10,7 @@ ViewersController.viewerMeta
 
 export const localizedLabel: MultiRenderer = {
   viewer: ex.LocalLabelViewer,
-  render(resources: MultiPointer) {
+  render(resources) {
     const arr = resources.toArray().filter(isLiteral)
     const label = arr.find(r => r.term.language === this.params.language) || arr.find(r => r.term.language === 'en')
 

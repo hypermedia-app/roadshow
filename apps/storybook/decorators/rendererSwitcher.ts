@@ -8,24 +8,23 @@ export const rendererSwitcher: PropertyDecorator = {
   appliesTo(state): boolean {
     return hex.MembersViewer.equals(state.viewer)
   },
-  decorate(render) {
-    const { renderers } = this.state
+  decorate(inner, context) {
+    const { renderers } = context.state
 
     const switchRenderer = (e: any) => {
       const renderer = renderers.find(renderer => renderer.id.value === e.target.value)
       if (renderer) {
-        this.setRenderer(renderer)
-        this.controller.host.requestUpdate()
+        context.setRenderer(renderer)
       }
     }
 
     return html`
       <select @change="${switchRenderer}">${renderers.map(renderer => html`
-        <option ?selected="${renderer.id.equals(this.state.renderer?.id)}" value="${renderer.id.value}">
-            ${renderer.meta.out(rdfs.label).value}
+        <option ?selected="${renderer.id.equals(context.state.renderer?.id)}" value="${renderer.id.value}">
+          ${renderer.meta.out(rdfs.label).value}
         </option>`)}
       </select>
-      ${render()}
+      ${inner}
     `
   },
 }

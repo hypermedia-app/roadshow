@@ -33,8 +33,6 @@ export const tableView: MultiRenderer = {
   },
   viewer: hex.MembersViewer,
   render(members) {
-    this.controller.initShapes(this.state, members)
-
     const propertyShapes = this.state.shape?.property.filter(p => !p.hidden) || []
 
     return html`<table>

@@ -4,7 +4,7 @@ import TermMap from '@rdf-esm/term-map'
 import { roadshow } from '@hydrofoil/vocabularies/builders'
 import clownface from 'clownface'
 import { dataset } from '@rdf-esm/dataset'
-import { Decorator, Decorators, Renderer as RendererInit, RenderFunc, RoadshowView } from './index'
+import { Decorator, Decorators, Renderer as RendererInit, RoadshowView } from './index'
 import * as defaultRenderers from './renderers'
 import { RendererNotFoundViewer } from './renderers'
 import { FocusNodeState, ObjectState, PropertyState } from './lib/state'
@@ -13,8 +13,9 @@ import { Renderer } from './lib/render'
 
 const LOADER_KEY = 'renderer'
 
-type InitializedRenderer = Renderer & { initialized?: true }
-type UninitializedRenderer = Renderer & { initialized: boolean; init: () => Promise<void> }
+type Initialized<T> = T & { initialized?: true }
+type Uninitialized<T> = T & { initialized: boolean; init: () => Promise<void> }
+type Initializable<T> = Initialized<T> | Uninitialized<T>
 type State = ObjectState | FocusNodeState | PropertyState
 
 function initRenderer({ init, render, viewer, id, meta }: RendererInit<any>): Renderer<any> {
@@ -33,11 +34,22 @@ function initRenderer({ init, render, viewer, id, meta }: RendererInit<any>): Re
   }
 }
 
-const notFound: [InitializedRenderer] = [initRenderer(RendererNotFoundViewer)]
+const notFound: [Initialized<Renderer>] = [initRenderer(RendererNotFoundViewer)]
+
+function needsInitialization(arg: Initializable<unknown>): arg is Uninitialized<unknown> {
+  return !arg.initialized && 'init' in arg && typeof arg.init === 'function'
+}
+
+function toInitialize(arr: Array<Initializable<unknown>>): Array<() => Promise<void>> {
+  return arr.filter(needsInitialization).map(initializable => async () => {
+    await initializable.init()
+    initializable.initialized = true
+  })
+}
 
 export class RenderersController implements ReactiveController {
   static readonly defaultRenderers: Array<Renderer<any>> = Object.values(defaultRenderers).map(initRenderer)
-  private renderers: Map<Term, Array<InitializedRenderer | UninitializedRenderer>> = new Map()
+  private renderers: Map<Term, Array<Initializable<Renderer>>> = new Map()
   private decorators: Decorators = {}
 
   constructor(private host: RoadshowView) {
@@ -72,65 +84,45 @@ export class RenderersController implements ReactiveController {
     }
   }
 
-  get(viewer: Term | undefined): Array<InitializedRenderer | UninitializedRenderer> {
-    const renderers = viewer && this.renderers.get(viewer)
-    if (!renderers?.length) {
-      return this.renderers.get(roadshow.RendererNotFoundViewer) || notFound
+  get(viewer: Term | undefined): Array<Initializable<Renderer>> {
+    const renderers = (viewer && this.renderers.get(viewer)) || this.renderers.get(roadshow.RendererNotFoundViewer)
+    if (!renderers || renderers.length === 0) {
+      return notFound
     }
 
     return renderers
   }
 
-  decorate(renderer: Renderer, state: State): Renderer {
+  getDecorators(state: State): Decorator<any, any>[] {
     if ('properties' in state) {
-      return this.__applyDecorators(renderer, state, this.decorators.focusNode)
+      return this.__applicableDecorators(state, this.decorators.focusNode)
     }
 
     if ('propertyShape' in state) {
-      return this.__applyDecorators(renderer, state, this.decorators.property)
+      return this.__applicableDecorators(state, this.decorators.property)
     }
 
-    return this.__applyDecorators(renderer, state, this.decorators.object)
+    return this.__applicableDecorators(state, this.decorators.object)
   }
 
-  private __applyDecorators<S extends State, VC extends ViewContext<S>>(renderer: Renderer<any>, state: S, decorators: Array<Decorator<S, VC>> = []): Renderer<any> {
-    const applicable = decorators.filter(decorator => decorator.appliesTo(state))
-    if (!applicable.length) {
-      return renderer
-    }
-
-    const initFuncs = [renderer.init, ...applicable.map(({ init }) => init)].filter(init => !!init)
-    let init: Renderer['init']
-    if (initFuncs.length) {
-      init = async () => { await Promise.all(initFuncs) }
-    }
-
-    const combinedRender = applicable.reduceRight((previous, { decorate }) => function decoratedRender(arg) {
-      return decorate.call(this, () => previous.call(this, arg))
-    }, renderer.render as RenderFunc<VC>)
-
-    return {
-      ...renderer,
-      init,
-      render(ptr) {
-        return combinedRender.call(this, ptr)
-      },
-    }
+  private __applicableDecorators<S extends State, VC extends ViewContext<S>>(state: S, decorators: Array<Decorator<S, VC>> = []) {
+    return decorators.filter(decorator => decorator.appliesTo(state))
   }
 
   beginInitialize(state: State): void {
-    const renderer = state.renderer as InitializedRenderer | UninitializedRenderer
+    const renderer = state.renderer as Initializable<Renderer>
+    const decorators = state.decorators as Array<Initializable<Decorator<any, any>>>
 
-    const shouldInit = renderer.initialized === false || (!renderer.initialized && 'init' in renderer)
+    const initFuncs = toInitialize([renderer, ...decorators])
 
-    if (shouldInit && !state.loadingFailed.has(LOADER_KEY)) {
+    if (initFuncs.length && !state.loadingFailed.has(LOADER_KEY)) {
       (async () => {
-        state.loading.add('renderer')
         this.host.requestUpdate()
 
         try {
-          await renderer.init?.()
+          await Promise.all(initFuncs.map(init => init()))
           renderer.initialized = true
+          state.renderer = renderer
         } catch (e) {
           state.loadingFailed.add(LOADER_KEY)
         } finally {
