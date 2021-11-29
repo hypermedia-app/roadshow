@@ -64,24 +64,33 @@ export class RenderersController implements ReactiveController {
     this.decorators = decorators
 
     this.renderers.clear()
-    for (const renderer of [...RenderersController.defaultRenderers, ...renderers.map(initRenderer)]) {
-      const array = this.renderers.get(renderer.viewer) || []
-
-      if ('init' in renderer) {
-        array.push({
-          ...renderer,
-          init: renderer.init!,
-          initialized: false,
-        })
-      } else {
-        array.push({
-          ...renderer,
-          initialized: true,
-        })
-      }
-
-      this.renderers.set(renderer.viewer, array)
+    for (const renderer of renderers.map(initRenderer)) {
+      this.__addRenderer(renderer)
     }
+    for (const renderer of RenderersController.defaultRenderers) {
+      if (!this.renderers.has(renderer.viewer)) {
+        this.__addRenderer(renderer)
+      }
+    }
+  }
+
+  private __addRenderer(renderer: Renderer) {
+    const array = this.renderers.get(renderer.viewer) || []
+
+    if ('init' in renderer) {
+      array.push({
+        ...renderer,
+        init: renderer.init!,
+        initialized: false,
+      })
+    } else {
+      array.push({
+        ...renderer,
+        initialized: true,
+      })
+    }
+
+    this.renderers.set(renderer.viewer, array)
   }
 
   get(viewer: Term | undefined): Array<Initializable<Renderer>> {
