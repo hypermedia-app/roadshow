@@ -7,6 +7,7 @@ import { Initializable, RenderersController } from '../RenderersController'
 import { Decorator, RoadshowView } from '..'
 import { AnyState } from '../lib/state'
 import { Renderer } from '../lib/render'
+import { ViewContext } from '../lib/ViewContext/index'
 
 describe('@hydrofoil/roadshow/RenderersController', () => {
   let host: RoadshowView
@@ -105,6 +106,7 @@ describe('@hydrofoil/roadshow/RenderersController', () => {
   describe('beginInitialize', () => {
     let renderer: Initializable<Renderer>
     let state: AnyState
+    let context: ViewContext<AnyState>
     beforeEach(() => {
       renderer = {} as any
       state = {
@@ -113,6 +115,7 @@ describe('@hydrofoil/roadshow/RenderersController', () => {
         loading: new Set(),
         loadingFailed: new Set(),
       } as any
+      context = { state } as any
     })
 
     it('sets loading flag when init begins', () => {
@@ -122,7 +125,7 @@ describe('@hydrofoil/roadshow/RenderersController', () => {
       renderer.init = sinon.spy()
 
       // when
-      renderers.beginInitialize(state)
+      renderers.beginInitialize(context)
 
       // then
       expect(state.loading.size).to.have.be.greaterThan(0)
@@ -136,7 +139,7 @@ describe('@hydrofoil/roadshow/RenderersController', () => {
       renderer.init = sinon.spy()
 
       // when
-      renderers.beginInitialize(state)
+      renderers.beginInitialize(context)
 
       // then
       expect(state.loading.size).to.have.be.eq(0)
@@ -151,7 +154,7 @@ describe('@hydrofoil/roadshow/RenderersController', () => {
       state.loading.add('renderer')
 
       // when
-      renderers.beginInitialize(state)
+      renderers.beginInitialize(context)
 
       // then
       expect(host.requestUpdate).not.to.have.been.called
@@ -165,7 +168,7 @@ describe('@hydrofoil/roadshow/RenderersController', () => {
       state.loadingFailed.add('renderer')
 
       // when
-      renderers.beginInitialize(state)
+      renderers.beginInitialize(context)
 
       // then
       expect(state.loading.size).to.have.be.eq(0)
@@ -179,7 +182,7 @@ describe('@hydrofoil/roadshow/RenderersController', () => {
       renderer.init = sinon.stub().rejects()
 
       // when
-      await renderers.beginInitialize(state)
+      await renderers.beginInitialize(context)
 
       // then
       expect(state.loadingFailed.size).to.have.be.eq(1)
@@ -193,10 +196,11 @@ describe('@hydrofoil/roadshow/RenderersController', () => {
       renderer.init = sinon.stub().resolves()
 
       // when
-      await renderers.beginInitialize(state)
+      await renderers.beginInitialize(context)
 
       // then
       expect(renderer.initialized).to.be.true
+      expect(renderer.init).to.have.been.calledWith(context)
       expect(host.requestUpdate).to.have.been.calledTwice
     })
 
@@ -217,11 +221,11 @@ describe('@hydrofoil/roadshow/RenderersController', () => {
       state.decorators.push(decorator)
 
       // when
-      await renderers.beginInitialize(state)
+      await renderers.beginInitialize(context)
 
       // then
       expect(renderer.init).not.to.have.been.called
-      expect(decorator.init).to.have.been.called
+      expect(decorator.init).to.have.been.calledWith(context)
     })
   })
 })
