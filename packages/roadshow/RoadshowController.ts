@@ -77,14 +77,15 @@ export class RoadshowController implements ReactiveController {
     this.host.requestUpdate()
   }
 
-  initRenderer<VC extends ViewContext<any>>({ state }: VC) {
+  initRenderer<VC extends ViewContext<any>>(context: VC) {
+    const { state } = context
     if (!state.renderer) {
       state.renderers = this.renderers.get(state.viewer);
       ([state.renderer] = state.renderers)
       state.decorators = this.renderers.getDecorators(state)
     }
 
-    this.renderers.beginInitialize(state)
+    this.renderers.beginInitialize(context)
 
     if (state.loading.size) {
       return this.renderers.get(roadshow.LoadingViewer)[0]

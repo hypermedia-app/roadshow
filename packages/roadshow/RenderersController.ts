@@ -10,11 +10,12 @@ import { RendererNotFoundViewer } from './renderers'
 import { AnyState } from './lib/state'
 import { Renderer } from './lib/render'
 import { Decorates } from './lib/decorator'
+import { ViewContext } from './lib/ViewContext/index'
 
 const LOADER_KEY = 'renderer'
 
 type Initialized<T> = T & { initialized?: true }
-type Uninitialized<T> = T & { initialized: boolean; init: () => Promise<void> }
+type Uninitialized<T> = T & { initialized: boolean; init: (context: any) => Promise<void> }
 export type Initializable<T> = Initialized<T> | Uninitialized<T>
 
 function initRenderer({ init, render, viewer, id, meta }: RendererInit<any>): Renderer<any> {
@@ -39,9 +40,9 @@ function needsInitialization(arg: Initializable<unknown>): arg is Uninitialized<
   return !arg.initialized && 'init' in arg && typeof arg.init === 'function'
 }
 
-function toInitialize(arr: Array<Initializable<unknown>>): Array<() => Promise<void>> {
-  return arr.filter(needsInitialization).map(initializable => async () => {
-    await initializable.init()
+function toInitialize(arr: Array<Initializable<unknown>>): Array<(context: unknown) => Promise<void>> {
+  return arr.filter(needsInitialization).map(initializable => async (context: unknown) => {
+    await initializable.init(context)
     initializable.initialized = true
   })
 }
@@ -115,7 +116,8 @@ export class RenderersController implements ReactiveController {
     return this.decorators.filter(decorator => (decorator.decorates.includes(decorates)) && decorator.appliesTo(state))
   }
 
-  beginInitialize(state: AnyState): Promise<void> | undefined {
+  beginInitialize(context: ViewContext<AnyState>): Promise<void> | undefined {
+    const { state } = context
     const renderer = state.renderer as Initializable<Renderer>
     const decorators = state.decorators as any as Array<Initializable<Decorator>>
 
@@ -127,7 +129,7 @@ export class RenderersController implements ReactiveController {
 
       return (async () => {
         try {
-          await Promise.all(initFuncs.map(init => init()))
+          await Promise.all(initFuncs.map(init => init(context)))
           renderer.initialized = true
           state.renderer = renderer
         } catch (e) {

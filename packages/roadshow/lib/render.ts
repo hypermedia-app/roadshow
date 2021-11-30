@@ -36,7 +36,7 @@ export interface Renderer<VC extends ViewContext<any> = ViewContext<any>> {
   meta: GraphPointer
   viewer: Term
   render: RenderFunc<VC>
-  init?: () => Promise<void>
+  init?: (context: VC) => Promise<void>
 }
 
 function findViewers(state: PropertyState | FocusNodeState, object: MultiPointer, { viewers, renderers }: RoadshowController) {
