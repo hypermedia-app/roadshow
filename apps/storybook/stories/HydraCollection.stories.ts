@@ -1,5 +1,5 @@
 import { html } from 'lit'
-import { MultiRenderer, Renderer, ViewerMatcher } from '@hydrofoil/roadshow'
+import { MultiRenderer, Renderer, ViewerMatcher, Decorator } from '@hydrofoil/roadshow'
 import '@hydrofoil/roadshow/roadshow-view'
 import { hydra, rdf, schema } from '@tpluscode/rdf-ns-builders/strict'
 import type { MultiPointer } from 'clownface'
@@ -14,6 +14,7 @@ import { galleryView } from '../viewers/hydra-MembersViewer/gallery'
 import { localizedLabel } from '../viewers/ex-LocalLabelViewer'
 import * as pagerViewer from '../viewers/hydra-PartialCollectionViewer'
 import * as imageViewer from '../viewers/schema-ImageViewer'
+import { rendererSwitcher } from '../decorators/rendererSwitcher'
 
 export default {
   title: 'Hydra Collection',
@@ -23,6 +24,7 @@ interface ViewStoryParams {
   resource: QuadArrayFactory
   viewers: ViewerMatcher[]
   renderers: Array<Renderer<any> | MultiRenderer>
+  decorators?: Decorator[]
 }
 
 async function selectShape(arg: MultiPointer) {
@@ -39,11 +41,12 @@ async function selectShape(arg: MultiPointer) {
   return []
 }
 
-const Template = template<ViewStoryParams>(({ resource, viewers, renderers }) => html`
+const Template = template<ViewStoryParams>(({ resource, viewers, renderers, decorators }) => html`
     <roadshow-view .resource="${runFactory(resource)}"
                    .shapesLoader="${selectShape}"
                    .viewers="${viewers}"
                    .renderers="${renderers}"
+                   .decorators="${decorators}"
     ></roadshow-view>
     `)
 
@@ -59,4 +62,12 @@ ProfileGallery.args = {
   resource: addressBook,
   viewers: [imageViewer.matcher, pagerViewer.matcher],
   renderers: [galleryView, imageViewer.renderer, pagerViewer.renderer, localizedLabel],
+}
+
+export const DecoratedViewerSwitcher = Template.bind({})
+DecoratedViewerSwitcher.args = {
+  resource: addressBook,
+  viewers: [imageViewer.matcher, pagerViewer.matcher],
+  renderers: [tableView, galleryView, imageViewer.renderer, pagerViewer.renderer, localizedLabel],
+  decorators: [rendererSwitcher],
 }

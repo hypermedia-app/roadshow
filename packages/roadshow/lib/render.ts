@@ -5,7 +5,9 @@ import { BlankNode, Literal, NamedNode, Term } from '@rdfjs/types'
 import { roadshow } from '@hydrofoil/vocabularies/builders'
 import { rdfs, sh } from '@tpluscode/rdf-ns-builders/strict'
 import { dataset } from '@rdf-esm/dataset'
-import { create, FocusNodeState, ObjectState, PropertyState } from './state'
+import { NodeShape } from '@rdfine/shacl'
+import { ResourceIdentifier } from '@tpluscode/rdfine'
+import { create, createPropertyState, FocusNodeState, ObjectState, PropertyState, RendererState } from './state'
 import {
   FocusNodeViewContext,
   ObjectViewContext,
@@ -15,7 +17,12 @@ import {
   ViewContext,
 } from './ViewContext/index'
 import type { RoadshowController } from '../RoadshowController'
-import { isLiteral, isResource, TRUE } from './clownface'
+import { isGraphPointer, isLiteral, isResource, TRUE } from './clownface'
+import { Decorator } from './decorator'
+
+export interface RenderFunc<VC extends ViewContext<unknown>> {
+  (this: VC, resource: MultiPointer): TemplateResult | string
+}
 
 interface Render {
   state: FocusNodeState
@@ -24,7 +31,22 @@ interface Render {
   params: Params
 }
 
-function findViewers(state: PropertyState, object: GraphPointer, { viewers, renderers }: RoadshowController) {
+export interface Renderer<VC extends ViewContext<any> = ViewContext<any>> {
+  readonly id: Term
+  meta: GraphPointer
+  viewer: Term
+  render: RenderFunc<VC>
+  init?: () => Promise<void>
+}
+
+function findViewers(state: PropertyState | FocusNodeState, object: MultiPointer, { viewers, renderers }: RoadshowController) {
+  if (!isGraphPointer(object)) {
+    return {
+      applicableViewers: [],
+      viewer: roadshow.RendererNotFoundViewer,
+    }
+  }
+
   let applicableViewers = viewers.findApplicableViewers(object)
   if (state.viewer && !viewers.isMultiViewer(state.viewer)) {
     applicableViewers = [
@@ -36,6 +58,18 @@ function findViewers(state: PropertyState, object: GraphPointer, { viewers, rend
   const viewer = applicableViewers.find(vr => renderers.has(vr.pointer.term))?.pointer.term || roadshow.RendererNotFoundViewer
 
   return { applicableViewers, viewer }
+}
+
+function setRenderer<S extends RendererState<any>>(this: ViewContext<any>, renderer: Renderer<ViewContext<S>>) {
+  this.state.renderer = renderer
+  this.controller.host.requestUpdate()
+}
+
+function renderFinal(final: Renderer, context: ViewContext<any>, pointer: MultiPointer) {
+  const decorators = context.state.decorators as Array<Decorator<any>>
+
+  const actualRendering = final.render.call(context, pointer)
+  return decorators.reduceRight((inner, { decorate }) => decorate(inner, context), actualRendering)
 }
 
 function objectState<T extends Literal | NamedNode | BlankNode>(state: PropertyState, object: GraphPointer<T>, controller: RoadshowController): T extends Literal ? ObjectState : FocusNodeState {
@@ -60,6 +94,8 @@ function objectState<T extends Literal | NamedNode | BlankNode>(state: PropertyS
     const newState: ObjectState = {
       applicableViewers,
       viewer,
+      renderers: [],
+      decorators: [],
       locals: {},
       loading: new Set(),
       loadingFailed: new Set(),
@@ -72,6 +108,18 @@ function objectState<T extends Literal | NamedNode | BlankNode>(state: PropertyS
   return objectState as any
 }
 
+function setShape(this: FocusNodeViewContext, shape: NodeShape | ResourceIdentifier) {
+  const found = this.state.applicableShapes.find(ns => ns.equals(shape))
+  if (found) {
+    this.state.shape = found
+    const { applicableViewers, viewer } = findViewers(this.state, this.node, this.controller)
+    this.state.applicableViewers = applicableViewers
+    this.state.viewer = viewer
+    this.state.properties = found.property.reduce(createPropertyState, [])
+    this.controller.host.requestUpdate()
+  }
+}
+
 function createChildContext<T extends Term>(parent: ViewContext<any>, state: any, pointer: GraphPointer<T>) : T extends Literal ? ObjectViewContext : FocusNodeViewContext {
   if (isResource(pointer)) {
     const childState = objectState<NamedNode | BlankNode>(state, pointer, parent.controller)
@@ -82,6 +130,8 @@ function createChildContext<T extends Term>(parent: ViewContext<any>, state: any
       controller: parent.controller,
       node: pointer,
       show: showProperty,
+      setRenderer,
+      setShape,
       state: childState,
       parent: state,
     } as any
@@ -95,6 +145,7 @@ function createChildContext<T extends Term>(parent: ViewContext<any>, state: any
     state: childState,
     node: pointer,
     parent: state,
+    setRenderer,
   } as any
 }
 
@@ -107,8 +158,8 @@ function renderMultiRenderObject(this: PropertyViewContext, ...args: Parameters<
 
   if (isLiteral(object)) {
     const childContext = createChildContext(this, this.state, object)
-    const renderer = this.controller.renderers.get(childContext.state)
-    const result = renderer.render.call(childContext, object)
+    const renderer = this.controller.initRenderer(childContext)
+    const result = renderFinal(renderer, childContext, object)
     if (render?.literal) {
       return render.literal.call(childContext, result)
     }
@@ -126,17 +177,17 @@ function renderPropertyObjectsIndividually(parent: FocusNodeViewContext, propert
       return 'No viewer found'
     }
 
-    const { render } = parent.controller.renderers.get(context.state)
+    const renderer = parent.controller.initRenderer(context)
 
     if ('properties' in context.state) {
-      parent.controller.shapes.loadShapes(context.state, object)
+      parent.controller.initShapes(context.state, object)
     }
 
     if ('pointer' in context.state) {
-      return render.call(context, context.state.pointer || object)
+      return renderFinal(renderer, context, context.state.pointer || object)
     }
 
-    return render.call(context, object)
+    return renderFinal(renderer, context, object)
   }
 }
 
@@ -162,14 +213,13 @@ function showProperty(this: FocusNodeViewContext, show: Show) {
       .blankNode()
       .addOut(rdfs.label, 'Property not found in state')
     this.state.viewer = roadshow.ErrorRenderer
-    return this.controller.renderers.get(this.state).render.call(this, details)
+    const renderer = this.controller.initRenderer(this)
+    return renderFinal(renderer, this, details)
   }
 
   const objects = findNodes(this.node, property.path)
   if (property.viewer && this.controller.viewers.isMultiViewer(property.viewer)) {
-    this.controller.shapes.loadShapes(property, objects)
-
-    const { render } = this.controller.renderers.get(property)
+    this.controller.initShapes(property, objects)
 
     const context: PropertyViewContext = {
       depth: this.depth,
@@ -179,16 +229,17 @@ function showProperty(this: FocusNodeViewContext, show: Show) {
       node: objects,
       object: renderMultiRenderObject,
       parent: this.state,
+      setRenderer,
     }
-    return render.call(context, objects)
+
+    const renderer = this.controller.initRenderer(context)
+    return renderFinal(renderer, context, objects)
   }
 
   return html`${objects.map(renderPropertyObjectsIndividually(this, property))}`
 }
 
 function renderState({ state, focusNode, controller, params }: Required<Render>): TemplateResult | string {
-  const { render } = controller.renderers.get(state)
-
   const context: FocusNodeViewContext = {
     depth: 0,
     state,
@@ -196,10 +247,13 @@ function renderState({ state, focusNode, controller, params }: Required<Render>)
     controller,
     node: focusNode,
     show: showProperty,
+    setRenderer,
+    setShape,
     parent: undefined,
   }
 
-  return render.call(context, focusNode)
+  const renderer = controller.initRenderer(context)
+  return renderFinal(renderer, context, focusNode)
 }
 
 export function render({ focusNode, ...rest }: Render): TemplateResult | string {

@@ -1,11 +1,18 @@
 import { ReactiveController } from 'lit'
 import { dash, rdf } from '@tpluscode/rdf-ns-builders/strict'
-import { RoadshowView } from './index'
-import { create, FocusNodeState } from './lib/state'
+import { MultiPointer } from 'clownface'
+import { roadshow } from '@hydrofoil/vocabularies/builders'
+import type { RoadshowView } from './index'
+import { create, createPropertyState, FocusNodeState, PropertyState } from './lib/state'
 import { RenderersController } from './RenderersController'
 import { ViewersController } from './ViewersController'
 import { ShapesController } from './ShapesController'
 import { ResourcesController } from './ResourcesController'
+import { ViewContext } from './lib/ViewContext/index'
+
+function isFocusNodeState(state: any): state is FocusNodeState {
+  return 'properties' in state && state.properties
+}
 
 export class RoadshowController implements ReactiveController {
   state: FocusNodeState
@@ -50,14 +57,46 @@ export class RoadshowController implements ReactiveController {
       return
     }
 
-    await this.shapes.loadShapes(this.state, this.state.pointer!)
+    await this.initShapes(this.state, this.state.pointer!)
 
     await this.host.requestUpdate()
     this.state.viewer = dash.DetailsViewer
     await this.host.requestUpdate()
   }
 
+  async initShapes(state: PropertyState | FocusNodeState, objects: MultiPointer): Promise<void> {
+    if (state.shapesLoaded) {
+      return
+    }
+
+    await this.shapes.loadShapes(state, objects)
+    if (isFocusNodeState(state)) {
+      state.properties = (state.shape?.property.reduce(createPropertyState, []) || [])
+    }
+    delete state.renderer
+    this.host.requestUpdate()
+  }
+
+  initRenderer<VC extends ViewContext<any>>({ state }: VC) {
+    if (!state.renderer) {
+      state.renderers = this.renderers.get(state.viewer);
+      ([state.renderer] = state.renderers)
+      state.decorators = this.renderers.getDecorators(state)
+    }
+
+    this.renderers.beginInitialize(state)
+
+    if (state.loading.size) {
+      return this.renderers.get(roadshow.LoadingViewer)[0]
+    }
+    if (state.loadingFailed.size) {
+      return this.renderers.get(roadshow.LoadingFailedViewer)[0]
+    }
+
+    return state.renderer
+  }
+
   refreshRenderers(): void {
-    this.renderers.set(this.host.renderers)
+    this.renderers.set(this.host.renderers, this.host.decorators)
   }
 }

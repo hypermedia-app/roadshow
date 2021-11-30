@@ -28,7 +28,7 @@
     "husky": "^5.0.9",
     "lint-staged": "^10.5.4",
     "ts-lit-plugin": "^1.2.1",
-    "typescript": "^4.1.5",
+    "typescript": "^4.5.2",
     "wsrun": "^5.2.4"
   },
   "repository": "git@github.com:hypermedia-app/roadshow.git",

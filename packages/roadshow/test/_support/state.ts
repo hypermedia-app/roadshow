@@ -7,6 +7,8 @@ export function focusNodeState(term = ex.foo, viewer = ex.FooViewer): FocusNodeS
     applicableShapes: [],
     applicableViewers: [],
     viewer,
+    renderers: [],
+    decorators: [],
     term,
     loading: new Set(),
     loadingFailed: new Set(),

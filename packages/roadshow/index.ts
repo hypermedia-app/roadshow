@@ -1,20 +1,24 @@
-import type { ReactiveControllerHost, TemplateResult } from 'lit'
-import type { GraphPointer, MultiPointer } from 'clownface'
+import type { ReactiveControllerHost } from 'lit'
+import type { GraphPointer } from 'clownface'
 import type { BlankNode, NamedNode, Term } from '@rdfjs/types'
 import type { ShapesLoader } from './ShapesController'
 import type { ResourceLoader } from './ResourcesController'
 import type { PropertyViewContext, ViewContext } from './lib/ViewContext'
+import type { Decorator } from './lib/decorator'
+import { RenderFunc } from './lib/render'
 import './lib/rdfine'
 
 export { html, css } from 'lit'
 
-export interface RenderFunc<S extends ViewContext<unknown>> {
-  (this: S, resource: MultiPointer): TemplateResult | string
-}
+export type { Decorator } from './lib/decorator'
+export type { RenderFunc } from './lib/render'
+export type { FocusNodeViewContext, PropertyViewContext, ObjectViewContext } from './lib/ViewContext'
 
-export interface Renderer<S extends ViewContext<any> = ViewContext<any>> {
+export interface Renderer<VC extends ViewContext<any> = ViewContext<any>> {
+  id?: NamedNode
+  meta?(ptr: GraphPointer): void
   viewer: Term
-  render: RenderFunc<S>
+  render: RenderFunc<VC>
   init?: () => Promise<void>
 }
 
@@ -33,6 +37,7 @@ export interface RoadshowView extends ReactiveControllerHost, EventTarget {
   resource: GraphPointer<NamedNode | BlankNode> | undefined
   resourceId: NamedNode | undefined
   renderers: Renderer[]
+  decorators: Decorator[] | undefined
   viewers: ViewerMatcher[]
   resourceLoader?: ResourceLoader
   shapesLoader?: ShapesLoader

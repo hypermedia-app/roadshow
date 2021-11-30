@@ -4,7 +4,7 @@ import { fromPointer } from '@rdfine/shacl/lib/NodeShape'
 import { BlankNode, NamedNode } from '@rdfjs/types'
 import { dash, sh } from '@tpluscode/rdf-ns-builders/strict'
 import type { RoadshowView } from './index'
-import { createPropertyState, FocusNodeState, PropertyState } from './lib/state'
+import { FocusNodeState, PropertyState } from './lib/state'
 import { isResource } from './lib/clownface'
 import { ResourcesController } from './ResourcesController'
 
@@ -47,12 +47,8 @@ export class ShapesController implements ReactiveController {
         ...shapePointers.map(ptr => fromPointer(ptr)).filter(found => !found.equals(state.shape)),
       ]
     }
-    if ('properties' in state) {
-      state.properties = state.shape?.property.reduce(createPropertyState, []) || []
-    }
 
     state.loading.delete(LOADER_KEY)
-    await this.host.requestUpdate()
   }
 
   async loadDashShape(resource: GraphPointer) {

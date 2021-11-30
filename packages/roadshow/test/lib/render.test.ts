@@ -42,6 +42,12 @@ describe('@hydrofoil/roadshow/lib/render', () => {
       shapes: {
         loadShapes,
       },
+      initRenderer(context: any) {
+        return this.renderers.get(context.state)
+      },
+      initShapes() {
+        //
+      },
     } as any
     params = {
       language: 'en',

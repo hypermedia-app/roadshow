@@ -1,9 +1,11 @@
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 PREFIX dash: <http://datashapes.org/dash#>
 PREFIX schema: <http://schema.org/>
 PREFIX sh: <http://www.w3.org/ns/shacl#>
 
 <>
   sh:targetClass schema:Person ;
+  rdfs:label "Detailed view" ;
   sh:property
     [
       sh:path schema:givenName ;
@@ -31,5 +33,21 @@ PREFIX sh: <http://www.w3.org/ns/shacl#>
               sh:path schema:contentUrl ;
             ] ;
         ] ;
+    ] ;
+.
+
+<#simplified>
+  sh:targetClass schema:Person ;
+  rdfs:label "Simplified view" ;
+  sh:property
+    [
+      sh:path schema:givenName ;
+      sh:name "First name" ;
+      sh:order 10 ;
+    ],
+    [
+      sh:path schema:familyName ;
+      sh:name 'Last name' ;
+      sh:order 20 ;
     ] ;
 .
