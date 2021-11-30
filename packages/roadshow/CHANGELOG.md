@@ -1,5 +1,11 @@
 # @hydrofoil/roadshow
 
+## 0.3.5
+
+### Patch Changes
+
+- c8dbdc3: Decorator's `.appliesTo` should take entire context
+
 ## 0.3.4
 
 ### Patch Changes
