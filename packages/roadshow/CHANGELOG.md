@@ -1,5 +1,15 @@
 # @hydrofoil/roadshow
 
+## 0.3.4
+
+### Patch Changes
+
+- 369071d: Ability to change shape
+- 2e0e661: Initialzing renderers with state as param (closes #22)
+- 5b7f353: Renderers now have an optional `meta` field
+- 5b7f353: Renderer decorators (closes #23)
+- 1d61a0e: Support multiple renderers of a viewer
+
 ## 0.3.3
 
 ### Patch Changes
