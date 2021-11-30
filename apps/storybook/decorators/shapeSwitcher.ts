@@ -4,7 +4,7 @@ import { html } from 'lit'
 
 export const shapeSwitcher: Decorator<FocusNodeViewContext> = {
   decorates: 'focusNode',
-  appliesTo(state): boolean {
+  appliesTo({ state }): boolean {
     return state.applicableShapes.length > 1
   },
   decorate(inner, context) {

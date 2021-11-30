@@ -6,7 +6,7 @@ import { hex } from '../lib/ns'
 
 export const rendererSwitcher: Decorator<PropertyViewContext> = {
   decorates: 'property',
-  appliesTo(state): boolean {
+  appliesTo({ state }): boolean {
     return hex.MembersViewer.equals(state.viewer)
   },
   decorate(inner, context) {

@@ -102,7 +102,8 @@ export class RenderersController implements ReactiveController {
     return renderers
   }
 
-  getDecorators(state: AnyState): Decorator[] {
+  getDecorators(context: ViewContext<AnyState>): Decorator[] {
+    const { state } = context
     let decorates: Decorates
 
     if ('properties' in state) {
@@ -113,7 +114,7 @@ export class RenderersController implements ReactiveController {
       decorates = 'object'
     }
 
-    return this.decorators.filter(decorator => (decorator.decorates.includes(decorates)) && decorator.appliesTo(state))
+    return this.decorators.filter(decorator => (decorator.decorates.includes(decorates)) && decorator.appliesTo(context))
   }
 
   beginInitialize(context: ViewContext<AnyState>): Promise<void> | undefined {
