@@ -1,5 +1,11 @@
 # @hydrofoil/roadshow
 
+## 0.3.7
+
+### Patch Changes
+
+- 84e1e44: Renderer was not actually switched when shapes changed
+
 ## 0.3.6
 
 ### Patch Changes
