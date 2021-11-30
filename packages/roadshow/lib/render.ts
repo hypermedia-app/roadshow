@@ -113,6 +113,8 @@ function setShape(this: FocusNodeViewContext, shape: NodeShape | ResourceIdentif
   if (found) {
     this.state.shape = found
     delete this.state.viewer
+    delete this.state.renderer
+
     let { applicableViewers, viewer } = findViewers(this.state, this.node, this.controller)
     const dashViewer: NamedNode = found.pointer.out(dash.viewer).term as any
     if (dashViewer) {
@@ -123,7 +125,6 @@ function setShape(this: FocusNodeViewContext, shape: NodeShape | ResourceIdentif
           pointer: this.controller.viewers.get(dashViewer),
           score: null,
         })
-        delete this.state.renderer
       }
     }
 
