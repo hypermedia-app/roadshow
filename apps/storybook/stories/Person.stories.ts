@@ -1,6 +1,6 @@
 import { html } from 'lit'
 import { rdf, sh } from '@tpluscode/rdf-ns-builders/strict'
-import { Decorators, MultiRenderer, Renderer, ViewerMatcher } from '@hydrofoil/roadshow/index'
+import { Decorator, MultiRenderer, Renderer, ViewerMatcher } from '@hydrofoil/roadshow/index'
 import { MultiPointer } from 'clownface'
 import { QuadArrayFactory } from '../resources/hydra-collection.ttl'
 import { template } from '../lib/template'
@@ -9,7 +9,7 @@ import schemaPerson from '../shapes/schema-person.ttl'
 import johnDoe from '../resources/john-doe.ttl'
 import { shapeSwitcher } from '../decorators/shapeSwitcher'
 import * as imageViewer from '../viewers/schema-ImageViewer'
-import { propertyDivver } from '../decorators/propertyDivver'
+import { divver } from '../decorators/divver'
 
 export default {
   title: 'Person',
@@ -19,7 +19,7 @@ interface ViewStoryParams {
   resource: QuadArrayFactory
   viewers: ViewerMatcher[]
   renderers: Array<Renderer<any> | MultiRenderer>
-  decorators?: Decorators
+  decorators?: Decorator[]
 }
 
 async function selectShape(arg: MultiPointer) {
@@ -42,8 +42,5 @@ ShapeSwitcher.args = {
   resource: johnDoe,
   viewers: [imageViewer.matcher],
   renderers: [imageViewer.renderer],
-  decorators: {
-    focusNode: [shapeSwitcher],
-    object: [propertyDivver],
-  },
+  decorators: [shapeSwitcher, divver],
 }

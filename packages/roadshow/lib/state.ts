@@ -15,8 +15,8 @@ export interface ViewerScore {
   score: number | null
 }
 
-export interface RendererState<VC extends ViewContext<any>> {
-  decorators: Array<Decorator<any, VC>>
+export interface RendererState<VC extends ViewContext<S>, S extends AnyState = VC['state']> {
+  decorators: Array<Decorator<VC>>
   renderers: Array<Renderer<VC>>
   renderer?: Renderer<VC>
 }
@@ -52,6 +52,8 @@ export interface FocusNodeState<R = unknown> extends ShapedNodeState<R>, Rendere
   applicableViewers: ViewerScore[]
   viewer: Term
 }
+
+export type AnyState = ObjectState | FocusNodeState | PropertyState
 
 export function createPropertyState(arr: PropertyState[], shape: PropertyShape): PropertyState[] {
   const path = shape.pointer.out(sh.path)

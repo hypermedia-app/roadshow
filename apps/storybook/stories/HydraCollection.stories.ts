@@ -1,5 +1,5 @@
 import { html } from 'lit'
-import { MultiRenderer, Renderer, ViewerMatcher, Decorators } from '@hydrofoil/roadshow'
+import { MultiRenderer, Renderer, ViewerMatcher, Decorator } from '@hydrofoil/roadshow'
 import '@hydrofoil/roadshow/roadshow-view'
 import { hydra, rdf, schema } from '@tpluscode/rdf-ns-builders/strict'
 import type { MultiPointer } from 'clownface'
@@ -24,7 +24,7 @@ interface ViewStoryParams {
   resource: QuadArrayFactory
   viewers: ViewerMatcher[]
   renderers: Array<Renderer<any> | MultiRenderer>
-  decorators?: Decorators
+  decorators?: Decorator[]
 }
 
 async function selectShape(arg: MultiPointer) {
@@ -69,7 +69,5 @@ DecoratedViewerSwitcher.args = {
   resource: addressBook,
   viewers: [imageViewer.matcher, pagerViewer.matcher],
   renderers: [tableView, galleryView, imageViewer.renderer, pagerViewer.renderer, localizedLabel],
-  decorators: {
-    property: [rendererSwitcher],
-  },
+  decorators: [rendererSwitcher],
 }

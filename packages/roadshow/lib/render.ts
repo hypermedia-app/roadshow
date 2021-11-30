@@ -18,7 +18,11 @@ import {
 } from './ViewContext/index'
 import type { RoadshowController } from '../RoadshowController'
 import { isGraphPointer, isLiteral, isResource, TRUE } from './clownface'
-import { Decorator, RenderFunc } from '../index'
+import { Decorator } from './decorator'
+
+export interface RenderFunc<VC extends ViewContext<unknown>> {
+  (this: VC, resource: MultiPointer): TemplateResult | string
+}
 
 interface Render {
   state: FocusNodeState
@@ -62,7 +66,7 @@ function setRenderer<S extends RendererState<any>>(this: ViewContext<any>, rende
 }
 
 function renderFinal(final: Renderer, context: ViewContext<any>, pointer: MultiPointer) {
-  const decorators = context.state.decorators as Array<Decorator<any, any>>
+  const decorators = context.state.decorators as Array<Decorator<any>>
 
   const actualRendering = final.render.call(context, pointer)
   return decorators.reduceRight((inner, { decorate }) => decorate(inner, context), actualRendering)

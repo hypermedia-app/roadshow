@@ -1,8 +1,9 @@
 /* eslint-disable lit-a11y/no-invalid-change-handler */
-import { FocusNodeDecorator } from '@hydrofoil/roadshow'
+import { Decorator, FocusNodeViewContext } from '@hydrofoil/roadshow'
 import { html } from 'lit'
 
-export const shapeSwitcher: FocusNodeDecorator = {
+export const shapeSwitcher: Decorator<FocusNodeViewContext> = {
+  decorates: 'focusNode',
   appliesTo(state): boolean {
     return state.applicableShapes.length > 1
   },

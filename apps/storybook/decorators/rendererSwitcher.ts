@@ -1,10 +1,11 @@
 /* eslint-disable lit-a11y/no-invalid-change-handler */
-import { PropertyDecorator } from '@hydrofoil/roadshow'
+import { Decorator, PropertyViewContext } from '@hydrofoil/roadshow'
 import { rdfs } from '@tpluscode/rdf-ns-builders/strict'
 import { html } from 'lit'
 import { hex } from '../lib/ns'
 
-export const rendererSwitcher: PropertyDecorator = {
+export const rendererSwitcher: Decorator<PropertyViewContext> = {
+  decorates: 'property',
   appliesTo(state): boolean {
     return hex.MembersViewer.equals(state.viewer)
   },

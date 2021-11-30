@@ -4,19 +4,18 @@ import TermMap from '@rdf-esm/term-map'
 import { roadshow } from '@hydrofoil/vocabularies/builders'
 import clownface from 'clownface'
 import { dataset } from '@rdf-esm/dataset'
-import { Decorator, Decorators, Renderer as RendererInit, RoadshowView } from './index'
+import { Decorator, Renderer as RendererInit, RoadshowView } from './index'
 import * as defaultRenderers from './renderers'
 import { RendererNotFoundViewer } from './renderers'
-import { FocusNodeState, ObjectState, PropertyState } from './lib/state'
-import { ViewContext } from './lib/ViewContext/index'
+import { AnyState } from './lib/state'
 import { Renderer } from './lib/render'
+import { Decorates } from './lib/decorator'
 
 const LOADER_KEY = 'renderer'
 
 type Initialized<T> = T & { initialized?: true }
 type Uninitialized<T> = T & { initialized: boolean; init: () => Promise<void> }
 type Initializable<T> = Initialized<T> | Uninitialized<T>
-type State = ObjectState | FocusNodeState | PropertyState
 
 function initRenderer({ init, render, viewer, id, meta }: RendererInit<any>): Renderer<any> {
   const graph = clownface({ dataset: dataset() })
@@ -50,7 +49,7 @@ function toInitialize(arr: Array<Initializable<unknown>>): Array<() => Promise<v
 export class RenderersController implements ReactiveController {
   static readonly defaultRenderers: Array<Renderer<any>> = Object.values(defaultRenderers).map(initRenderer)
   private renderers: Map<Term, Array<Initializable<Renderer>>> = new Map()
-  private decorators: Decorators = {}
+  private decorators: Decorator[] = []
 
   constructor(private host: RoadshowView) {
     this.renderers = new TermMap()
@@ -60,7 +59,7 @@ export class RenderersController implements ReactiveController {
     //
   }
 
-  set(renderers: RendererInit[], decorators: Decorators = {}): void {
+  set(renderers: RendererInit[], decorators: Decorator[] = []): void {
     this.decorators = decorators
 
     this.renderers.clear()
@@ -102,25 +101,23 @@ export class RenderersController implements ReactiveController {
     return renderers
   }
 
-  getDecorators(state: State): Decorator<any, any>[] {
+  getDecorators(state: AnyState): Decorator[] {
+    let decorates: Decorates
+
     if ('properties' in state) {
-      return this.__applicableDecorators(state, this.decorators.focusNode)
+      decorates = 'focusNode'
+    } else if ('propertyShape' in state) {
+      decorates = 'property'
+    } else {
+      decorates = 'object'
     }
 
-    if ('propertyShape' in state) {
-      return this.__applicableDecorators(state, this.decorators.property)
-    }
-
-    return this.__applicableDecorators(state, this.decorators.object)
+    return this.decorators.filter(decorator => (decorator.decorates.includes(decorates)) && decorator.appliesTo(state))
   }
 
-  private __applicableDecorators<S extends State, VC extends ViewContext<S>>(state: S, decorators: Array<Decorator<S, VC>> = []) {
-    return decorators.filter(decorator => decorator.appliesTo(state))
-  }
-
-  beginInitialize(state: State): void {
+  beginInitialize(state: AnyState): void {
     const renderer = state.renderer as Initializable<Renderer>
-    const decorators = state.decorators as Array<Initializable<Decorator<any, any>>>
+    const decorators = state.decorators as any as Array<Initializable<Decorator>>
 
     const initFuncs = toInitialize([renderer, ...decorators])
 
