@@ -3,7 +3,7 @@ import { html, TemplateResult } from 'lit'
 import { findNodes } from 'clownface-shacl-path'
 import { BlankNode, Literal, NamedNode, Term } from '@rdfjs/types'
 import { roadshow } from '@hydrofoil/vocabularies/builders'
-import { rdfs, sh } from '@tpluscode/rdf-ns-builders/strict'
+import { dash, rdfs, sh } from '@tpluscode/rdf-ns-builders/strict'
 import { dataset } from '@rdf-esm/dataset'
 import { NodeShape } from '@rdfine/shacl'
 import { ResourceIdentifier } from '@tpluscode/rdfine'
@@ -112,7 +112,21 @@ function setShape(this: FocusNodeViewContext, shape: NodeShape | ResourceIdentif
   const found = this.state.applicableShapes.find(ns => ns.equals(shape))
   if (found) {
     this.state.shape = found
-    const { applicableViewers, viewer } = findViewers(this.state, this.node, this.controller)
+    delete this.state.viewer
+    let { applicableViewers, viewer } = findViewers(this.state, this.node, this.controller)
+    const dashViewer: NamedNode = found.pointer.out(dash.viewer).term as any
+    if (dashViewer) {
+      const hasRenderer = this.controller.renderers.has(dashViewer)
+      if (hasRenderer) {
+        viewer = dashViewer
+        applicableViewers.unshift({
+          pointer: this.controller.viewers.get(dashViewer),
+          score: null,
+        })
+        delete this.state.renderer
+      }
+    }
+
     this.state.applicableViewers = applicableViewers
     this.state.viewer = viewer
     this.state.properties = found.property.reduce(createPropertyState, [])

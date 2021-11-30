@@ -50,7 +50,7 @@ export interface FocusNodeState<R = unknown> extends ShapedNodeState<R>, Rendere
   pointer?: GraphPointer<BlankNode | NamedNode>
   properties: PropertyState[]
   applicableViewers: ViewerScore[]
-  viewer: Term
+  viewer?: Term
 }
 
 export type AnyState = ObjectState | FocusNodeState | PropertyState
