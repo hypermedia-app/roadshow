@@ -15,7 +15,7 @@ const LOADER_KEY = 'renderer'
 
 type Initialized<T> = T & { initialized?: true }
 type Uninitialized<T> = T & { initialized: boolean; init: () => Promise<void> }
-type Initializable<T> = Initialized<T> | Uninitialized<T>
+export type Initializable<T> = Initialized<T> | Uninitialized<T>
 
 function initRenderer({ init, render, viewer, id, meta }: RendererInit<any>): Renderer<any> {
   const graph = clownface({ dataset: dataset() })
@@ -76,10 +76,10 @@ export class RenderersController implements ReactiveController {
   private __addRenderer(renderer: Renderer) {
     const array = this.renderers.get(renderer.viewer) || []
 
-    if ('init' in renderer) {
+    if (typeof renderer.init === 'function') {
       array.push({
         ...renderer,
-        init: renderer.init!,
+        init: renderer.init,
         initialized: false,
       })
     } else {
@@ -115,16 +115,17 @@ export class RenderersController implements ReactiveController {
     return this.decorators.filter(decorator => (decorator.decorates.includes(decorates)) && decorator.appliesTo(state))
   }
 
-  beginInitialize(state: AnyState): void {
+  beginInitialize(state: AnyState): Promise<void> | undefined {
     const renderer = state.renderer as Initializable<Renderer>
     const decorators = state.decorators as any as Array<Initializable<Decorator>>
 
     const initFuncs = toInitialize([renderer, ...decorators])
 
-    if (initFuncs.length && !state.loadingFailed.has(LOADER_KEY)) {
-      (async () => {
-        this.host.requestUpdate()
+    if (initFuncs.length && !state.loadingFailed.has(LOADER_KEY) && !state.loading.has(LOADER_KEY)) {
+      state.loading.add(LOADER_KEY)
+      this.host.requestUpdate()
 
+      return (async () => {
         try {
           await Promise.all(initFuncs.map(init => init()))
           renderer.initialized = true
@@ -137,6 +138,8 @@ export class RenderersController implements ReactiveController {
         }
       })()
     }
+
+    return undefined
   }
 
   has(viewer: NamedNode): boolean {
