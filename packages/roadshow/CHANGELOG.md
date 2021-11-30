@@ -1,5 +1,11 @@
 # @hydrofoil/roadshow
 
+## 0.3.6
+
+### Patch Changes
+
+- 145dbfb: Switching shape should inspect `dash:viewer` and select its renderer
+
 ## 0.3.5
 
 ### Patch Changes
