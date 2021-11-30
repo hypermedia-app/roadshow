@@ -82,7 +82,7 @@ export class RoadshowController implements ReactiveController {
     if (!state.renderer) {
       state.renderers = this.renderers.get(state.viewer);
       ([state.renderer] = state.renderers)
-      state.decorators = this.renderers.getDecorators(state)
+      state.decorators = this.renderers.getDecorators(context)
     }
 
     this.renderers.beginInitialize(context)
