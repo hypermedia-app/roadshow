@@ -1,5 +1,11 @@
 # @hydrofoil/roadshow
 
+## 0.3.9
+
+### Patch Changes
+
+- ff7c5cb: Not all properties were initialized to state
+
 ## 0.3.8
 
 ### Patch Changes
