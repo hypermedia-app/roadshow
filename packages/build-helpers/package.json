@@ -1,6 +1,7 @@
 {
   "name": "@roadshow/build-helpers",
   "version": "0.0.0",
+  "private": true,
   "dependencies": {
     "@rdf-esm/dataset": "^0.5.0",
     "@rdf-esm/formats-common": "^0.5.5",
