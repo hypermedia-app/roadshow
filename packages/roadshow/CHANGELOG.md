@@ -1,5 +1,11 @@
 # @hydrofoil/roadshow
 
+## 0.3.8
+
+### Patch Changes
+
+- 91f767d: Combine properties from logical nested shapes using `sh:and`, `sh:or`, `sh:xone`
+
 ## 0.3.7
 
 ### Patch Changes
