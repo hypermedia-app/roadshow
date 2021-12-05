@@ -1,0 +1,40 @@
+PREFIX sh: <http://www.w3.org/ns/shacl#>
+
+<>
+  a sh:NodeShape ;
+  sh:and ( <#and> ) ;
+  sh:or ( <#or> ) ;
+  sh:xone ( <#xone> ) ;
+  sh:property
+    [
+      a sh:PropertyShape ;
+      sh:name "Direct property" ;
+    ] ;
+.
+
+<#and>
+  a sh:NodeShape ;
+  sh:property
+    [
+      a sh:PropertyShape ;
+      sh:name "AND-ed property" ;
+    ] ;
+.
+
+<#or>
+  a sh:NodeShape ;
+  sh:property
+    [
+      a sh:PropertyShape ;
+      sh:name "OR-ed property" ;
+    ] ;
+.
+
+<#xone>
+  a sh:NodeShape ;
+  sh:property
+    [
+      a sh:PropertyShape ;
+      sh:name "XONE-ed property" ;
+    ] ;
+.

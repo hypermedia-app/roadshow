@@ -9,6 +9,7 @@ import { isResource, isGraphPointer } from './clownface'
 import type { Renderer } from './render'
 import type { FocusNodeViewContext, ObjectViewContext, PropertyViewContext, ViewContext } from './ViewContext/index'
 import type { Decorator } from '../index'
+import { getAllProperties } from './shape'
 
 export interface ViewerScore {
   pointer: GraphPointer<NamedNode>
@@ -89,6 +90,11 @@ interface Create {
 }
 
 export function create({ term, pointer, shape, viewer = dash.DetailsViewer }: Create): FocusNodeState {
+  const properties: PropertyShape[] = []
+  if (shape) {
+    properties.push(...getAllProperties(shape))
+  }
+
   return {
     shape,
     loading: new Set(),
@@ -96,7 +102,7 @@ export function create({ term, pointer, shape, viewer = dash.DetailsViewer }: Cr
     applicableShapes: [],
     applicableViewers: [],
     shapesLoaded: false,
-    properties: shape?.property.reduce(createPropertyState, []) || [],
+    properties: properties.reduce(createPropertyState, []),
     viewer,
     renderers: [],
     decorators: [],
