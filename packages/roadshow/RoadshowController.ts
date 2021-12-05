@@ -9,6 +9,7 @@ import { ViewersController } from './ViewersController'
 import { ShapesController } from './ShapesController'
 import { ResourcesController } from './ResourcesController'
 import { ViewContext } from './lib/ViewContext/index'
+import { getAllProperties } from './lib/shape'
 
 function isFocusNodeState(state: any): state is FocusNodeState {
   return 'properties' in state && state.properties
@@ -71,7 +72,10 @@ export class RoadshowController implements ReactiveController {
 
     await this.shapes.loadShapes(state, objects)
     if (isFocusNodeState(state)) {
-      state.properties = (state.shape?.property.reduce(createPropertyState, []) || [])
+      state.properties = []
+      if (state.shape) {
+        state.properties = [...getAllProperties(state.shape)].reduce(createPropertyState, [])
+      }
     }
     delete state.renderer
     this.host.requestUpdate()

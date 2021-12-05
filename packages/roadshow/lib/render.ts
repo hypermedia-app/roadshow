@@ -19,6 +19,7 @@ import {
 import type { RoadshowController } from '../RoadshowController'
 import { isGraphPointer, isLiteral, isResource, TRUE } from './clownface'
 import { Decorator } from './decorator'
+import { getAllProperties } from './shape'
 
 export interface RenderFunc<VC extends ViewContext<unknown>> {
   (this: VC, resource: MultiPointer): TemplateResult | string
@@ -130,7 +131,7 @@ function setShape(this: FocusNodeViewContext, shape: NodeShape | ResourceIdentif
 
     this.state.applicableViewers = applicableViewers
     this.state.viewer = viewer
-    this.state.properties = found.property.reduce(createPropertyState, [])
+    this.state.properties = [...getAllProperties(found)].reduce(createPropertyState, [])
     this.controller.host.requestUpdate()
   }
 }
