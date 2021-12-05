@@ -1,0 +1,25 @@
+PREFIX sh: <http://www.w3.org/ns/shacl#>
+
+<>
+  a sh:NodeShape ;
+  sh:and
+    (
+      [
+        sh:and
+          (
+            [
+              sh:and
+                (
+                  [
+                    sh:property
+                      [
+                        a sh:PropertyShape ;
+                        sh:name "Deep property" ;
+                      ] ;
+                  ]
+                )
+            ]
+          )
+      ]
+    ) ;
+.

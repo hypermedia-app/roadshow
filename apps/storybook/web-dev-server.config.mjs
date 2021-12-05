@@ -4,7 +4,7 @@ import { fromRollup } from '@web/dev-server-rollup'
 import commonjs from '@rollup/plugin-commonjs'
 import { nodeResolve } from '@rollup/plugin-node-resolve'
 import rdfjs from 'rdfjs-eds-plugin'
-import turtle from './.build/transformTurtle.js'
+import turtle from '@roadshow/build-helpers/transformTurtle.js'
 
 export default {
   open: false,

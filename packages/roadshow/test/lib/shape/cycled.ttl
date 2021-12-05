@@ -1,0 +1,31 @@
+PREFIX sh: <http://www.w3.org/ns/shacl#>
+
+<>
+  a sh:NodeShape ;
+  sh:and ( <> ) ;
+  sh:or ( <#alt1> <#alt2> ) ;
+  sh:property
+    [
+      a sh:PropertyShape ;
+      sh:name "Direct property" ;
+    ] ;
+.
+
+<#alt1>
+  a sh:NodeShape ;
+  sh:and <#and> ;
+.
+
+<#alt2>
+  a sh:NodeShape ;
+  sh:and <#and> ;
+.
+
+<#and>
+  a sh:NodeShape ;
+  sh:property
+    [
+      a sh:PropertyShape ;
+      sh:name "AND-ed property" ;
+    ] ;
+.

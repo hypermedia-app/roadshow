@@ -1408,7 +1408,7 @@
     "@rdf-esm/data-model" "^0.5.3"
     "@rdfjs/dataset" "^1.0.1"
 
-"@rdf-esm/formats-common@^0.5":
+"@rdf-esm/formats-common@^0.5", "@rdf-esm/formats-common@^0.5.5":
   version "0.5.5"
   resolved "https://registry.yarnpkg.com/@rdf-esm/formats-common/-/formats-common-0.5.5.tgz#52d9aa49434072601b0210d101e48230e6547e51"
   integrity sha512-kbz7ER2WdyL72Y+OZINrZtBFSTAN0brdX3IMcagN+VXliv4TJwsIokVexdBY/b+Fl4W0HG2hZe4FeiB18Myu0g==
@@ -2049,7 +2049,7 @@
   dependencies:
     "@types/rdf-js" "*"
 
-"@types/rdfjs__term-set@^1.0.3":
+"@types/rdfjs__term-set@*", "@types/rdfjs__term-set@^1.0.3":
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/@types/rdfjs__term-set/-/rdfjs__term-set-1.0.3.tgz#d44c222d9f12642274e68a7b42673209cab70366"
   integrity sha512-+BNhhBuDeYwR7yNDetqkaTbHIZ1Tt++vSfuzOdFGORxSLs1bxSl6Ae31jA2E+ePgZGbKRSGjLlWyUv1k7krjww==

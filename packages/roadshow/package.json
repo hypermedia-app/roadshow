@@ -18,6 +18,7 @@
     "@rdf-esm/dataset": "^0.5.0",
     "@rdf-esm/namespace": "^0.5.3",
     "@rdf-esm/term-map": "^0.5.0",
+    "@rdf-esm/term-set": "^0.5.0",
     "@rdfjs/types": "*",
     "@zazuko/rdf-vocabularies": "*",
     "clownface": "^1.2.0",
@@ -27,7 +28,9 @@
   "devDependencies": {
     "@open-wc/testing": "^3.0.0-next.2",
     "@rdf-esm/namespace": "^0.5.3",
+    "@roadshow/build-helpers": "0.0.0",
     "@types/rdfjs__term-map": "*",
+    "@types/rdfjs__term-set": "*",
     "@types/sinon": "^10.0.2",
     "sinon": "^11.1.2"
   },

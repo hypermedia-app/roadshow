@@ -1,0 +1,16 @@
+{
+  "name": "@roadshow/build-helpers",
+  "version": "0.0.0",
+  "dependencies": {
+    "@rdf-esm/dataset": "^0.5.0",
+    "@rdf-esm/formats-common": "^0.5.5",
+    "clownface": "^1",
+    "string-to-stream": "^3.0.1",
+    "stream-to-string": "^1.2.0",
+    "@rdfjs/serializer-rdfjs": "^0.0.4",
+    "@rollup/pluginutils": "^3"
+  },
+  "devDependencies": {
+    "@types/rdfjs__serializer-rdfjs": "^0"
+  }
+}

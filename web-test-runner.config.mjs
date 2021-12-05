@@ -3,6 +3,7 @@ import rdfjs from 'rdfjs-eds-plugin'
 import { fromRollup } from '@web/dev-server-rollup'
 import commonjs from '@rollup/plugin-commonjs'
 import fs from 'fs'
+import turtle from '@roadshow/build-helpers/transformTurtle.js'
 
 const nodeResolveFix = {
   serve(context) {
@@ -18,12 +19,17 @@ const config = {
   groups: [
     { name: 'core', files: 'packages/roadshow/test/**/*.test.ts' },
   ],
+  mimeTypes: {
+    '**/*.ttl': 'js',
+    '**/*.trig': 'js',
+  },
   coverage: true,
   nodeResolve: true,
   plugins: [
     esbuildPlugin({ ts: true, js: true, target: 'auto' }),
     nodeResolveFix,
     rdfjs,
+    fromRollup(turtle)(),
     fromRollup(commonjs)({
       exclude: [
         '**/node_modules/@open-wc/**/*',
