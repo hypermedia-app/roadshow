@@ -1,5 +1,11 @@
 # @hydrofoil/roadshow
 
+## 0.3.10
+
+### Patch Changes
+
+- e35009a: Update @hydrofoil/vocabularies
+
 ## 0.3.9
 
 ### Patch Changes
