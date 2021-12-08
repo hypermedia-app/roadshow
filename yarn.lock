@@ -1134,10 +1134,10 @@
   dependencies:
     "@types/chai" "^4.2.12"
 
-"@hydrofoil/vocabularies@^0.2.0":
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/@hydrofoil/vocabularies/-/vocabularies-0.2.0.tgz#36ab95db69d72a709b7f7a002f0f674eb8d8cc0d"
-  integrity sha512-7Nckyo2lsG7F9EpxgJuT7In6PIOo/ze5Dxs5rCS2LsGIW0DeCuCfdgoP5zGpUkgVfYZOKkrpJCXLkePLTRionA==
+"@hydrofoil/vocabularies@^0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@hydrofoil/vocabularies/-/vocabularies-0.3.0.tgz#b8d223d18c71cce66682699a8aea924924326b2d"
+  integrity sha512-9zx6nC7Hr1EnkaglVroG6f93wvYiIoI2hV18DHJb/WFNY8qWBnpgygbPow96faRX4yXp05AEQNhW87FmDhOx9A==
   dependencies:
     "@rdf-esm/namespace" "^0.5.3"
     "@rdfjs/parser-n3" "^1.1.4"
