@@ -10,7 +10,7 @@
     "**/*.d.ts"
   ],
   "dependencies": {
-    "@hydrofoil/vocabularies": "^0.2.0",
+    "@hydrofoil/vocabularies": "^0.3.0",
     "@rdfine/dash": "^0.2.1",
     "@rdfine/shacl": "^0.8.2",
     "@tpluscode/rdfine": "^0.5.29",
