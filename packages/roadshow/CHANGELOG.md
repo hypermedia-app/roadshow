@@ -1,5 +1,11 @@
 # @hydrofoil/roadshow
 
+## 0.3.11
+
+### Patch Changes
+
+- e978389: Add state to `ShapesLoader` arguments to allown more control of loaded shapes
+
 ## 0.3.10
 
 ### Patch Changes
