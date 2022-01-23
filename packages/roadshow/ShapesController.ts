@@ -11,7 +11,7 @@ import { ResourcesController } from './ResourcesController'
 const LOADER_KEY = 'shapes'
 
 export interface ShapesLoader {
-  (arg: MultiPointer): Promise<Array<GraphPointer<NamedNode | BlankNode>>>
+  (arg: MultiPointer, state: FocusNodeState | PropertyState): Promise<Array<GraphPointer<NamedNode | BlankNode>>>
 }
 
 export class ShapesController implements ReactiveController {
@@ -32,7 +32,7 @@ export class ShapesController implements ReactiveController {
     state.shapesLoaded = true
     state.loading.add(LOADER_KEY)
 
-    const loadShapes = () => shapesLoader(focusNode)
+    const loadShapes = () => shapesLoader(focusNode, state)
     if (!state.shape) {
       await this.host.requestUpdate()
 
