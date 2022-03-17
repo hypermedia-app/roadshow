@@ -3,7 +3,8 @@ import { html, TemplateResult } from 'lit'
 import { findNodes } from 'clownface-shacl-path'
 import { BlankNode, Literal, NamedNode, Term } from '@rdfjs/types'
 import { roadshow } from '@hydrofoil/vocabularies/builders'
-import { dash, rdfs, sh } from '@tpluscode/rdf-ns-builders/strict'
+import { dash, rdfs } from '@tpluscode/rdf-ns-builders/strict'
+import { sh } from '@tpluscode/rdf-ns-builders'
 import { dataset } from '@rdf-esm/dataset'
 import { NodeShape } from '@rdfine/shacl'
 import { ResourceIdentifier } from '@tpluscode/rdfine'
@@ -233,7 +234,10 @@ function showProperty(this: FocusNodeViewContext, show: Show) {
     return renderFinal(renderer, this, details)
   }
 
-  const objects = findNodes(this.node, property.path)
+  let objects = property.propertyShape.pointer.out(sh.values)
+  if (!objects.terms.length) {
+    objects = findNodes(this.node, property.path)
+  }
   if (property.viewer && this.controller.viewers.isMultiViewer(property.viewer)) {
     this.controller.initShapes(property, objects)
 
