@@ -1,6 +1,6 @@
 /* eslint-disable no-use-before-define */
 import { NodeShape, PropertyShape } from '@rdfine/shacl'
-import { GraphPointer } from 'clownface'
+import { GraphPointer, MultiPointer } from 'clownface'
 import { BlankNode, NamedNode, Term } from '@rdfjs/types'
 import { dash, sh } from '@tpluscode/rdf-ns-builders/strict'
 import TermMap from '@rdf-esm/term-map'
@@ -31,7 +31,6 @@ export interface ObjectState<R = unknown> extends RendererState<ObjectViewContex
 }
 
 interface ShapedNodeState<R = unknown> {
-  shape?: NodeShape
   applicableShapes: NodeShape[]
   shapesLoaded?: boolean
   loading: Set<string>
@@ -40,6 +39,18 @@ interface ShapedNodeState<R = unknown> {
 }
 
 export interface PropertyState<R = unknown> extends ShapedNodeState<R>, RendererState<PropertyViewContext> {
+  /**
+   * Node Shape selected to represent the property objects
+   */
+  shape: NodeShape | undefined
+  /**
+   * The Node Shape of which the property is child
+   */
+  focusNodeShape: NodeShape | undefined
+  /**
+   * The focus node, ie. subject of the property objects
+   */
+  focusNode: MultiPointer | undefined
   propertyShape: PropertyShape
   path: GraphPointer
   viewer?: Term
@@ -47,6 +58,7 @@ export interface PropertyState<R = unknown> extends ShapedNodeState<R>, Renderer
 }
 
 export interface FocusNodeState<R = unknown> extends ShapedNodeState<R>, RendererState<FocusNodeViewContext> {
+  shape: NodeShape | undefined
   term: Term
   pointer?: GraphPointer<BlankNode | NamedNode>
   properties: PropertyState[]
@@ -56,7 +68,7 @@ export interface FocusNodeState<R = unknown> extends ShapedNodeState<R>, Rendere
 
 export type AnyState = ObjectState | FocusNodeState | PropertyState
 
-export function createPropertyState(arr: PropertyState[], shape: PropertyShape): PropertyState[] {
+export const createPropertyState = (focusNode: MultiPointer | undefined, focusNodeShape: NodeShape | undefined) => (arr: PropertyState[], shape: PropertyShape): PropertyState[] => {
   const path = shape.pointer.out(sh.path)
   if (!isGraphPointer(path)) {
     // eslint-disable-next-line no-console
@@ -70,6 +82,8 @@ export function createPropertyState(arr: PropertyState[], shape: PropertyShape):
   return [...arr, {
     propertyShape: shape,
     shape: nodeShape,
+    focusNodeShape,
+    focusNode,
     path,
     objects: new TermMap(),
     viewer: shape.viewer?.id,
@@ -102,7 +116,7 @@ export function create({ term, pointer, shape, viewer = dash.DetailsViewer }: Cr
     applicableShapes: [],
     applicableViewers: [],
     shapesLoaded: false,
-    properties: properties.reduce(createPropertyState, []),
+    properties: properties.reduce(createPropertyState(pointer, shape), []),
     viewer,
     renderers: [],
     decorators: [],

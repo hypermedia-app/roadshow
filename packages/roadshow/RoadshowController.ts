@@ -74,7 +74,7 @@ export class RoadshowController implements ReactiveController {
     if (isFocusNodeState(state)) {
       state.properties = []
       if (state.shape) {
-        state.properties = [...getAllProperties(state.shape)].reduce(createPropertyState, [])
+        state.properties = [...getAllProperties(state.shape)].reduce(createPropertyState(state.pointer, state.shape), [])
       }
     }
     delete state.renderer
