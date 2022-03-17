@@ -7,7 +7,8 @@
     "test": "wtr",
     "postinstall": "husky install",
     "build": "wsrun -m -c prepack",
-    "release": "changeset publish"
+    "release": "changeset publish",
+    "prepare": "npx yarn-deduplicate"
   },
   "devDependencies": {
     "@babel/preset-typescript": "^7.13.0",
@@ -29,7 +30,8 @@
     "lint-staged": "^10.5.4",
     "ts-lit-plugin": "^1.2.1",
     "typescript": "^4.5.2",
-    "wsrun": "^5.2.4"
+    "wsrun": "^5.2.4",
+    "yarn-deduplicate": "^3.1.0"
   },
   "repository": "git@github.com:hypermedia-app/roadshow.git",
   "author": "Tomasz Pluskiewicz <awesome@hypermedia.app>",
