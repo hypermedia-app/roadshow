@@ -131,7 +131,7 @@ function setShape(this: FocusNodeViewContext, shape: NodeShape | ResourceIdentif
 
     this.state.applicableViewers = applicableViewers
     this.state.viewer = viewer
-    this.state.properties = [...getAllProperties(found)].reduce(createPropertyState, [])
+    this.state.properties = [...getAllProperties(found)].reduce(createPropertyState(this.node, found), [])
     this.controller.host.requestUpdate()
   }
 }
