@@ -1,5 +1,12 @@
 # @hydrofoil/roadshow
 
+## 0.3.12
+
+### Patch Changes
+
+- 7724fbe: Expose all shapes across state objects
+- 2693264: Set property nodes from `sh:values` instead of `sh:path`
+
 ## 0.3.11
 
 ### Patch Changes
