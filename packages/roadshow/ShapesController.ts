@@ -33,20 +33,11 @@ export class ShapesController implements ReactiveController {
     state.loading.add(LOADER_KEY)
 
     const loadShapes = () => shapesLoader(focusNode, state)
-    if (!state.shape) {
-      await this.host.requestUpdate()
+    await this.host.requestUpdate()
 
-      const shapePointers = await loadShapes()
-
-      state.applicableShapes = shapePointers.map(ptr => fromPointer(ptr));
-      [state.shape] = state.applicableShapes
-    } else {
-      const shapePointers = await loadShapes()
-      state.applicableShapes = [
-        state.shape,
-        ...shapePointers.map(ptr => fromPointer(ptr)).filter(found => !found.equals(state.shape)),
-      ]
-    }
+    const shapePointers = await loadShapes()
+    state.applicableShapes = shapePointers.map(ptr => fromPointer(ptr));
+    [state.shape] = state.applicableShapes
 
     state.loading.delete(LOADER_KEY)
   }
