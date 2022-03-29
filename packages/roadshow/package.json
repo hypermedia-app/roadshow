@@ -26,7 +26,7 @@
     "lit": "^2.0.0-rc.2"
   },
   "devDependencies": {
-    "@open-wc/testing": "^3.0.0-next.2",
+    "@open-wc/testing": "^3.1.2",
     "@rdf-esm/namespace": "^0.5.3",
     "@roadshow/build-helpers": "0.0.0",
     "@types/rdfjs__term-map": "*",
