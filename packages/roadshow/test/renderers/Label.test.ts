@@ -1,7 +1,7 @@
 import { expect, fixture, html } from '@open-wc/testing'
 import { rdfs, schema, skos } from '@tpluscode/rdf-ns-builders/strict'
 import { Label } from '../../renderers/Label'
-import { blankNode } from '../_support/clownface'
+import { blankNode, namedNode } from '../_support/clownface'
 import { ViewContext } from '../../lib/ViewContext/index'
 
 describe('@hydrofoil/roadshow/renderers/Label', () => {
@@ -64,5 +64,17 @@ describe('@hydrofoil/roadshow/renderers/Label', () => {
 
     // then
     expect(result).dom.to.eq('<div>bar</div>')
+  })
+
+  it('should render anchor for named node', async () => {
+    // given
+    const pointer = namedNode('urn:foo:bar')
+      .addOut(rdfs.label, 'baz')
+
+    // when
+    const result = await fixture(Label.render.call(context, pointer))
+
+    // then
+    expect(result).dom.to.eq('<a href="urn:foo:bar">baz</a>')
   })
 })
