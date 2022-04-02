@@ -1,5 +1,11 @@
 # @hydrofoil/roadshow
 
+## 0.4.1
+
+### Patch Changes
+
+- 2f409c2: Limit the number of rendered objects to the value of `sh:maxCount`
+
 ## 0.4.0
 
 ### Minor Changes
