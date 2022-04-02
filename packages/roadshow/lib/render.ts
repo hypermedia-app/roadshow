@@ -256,7 +256,10 @@ function showProperty(this: FocusNodeViewContext, show: Show) {
     return renderFinal(renderer, context, objects)
   }
 
-  return html`${objects.map(renderPropertyObjectsIndividually(this, property))}`
+  const { maxCount } = property.propertyShape
+  return html`${objects
+    .filter((obj, index) => (!maxCount || maxCount > index))
+    .map(renderPropertyObjectsIndividually(this, property))}`
 }
 
 function renderState({ state, focusNode, controller, params }: Required<Render>): TemplateResult | string {
