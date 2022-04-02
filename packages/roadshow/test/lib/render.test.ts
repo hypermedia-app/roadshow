@@ -37,7 +37,7 @@ describe('@hydrofoil/roadshow/lib/render', () => {
       viewers: {
         isMultiViewer: () => false,
         findApplicableViewers: sinon.stub().returns([]),
-        get: sinon.stub().returns(blankNode()),
+        get: sinon.stub().callsFake(namedNode),
       },
       shapes: {
         loadShapes,
@@ -66,6 +66,51 @@ describe('@hydrofoil/roadshow/lib/render', () => {
 
       // then
       expect(result.textContent).to.eq('Resource /foo/bar')
+    })
+
+    it('renders all objects', async () => {
+      // given
+      const shape = createShape({
+        property: [{
+          path: rdfs.label,
+          viewer: ex.FooViewer,
+        }],
+      })
+      const focusNode = namedNode('/foo/bar')
+        .addOut(rdfs.label, 'foo')
+        .addOut(rdfs.label, 'bar')
+        .addOut(rdfs.label, 'baz')
+      const state: FocusNodeState = create({ shape, term: focusNode.term, pointer: focusNode })
+      renderers.set(ex.FooViewer, ptr => html`<span>${ptr.value}</span>`)
+
+      // when
+      const result = await fixture(html`<div>${render({ state, focusNode, controller, params })}</div>`)
+
+      // then
+      expect(result).dom.to.eq('<div><span>foo</span><span>bar</span><span>baz</span></div>')
+    })
+
+    it('limits rendered child objects to sh:maxCount', async () => {
+      // given
+      const shape = createShape({
+        property: [{
+          path: rdfs.label,
+          viewer: ex.FooViewer,
+          maxCount: 2,
+        }],
+      })
+      const focusNode = namedNode('/foo/bar')
+        .addOut(rdfs.label, 'foo')
+        .addOut(rdfs.label, 'bar')
+        .addOut(rdfs.label, 'baz')
+      const state: FocusNodeState = create({ shape, term: focusNode.term, pointer: focusNode })
+      renderers.set(ex.FooViewer, ptr => html`<span>${ptr.value}</span>`)
+
+      // when
+      const result = await fixture(html`<div>${render({ state, focusNode, controller, params })}</div>`)
+
+      // then
+      expect(result).dom.to.eq('<div><span>foo</span><span>bar</span></div>')
     })
 
     describe('multi viewer', async () => {

@@ -21,7 +21,7 @@
     "@rdf-esm/term-set": "^0.5.0",
     "@rdfjs/types": "*",
     "@zazuko/rdf-vocabularies": "*",
-    "clownface": "^1.2.0",
+    "clownface": "^1.5.0",
     "clownface-shacl-path": "^1.1",
     "lit": "^2.0.0-rc.2"
   },
@@ -29,6 +29,7 @@
     "@open-wc/testing": "^3.1.2",
     "@rdf-esm/namespace": "^0.5.3",
     "@roadshow/build-helpers": "0.0.0",
+    "@types/clownface": "^1.5.0",
     "@types/rdfjs__term-map": "*",
     "@types/rdfjs__term-set": "*",
     "@types/sinon": "^10.0.2",

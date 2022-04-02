@@ -1944,12 +1944,12 @@
   resolved "https://registry.yarnpkg.com/@types/chai/-/chai-4.2.21.tgz#9f35a5643129df132cf3b5c1ec64046ea1af0650"
   integrity sha512-yd+9qKmJxm496BOV9CMNaey8TWsikaZOwMRwPHQIjcOJM9oV+fi9ZMNw3JsVnbEEbo2gRTDnGEBv8pjyn67hNg==
 
-"@types/clownface@^1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@types/clownface/-/clownface-1.2.0.tgz#d64baf0697872b9b516d3e305bff9b483f6dad8a"
-  integrity sha512-DHEhy555Y7Lrxvkq73T5tbkwg0IdMQkQM7VgOi2FpK4f3sskV41RN2yDvQf4acfy4HJxy9wZXej6v9KaIm30og==
+"@types/clownface@^1.2.0", "@types/clownface@^1.5.0":
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/@types/clownface/-/clownface-1.5.0.tgz#8da08cd66c2762b49aed111d9afcf6f06a9d7a9b"
+  integrity sha512-/TPkbDuGUn7PXyHi3UMGnM88XltVDkutc0cgYBjouQBZAu22jQ5v2xBtfyd+MYxIGtSTF/NWByyl94M3Uk9QHA==
   dependencies:
-    "@types/rdf-js" "*"
+    rdf-js "^4.0.2"
 
 "@types/co-body@^6.1.0":
   version "6.1.0"
@@ -3350,10 +3350,10 @@ clownface-shacl-path@^1.1, clownface-shacl-path@^1.1.0:
     "@tpluscode/rdf-ns-builders" "^1.0.0"
     "@tpluscode/rdf-string" "^0.2.24"
 
-clownface@^1, clownface@^1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/clownface/-/clownface-1.2.0.tgz#a53139e3c2bcc8638d7eb0c339ac31fa3ed12255"
-  integrity sha512-01iluBG+GPzFFFvFPhZxuWf8gU8mQVdm6gkvI71xl4fJyJSX7VpX3US4LbMC+0D6+KK75C+Q9AFtYpzv3fKvmg==
+clownface@^1, clownface@^1.2.0, clownface@^1.5.0:
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/clownface/-/clownface-1.5.0.tgz#42146717b19d2791569b9c8fca78d8225744a72d"
+  integrity sha512-rQEtU1EIroWVWzmoFq+GvvYT5etCO58bzYeaKBfaJn12ItwormbKKtbKFdD7e3NqRczhZhBKWmvCaWVoZBd+Xg==
   dependencies:
     "@rdfjs/data-model" "^1.1.0"
     "@rdfjs/namespace" "^1.0.0"
