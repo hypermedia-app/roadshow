@@ -1,3 +1,4 @@
 ignore:
   - "**/*.ttl"
   - "packages/build-helpers"
+  - "packages/roadshow/test"
