@@ -1,5 +1,12 @@
 # @hydrofoil/roadshow
 
+## 0.4.2
+
+### Patch Changes
+
+- ec9bc31: `dash:LabelViewer` should not render link for blank nodes
+- fda0a2e: `dash:LabelViewer`: correct precedence of predicates (`skos:xLabel`, then `schema:name`, `rdfs:label` last)
+
 ## 0.4.1
 
 ### Patch Changes
