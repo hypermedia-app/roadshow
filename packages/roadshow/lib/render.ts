@@ -3,7 +3,7 @@ import { html, TemplateResult } from 'lit'
 import { findNodes } from 'clownface-shacl-path'
 import { BlankNode, Literal, NamedNode, Term } from '@rdfjs/types'
 import { roadshow } from '@hydrofoil/vocabularies/builders'
-import { dash, rdfs } from '@tpluscode/rdf-ns-builders/strict'
+import { dash, rdf, rdfs } from '@tpluscode/rdf-ns-builders/strict'
 import { sh } from '@tpluscode/rdf-ns-builders'
 import { dataset } from '@rdf-esm/dataset'
 import { NodeShape } from '@rdfine/shacl'
@@ -256,8 +256,15 @@ function showProperty(this: FocusNodeViewContext, show: Show) {
     return renderFinal(renderer, context, objects)
   }
 
-  const { maxCount } = property.propertyShape
+  const { maxCount, class: clas } = property.propertyShape
   return html`${objects
+    .filter((obj) => {
+      if (clas) {
+        return !!obj.has(rdf.type, clas.id).term
+      }
+
+      return true
+    })
     .filter((obj, index) => (!maxCount || maxCount > index))
     .map(renderPropertyObjectsIndividually(this, property))}`
 }

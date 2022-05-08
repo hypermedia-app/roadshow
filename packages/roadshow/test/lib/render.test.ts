@@ -3,7 +3,7 @@ import { fromPointer } from '@rdfine/shacl/lib/NodeShape'
 import { NodeShape } from '@rdfine/shacl'
 import { html } from 'lit'
 import sinon from 'sinon'
-import { dash, foaf, rdfs, sh } from '@tpluscode/rdf-ns-builders/strict'
+import { dash, foaf, rdf, rdfs, sh } from '@tpluscode/rdf-ns-builders/strict'
 import { Initializer } from '@tpluscode/rdfine/RdfResource'
 import { render } from '../../lib/render'
 import { blankNode, namedNode } from '../_support/clownface'
@@ -111,6 +111,30 @@ describe('@hydrofoil/roadshow/lib/render', () => {
 
       // then
       expect(result).dom.to.eq('<div><span>foo</span><span>bar</span></div>')
+    })
+
+    it('filters rendered child URI nodes by sh:class', async () => {
+      // given
+      const shape = createShape({
+        property: [{
+          path: foaf.knows,
+          viewer: ex.FooViewer,
+          class: foaf.Person,
+        }],
+      })
+      const focusNode = namedNode('/foo')
+        .addOut(foaf.knows, node => node.addOut(rdf.type, foaf.Person).addOut(rdfs.label, 'person'))
+        .addOut(foaf.knows, node => node.addOut(rdf.type, foaf.Agent).addOut(rdfs.label, 'agent'))
+        .addOut(foaf.knows, node => node.addOut(rdf.type, [foaf.Agent, foaf.Person]).addOut(rdfs.label, 'both'))
+        .addOut(foaf.knows, node => node.addOut(rdfs.label, 'no type'))
+      const state: FocusNodeState = create({ shape, term: focusNode.term, pointer: focusNode })
+      renderers.set(ex.FooViewer, ptr => html`<span>${ptr.out(rdfs.label).value}</span>`)
+
+      // when
+      const result = await fixture(html`<div>${render({ state, focusNode, controller, params })}</div>`)
+
+      // then
+      expect(result).dom.to.eq('<div><span>person</span><span>both</span></div>')
     })
 
     describe('multi viewer', async () => {
