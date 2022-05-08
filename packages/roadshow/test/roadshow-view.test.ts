@@ -136,8 +136,8 @@ describe('@hydrofoil/roadshow/roadshow-view', () => {
       const resource = graph.namedNode('foo')
         .addOut(foaf.knows, graph.namedNode('friend'))
         .addOut(dash.shape, shape.pointer)
-      const loadResource: ResourceLoader = async term => clownface()
-        .namedNode(term)
+      const loadResource: ResourceLoader = async () => clownface()
+        .namedNode('friend-loaded')
         .addOut(rdfs.label, 'Fetched!')
       const renderers = [detailsViewer, <Renderer<ObjectViewContext>>{
         viewer: dash.LiteralViewer,

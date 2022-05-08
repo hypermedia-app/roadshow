@@ -20,6 +20,7 @@ export interface RendererState<VC extends ViewContext<S>, S extends AnyState = V
   decorators: Array<Decorator<VC>>
   renderers: Array<Renderer<VC>>
   renderer?: Renderer<VC>
+  error?: string | Error
 }
 
 export interface ObjectState<R = unknown> extends RendererState<ObjectViewContext> {

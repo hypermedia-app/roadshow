@@ -3,7 +3,7 @@ import { html, TemplateResult } from 'lit'
 import { findNodes } from 'clownface-shacl-path'
 import { BlankNode, Literal, NamedNode, Term } from '@rdfjs/types'
 import { roadshow } from '@hydrofoil/vocabularies/builders'
-import { dash, rdf, rdfs } from '@tpluscode/rdf-ns-builders/strict'
+import { dash, rdf } from '@tpluscode/rdf-ns-builders/strict'
 import { sh } from '@tpluscode/rdf-ns-builders'
 import { dataset } from '@rdf-esm/dataset'
 import { NodeShape } from '@rdfine/shacl'
@@ -67,10 +67,10 @@ function setRenderer<S extends RendererState<any>>(this: ViewContext<any>, rende
   this.controller.host.requestUpdate()
 }
 
-function renderFinal(final: Renderer, context: ViewContext<any>, pointer: MultiPointer) {
+function renderFinal(final: Renderer, context: ViewContext<any>) {
   const decorators = context.state.decorators as Array<Decorator<any>>
 
-  const actualRendering = final.render.call(context, pointer)
+  const actualRendering = final.render.call(context, context.node)
   return decorators.reduceRight((inner, { decorate }) => decorate(inner, context), actualRendering)
 }
 
@@ -145,7 +145,7 @@ function createChildContext<T extends Term>(parent: ViewContext<any>, state: any
       depth: parent.depth + 1,
       params: parent.params,
       controller: parent.controller,
-      node: pointer,
+      node: childState.pointer || pointer,
       show: showProperty,
       setRenderer,
       setShape,
@@ -176,7 +176,7 @@ function renderMultiRenderObject(this: PropertyViewContext, ...args: Parameters<
   if (isLiteral(object)) {
     const childContext = createChildContext(this, this.state, object)
     const renderer = this.controller.initRenderer(childContext)
-    const result = renderFinal(renderer, childContext, object)
+    const result = renderFinal(renderer, childContext)
     if (render?.literal) {
       return render.literal.call(childContext, result)
     }
@@ -201,10 +201,10 @@ function renderPropertyObjectsIndividually(parent: FocusNodeViewContext, propert
     }
 
     if ('pointer' in context.state) {
-      return renderFinal(renderer, context, context.state.pointer || object)
+      return renderFinal(renderer, context)
     }
 
-    return renderFinal(renderer, context, object)
+    return renderFinal(renderer, context)
   }
 }
 
@@ -226,12 +226,10 @@ function showProperty(this: FocusNodeViewContext, show: Show) {
   const property = this.state.properties.find(propertyStateTo(show))
 
   if (!property) {
-    const details = clownface({ dataset: dataset() })
-      .blankNode()
-      .addOut(rdfs.label, 'Property not found in state')
+    this.state.error = 'Property not found in state'
     this.state.viewer = roadshow.ErrorRenderer
     const renderer = this.controller.initRenderer(this)
-    return renderFinal(renderer, this, details)
+    return renderFinal(renderer, this)
   }
 
   let objects = property.propertyShape.pointer.out(sh.values)
@@ -253,7 +251,7 @@ function showProperty(this: FocusNodeViewContext, show: Show) {
     }
 
     const renderer = this.controller.initRenderer(context)
-    return renderFinal(renderer, context, objects)
+    return renderFinal(renderer, context)
   }
 
   const { maxCount, class: clas } = property.propertyShape
@@ -283,7 +281,7 @@ function renderState({ state, focusNode, controller, params }: Required<Render>)
   }
 
   const renderer = controller.initRenderer(context)
-  return renderFinal(renderer, context, focusNode)
+  return renderFinal(renderer, context)
 }
 
 export function render({ focusNode, ...rest }: Render): TemplateResult | string {
