@@ -36,7 +36,6 @@ export class ResourcesController {
     }
 
     state.loading.add(LOADER_KEY)
-    await this.host.requestUpdate()
 
     const loaded = await this.load(state.term)
     state.loading.delete(LOADER_KEY)

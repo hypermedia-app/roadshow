@@ -53,14 +53,12 @@ export class RoadshowController implements ReactiveController {
         term: this.host.resource.term,
       })
       this.state.pointer = this.host.resource
-      await this.host.requestUpdate()
     } else {
       return
     }
 
     await this.initShapes(this.state, this.state.pointer!)
 
-    await this.host.requestUpdate()
     this.state.viewer = dash.DetailsViewer
     await this.host.requestUpdate()
   }
