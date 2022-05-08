@@ -126,7 +126,6 @@ export class RenderersController implements ReactiveController {
 
     if (initFuncs.length && !state.loadingFailed.has(LOADER_KEY) && !state.loading.has(LOADER_KEY)) {
       state.loading.add(LOADER_KEY)
-      this.host.requestUpdate()
 
       return (async () => {
         try {

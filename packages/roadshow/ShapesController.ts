@@ -33,7 +33,6 @@ export class ShapesController implements ReactiveController {
     state.loading.add(LOADER_KEY)
 
     const loadShapes = () => shapesLoader(focusNode, state)
-    await this.host.requestUpdate()
 
     const shapePointers = await loadShapes()
     state.applicableShapes = shapePointers.map(ptr => fromPointer(ptr));
