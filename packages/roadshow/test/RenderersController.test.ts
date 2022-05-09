@@ -129,7 +129,6 @@ describe('@hydrofoil/roadshow/RenderersController', () => {
 
       // then
       expect(state.loading.size).to.have.be.greaterThan(0)
-      expect(host.requestUpdate).to.have.been.calledOnce
     })
 
     it('does nothing if no init is necessary', () => {
@@ -186,7 +185,7 @@ describe('@hydrofoil/roadshow/RenderersController', () => {
 
       // then
       expect(state.loadingFailed.size).to.have.be.eq(1)
-      expect(host.requestUpdate).to.have.been.calledTwice
+      expect(host.requestUpdate).to.have.been.called
     })
 
     it('marks renderer as initialized when init finishes', async () => {
@@ -201,7 +200,7 @@ describe('@hydrofoil/roadshow/RenderersController', () => {
       // then
       expect(renderer.initialized).to.be.true
       expect(renderer.init).to.have.been.calledWith(context)
-      expect(host.requestUpdate).to.have.been.calledTwice
+      expect(host.requestUpdate).to.have.been.called
     })
 
     it('initializes decorator but not renderer if the latter has already been initialized', async () => {
