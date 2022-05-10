@@ -26,6 +26,7 @@ export class ShapesController implements ReactiveController {
   async loadShapes(state: FocusNodeState | PropertyState, focusNode: MultiPointer): Promise<void> {
     const { shapesLoader } = this.host
     if (!shapesLoader || state.shapesLoaded) {
+      state.shapesLoaded = true
       return
     }
 
