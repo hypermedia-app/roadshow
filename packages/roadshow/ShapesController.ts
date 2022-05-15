@@ -3,9 +3,9 @@ import type { GraphPointer, MultiPointer } from 'clownface'
 import { fromPointer } from '@rdfine/shacl/lib/NodeShape'
 import { BlankNode, NamedNode } from '@rdfjs/types'
 import { dash, sh } from '@tpluscode/rdf-ns-builders/strict'
+import graphPointer from 'is-graph-pointer'
 import type { RoadshowView } from './index'
 import { FocusNodeState, PropertyState } from './lib/state'
-import { isResource } from './lib/clownface'
 import { ResourcesController } from './ResourcesController'
 
 const LOADER_KEY = 'shapes'
@@ -43,7 +43,7 @@ export class ShapesController implements ReactiveController {
   }
 
   async loadDashShape(resource: GraphPointer) {
-    const [dashShape] = resource.out(dash.shape).toArray().filter(isResource)
+    const [dashShape] = resource.out(dash.shape).toArray().filter(graphPointer.isResource)
 
     if (dashShape) {
       if (dashShape.out(sh.property).terms.length) {
