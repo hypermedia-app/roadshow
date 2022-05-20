@@ -8,6 +8,7 @@ import { sh } from '@tpluscode/rdf-ns-builders'
 import { dataset } from '@rdf-esm/dataset'
 import { NodeShape } from '@rdfine/shacl'
 import { ResourceIdentifier } from '@tpluscode/rdfine'
+import graphPointer from 'is-graph-pointer'
 import { create, createPropertyState, FocusNodeState, ObjectState, PropertyState, RendererState } from './state'
 import {
   FocusNodeViewContext,
@@ -18,7 +19,7 @@ import {
   ViewContext,
 } from './ViewContext/index'
 import type { RoadshowController } from '../RoadshowController'
-import { isGraphPointer, isLiteral, isResource, TRUE } from './clownface'
+import { TRUE } from './clownface'
 import { Decorator } from './decorator'
 import { getAllProperties } from './shape'
 
@@ -42,7 +43,7 @@ export interface Renderer<VC extends ViewContext<any> = ViewContext<any>> {
 }
 
 function findViewers(state: PropertyState | FocusNodeState, object: MultiPointer, { viewers, renderers }: RoadshowController) {
-  if (!isGraphPointer(object)) {
+  if (!graphPointer.isGraphPointer(object)) {
     return {
       applicableViewers: [],
       viewer: roadshow.RendererNotFoundViewer,
@@ -79,7 +80,7 @@ function objectState<T extends Literal | NamedNode | BlankNode>(state: PropertyS
   if (!objectState) {
     const { applicableViewers, viewer } = findViewers(state, object, controller)
 
-    if (isResource(object)) {
+    if (graphPointer.isResource(object)) {
       const newState: FocusNodeState = {
         ...create({ ...state, term: object.term, pointer: object }),
         applicableViewers,
@@ -138,7 +139,7 @@ function setShape(this: FocusNodeViewContext, shape: NodeShape | ResourceIdentif
 }
 
 function createChildContext<T extends Term>(parent: ViewContext<any>, state: any, pointer: GraphPointer<T>) : T extends Literal ? ObjectViewContext : FocusNodeViewContext {
-  if (isResource(pointer)) {
+  if (graphPointer.isResource(pointer)) {
     const childState = objectState<NamedNode | BlankNode>(state, pointer, parent.controller)
 
     return <FocusNodeViewContext>{
@@ -169,11 +170,11 @@ function createChildContext<T extends Term>(parent: ViewContext<any>, state: any
 function renderMultiRenderObject(this: PropertyViewContext, ...args: Parameters<PropertyViewContext['object']>) {
   const [object, render] = args
 
-  if (isResource(object) && render?.resource) {
+  if (graphPointer.isResource(object) && render?.resource) {
     return render.resource.call(createChildContext(this, this.state, object))
   }
 
-  if (isLiteral(object)) {
+  if (graphPointer.isLiteral(object)) {
     const childContext = createChildContext(this, this.state, object)
     const renderer = this.controller.initRenderer(childContext)
     const result = renderFinal(renderer, childContext)

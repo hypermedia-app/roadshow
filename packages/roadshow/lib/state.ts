@@ -5,7 +5,7 @@ import { BlankNode, NamedNode, Term } from '@rdfjs/types'
 import { dash, sh } from '@tpluscode/rdf-ns-builders/strict'
 import TermMap from '@rdf-esm/term-map'
 import { fromPointer } from '@rdfine/shacl/lib/NodeShape'
-import { isResource, isGraphPointer } from './clownface'
+import graphPointer from 'is-graph-pointer'
 import type { Renderer } from './render'
 import type { FocusNodeViewContext, ObjectViewContext, PropertyViewContext, ViewContext } from './ViewContext/index'
 import type { Decorator } from '../index'
@@ -71,14 +71,14 @@ export type AnyState = ObjectState | FocusNodeState | PropertyState
 
 export const createPropertyState = (focusNode: MultiPointer | undefined, focusNodeShape: NodeShape | undefined) => (arr: PropertyState[], shape: PropertyShape): PropertyState[] => {
   const path = shape.pointer.out(sh.path)
-  if (!isGraphPointer(path)) {
+  if (!graphPointer.isGraphPointer(path)) {
     // eslint-disable-next-line no-console
     console.warn(`Skipping property ${shape.name || shape.id.value}. It does not have a valid sh:path`)
     return arr
   }
 
   const [shNode] = shape.pointer.out(sh.node).toArray()
-  const nodeShape = isResource(shNode) ? fromPointer(shNode) : undefined
+  const nodeShape = graphPointer.isResource(shNode) ? fromPointer(shNode) : undefined
 
   return [...arr, {
     propertyShape: shape,

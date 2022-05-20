@@ -1,5 +1,15 @@
 # @hydrofoil/roadshow
 
+## 0.4.3
+
+### Patch Changes
+
+- bea6a59: `sh:class` on a SHACL Property filters out which values are rendered
+- 6edbeaa: Without a shapes loader, rendereing would fall into an endless loop
+- 2b7b13d: Less calls to `host.requestUpdate()` should prevent too wide DOM modifications
+- f607acb: Added `error` state property
+- 7f76ed2: When resource was dereferenced (`roadshow:dereference true`), it would not actually be passed to render when used in a `dash:DetailsViewer`
+
 ## 0.4.2
 
 ### Patch Changes

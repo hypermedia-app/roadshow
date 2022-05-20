@@ -1,13 +1,13 @@
 {
   "name": "storybook",
-  "version": "0.1.20",
+  "version": "0.1.21",
   "private": true,
   "scripts": {
     "start": "wds",
     "build": "build-storybook --output-dir ../../dist/storybook"
   },
   "dependencies": {
-    "@hydrofoil/roadshow": "0.4.2",
+    "@hydrofoil/roadshow": "0.4.3",
     "@hydrofoil/vocabularies": "^0.3.0",
     "@rdf-esm/data-model": "^0.5.4",
     "@rdf-esm/dataset": "^0.5.1",
@@ -23,6 +23,7 @@
     "@tpluscode/rdfine": "^0.5.22",
     "clownface": "^1.2.0",
     "clownface-shacl-path": "^1.1.0",
+    "is-graph-pointer": "^1.1.0",
     "lit": "^2.0.0-rc.2"
   },
   "devDependencies": {
