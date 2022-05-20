@@ -30,6 +30,7 @@ export class ViewersController implements ReactiveController {
   static readonly defaultViewers: Array<ViewerMatcher> = Object.values(defaultViewers)
   static readonly viewerMeta: AnyPointer = clownface({ dataset: $rdf.dataset() })
 
+  private __dashLoaded = false
   viewers: Map<NamedNode, Viewer>
 
   constructor(private host: RoadshowView) {
@@ -38,6 +39,10 @@ export class ViewersController implements ReactiveController {
   }
 
   async loadDash(): Promise<void> {
+    if (this.__dashLoaded) {
+      return
+    }
+    this.__dashLoaded = true
     const Dash = await import('@zazuko/rdf-vocabularies/datasets/dash')
     for (const quad of Dash.default($rdf)) {
       ViewersController.viewerMeta.dataset.add(quad)
