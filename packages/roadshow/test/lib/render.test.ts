@@ -3,7 +3,7 @@ import { fromPointer } from '@rdfine/shacl/lib/NodeShape'
 import { NodeShape } from '@rdfine/shacl'
 import { html } from 'lit'
 import sinon from 'sinon'
-import { dash, foaf, rdf, rdfs, sh } from '@tpluscode/rdf-ns-builders/strict'
+import { dash, foaf, rdf, rdfs, schema, sh } from '@tpluscode/rdf-ns-builders/strict'
 import { Initializer } from '@tpluscode/rdfine/RdfResource'
 import { render } from '../../lib/render'
 import { blankNode, namedNode } from '../_support/clownface'
@@ -159,6 +159,45 @@ describe('@hydrofoil/roadshow/lib/render', () => {
 
         // then
         expect(result.textContent).to.eq('Count: 3')
+      })
+
+      it('renders using selected viewer when overridden in .show()', async () => {
+        // given
+        const shape = createShape({
+          property: [{
+            path: schema.breadcrumb,
+            viewer: ex.BreadcrumbViewer,
+            node: {
+              property: {
+                path: schema.itemListElement,
+              },
+            },
+          }],
+        })
+        const focusNode = namedNode('/page/child')
+          .addOut(schema.breadcrumb, (bc) => {
+            bc.addOut(schema.itemListElement, (item) => {
+              item.addOut(schema.item, item.namedNode('/page'))
+                .addOut(schema.name, 'Parent')
+            })
+          })
+        const state: FocusNodeState = create({ shape, term: focusNode.term, pointer: focusNode })
+        renderers.set(ex.BreadcrumbViewer, function (this: FocusNodeViewContext) {
+          const [itemsProperty] = this.state.properties
+
+          return html`<ol class="breadcrumbs">
+            ${this.show({ property: itemsProperty, viewer: ex.BreadcrumbItemViewer })}
+          </ol>`
+        })
+        renderers.set(ex.BreadcrumbItemViewer, resource => html`<li>${resource.out(schema.name).value}</li>`)
+
+        // when
+        const result = await fixture(render({ state, focusNode, controller, params }))
+
+        // then
+        expect(result).dom.to.eq(`<ol class="breadcrumbs">
+          <li>Parent</li>
+        </ol>`)
       })
 
       it('calling sub-renderer for individual objects', async () => {

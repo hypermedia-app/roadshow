@@ -237,6 +237,11 @@ function showProperty(this: FocusNodeViewContext, show: Show) {
   if (!objects.terms.length) {
     objects = findNodes(this.node, property.path)
   }
+
+  if (show.viewer) {
+    property.viewer = show.viewer
+  }
+
   if (property.viewer && this.controller.viewers.isMultiViewer(property.viewer)) {
     this.controller.initShapes(property, objects)
 
