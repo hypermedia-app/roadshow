@@ -1,5 +1,15 @@
 # storybook
 
+## 0.1.22
+
+### Patch Changes
+
+- f61942a: Added dependency on [is-graph-pointer](https://npm.im/is-graph-pointer)
+- Updated dependencies [49a81d5]
+- Updated dependencies [f61942a]
+- Updated dependencies [240998b]
+  - @hydrofoil/roadshow@0.4.4
+
 ## 0.1.21
 
 ### Patch Changes

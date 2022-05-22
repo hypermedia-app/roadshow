@@ -1,5 +1,13 @@
 # @hydrofoil/roadshow
 
+## 0.4.4
+
+### Patch Changes
+
+- 49a81d5: Prevent DASH from being parsed mutliple times
+- f61942a: Added dependency on [is-graph-pointer](https://npm.im/is-graph-pointer)
+- 240998b: Possibility to override the viewer for property objects when calling `show()`
+
 ## 0.4.3
 
 ### Patch Changes
