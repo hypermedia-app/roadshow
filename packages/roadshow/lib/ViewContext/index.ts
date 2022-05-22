@@ -23,6 +23,7 @@ export interface ViewContext<S, P = any> {
 
 export interface Show {
   property: PropertyState | PropertyShape | NamedNode
+  viewer?: NamedNode
 }
 
 export interface FocusNodeViewContext<R = unknown> extends ViewContext<FocusNodeState<R>, PropertyState> {
