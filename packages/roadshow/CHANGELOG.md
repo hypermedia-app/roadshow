@@ -1,5 +1,11 @@
 # @hydrofoil/roadshow
 
+## 0.4.5
+
+### Patch Changes
+
+- 062b717: `is-graph-pointer` without default export did not work in webpack
+
 ## 0.4.4
 
 ### Patch Changes
