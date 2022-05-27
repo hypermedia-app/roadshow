@@ -2,4 +2,4 @@
 "@hydrofoil/roadshow": patch
 ---
 
-`is-graph-pointer` was incorrectly imported, which broke webpack
+`is-graph-pointer` without default export did not work in webpack
