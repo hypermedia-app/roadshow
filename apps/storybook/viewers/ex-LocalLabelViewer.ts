@@ -1,5 +1,5 @@
 import { MultiRenderer } from '@hydrofoil/roadshow/index'
-import * as graphPointer from 'is-graph-pointer'
+import graphPointer from 'is-graph-pointer'
 import { ViewersController } from '@hydrofoil/roadshow/ViewersController'
 import { dash, rdf } from '@tpluscode/rdf-ns-builders/strict'
 import { ex } from '../lib/ns'
