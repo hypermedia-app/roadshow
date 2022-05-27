@@ -23,7 +23,7 @@
     "@zazuko/rdf-vocabularies": "*",
     "clownface": "^1.5.0",
     "clownface-shacl-path": "^1.1",
-    "is-graph-pointer": "^1.2.0",
+    "is-graph-pointer": "^1.2.1",
     "lit": "^2.0.0-rc.2"
   },
   "devDependencies": {
