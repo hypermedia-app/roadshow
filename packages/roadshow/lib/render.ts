@@ -8,7 +8,7 @@ import { sh } from '@tpluscode/rdf-ns-builders'
 import { dataset } from '@rdf-esm/dataset'
 import { NodeShape } from '@rdfine/shacl'
 import { ResourceIdentifier } from '@tpluscode/rdfine'
-import * as graphPointer from 'is-graph-pointer'
+import graphPointer from 'is-graph-pointer'
 import { create, createPropertyState, FocusNodeState, ObjectState, PropertyState, RendererState } from './state'
 import {
   FocusNodeViewContext,
