@@ -1,5 +1,5 @@
 import { aTimeout, expect, fixture, waitUntil } from '@open-wc/testing'
-import { dash, foaf, rdfs } from '@tpluscode/rdf-ns-builders/strict'
+import { dash, foaf, rdfs } from '@tpluscode/rdf-ns-builders'
 import { html } from 'lit'
 import { fromPointer } from '@rdfine/shacl/lib/NodeShape'
 import sinon from 'sinon'

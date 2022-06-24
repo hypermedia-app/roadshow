@@ -1,6 +1,6 @@
 /* eslint-disable lit-a11y/no-invalid-change-handler */
 import { Decorator, PropertyViewContext } from '@hydrofoil/roadshow'
-import { rdfs } from '@tpluscode/rdf-ns-builders/strict'
+import { rdfs } from '@tpluscode/rdf-ns-builders'
 import { html } from 'lit'
 import { hex } from '../lib/ns'
 

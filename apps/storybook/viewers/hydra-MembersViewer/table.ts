@@ -4,7 +4,7 @@ import { GraphPointer } from 'clownface'
 import { FocusNodeViewContext, PropertyViewContext } from '@hydrofoil/roadshow/lib/ViewContext/index'
 import { MultiRenderer } from '@hydrofoil/roadshow/index'
 import { ViewersController } from '@hydrofoil/roadshow/ViewersController'
-import { dash, rdf, rdfs } from '@tpluscode/rdf-ns-builders/strict'
+import { dash, rdf, rdfs } from '@tpluscode/rdf-ns-builders'
 import { hex } from '../../lib/ns'
 
 ViewersController.viewerMeta

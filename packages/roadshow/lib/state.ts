@@ -2,7 +2,7 @@
 import { NodeShape, PropertyShape } from '@rdfine/shacl'
 import { GraphPointer, MultiPointer } from 'clownface'
 import { BlankNode, NamedNode, Term } from '@rdfjs/types'
-import { dash, sh } from '@tpluscode/rdf-ns-builders/strict'
+import { dash, sh } from '@tpluscode/rdf-ns-builders'
 import TermMap from '@rdf-esm/term-map'
 import { fromPointer } from '@rdfine/shacl/lib/NodeShape'
 import graphPointer from 'is-graph-pointer'

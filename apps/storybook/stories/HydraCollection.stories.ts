@@ -1,7 +1,7 @@
 import { html } from 'lit'
 import { MultiRenderer, Renderer, ViewerMatcher, Decorator } from '@hydrofoil/roadshow'
 import '@hydrofoil/roadshow/roadshow-view'
-import { hydra, rdf, schema } from '@tpluscode/rdf-ns-builders/strict'
+import { hydra, rdf, schema } from '@tpluscode/rdf-ns-builders'
 import type { MultiPointer } from 'clownface'
 import { runFactory } from '@roadshow/build-helpers/runFactory'
 import { template } from '../lib/template'

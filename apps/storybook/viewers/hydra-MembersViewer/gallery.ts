@@ -1,6 +1,6 @@
 import { MultiRenderer } from '@hydrofoil/roadshow/index'
 import { html } from 'lit'
-import { rdfs, schema } from '@tpluscode/rdf-ns-builders/strict'
+import { rdfs, schema } from '@tpluscode/rdf-ns-builders'
 import { FocusNodeViewContext } from '@hydrofoil/roadshow/lib/ViewContext/index'
 import { PropertyState } from '@hydrofoil/roadshow/lib/state'
 import { hex } from '../../lib/ns'

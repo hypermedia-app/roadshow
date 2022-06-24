@@ -1,4 +1,4 @@
-import { dash } from '@tpluscode/rdf-ns-builders/strict'
+import { dash } from '@tpluscode/rdf-ns-builders'
 import { html } from 'lit'
 import { Renderer } from '../index'
 

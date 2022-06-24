@@ -1,5 +1,5 @@
 import { expect, fixture, html } from '@open-wc/testing'
-import { rdfs, schema, skos } from '@tpluscode/rdf-ns-builders/strict'
+import { rdfs, schema, skos } from '@tpluscode/rdf-ns-builders'
 import { Label } from '../../renderers/Label'
 import { blankNode, namedNode } from '../_support/clownface'
 import { ViewContext } from '../../lib/ViewContext/index'

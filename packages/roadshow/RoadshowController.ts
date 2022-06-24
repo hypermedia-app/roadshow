@@ -1,5 +1,5 @@
 import { ReactiveController } from 'lit'
-import { dash, rdf } from '@tpluscode/rdf-ns-builders/strict'
+import { dash, rdf } from '@tpluscode/rdf-ns-builders'
 import { MultiPointer } from 'clownface'
 import { roadshow } from '@hydrofoil/vocabularies/builders'
 import type { RoadshowView } from './index'

@@ -1,5 +1,5 @@
 import { Renderer, ViewerMatcher } from '@hydrofoil/roadshow/index'
-import { hydra, rdf } from '@tpluscode/rdf-ns-builders/strict'
+import { hydra, rdf } from '@tpluscode/rdf-ns-builders'
 import { NamedNode } from 'rdf-js'
 import { html } from 'lit'
 import { FocusNodeViewContext } from '@hydrofoil/roadshow/lib/ViewContext'

@@ -1887,6 +1887,16 @@
     commander "^7.2.0"
     fs-extra "^10.0.0"
 
+"@tpluscode/rdf-ns-builders@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@tpluscode/rdf-ns-builders/-/rdf-ns-builders-2.0.0.tgz#706112f975fd8459c4db0e4c506bf97dec354a91"
+  integrity sha512-s+pwFo3CYN2UvAskElaeorRh1hX3qs2NYOTXP7Fsc4UdpjMN6L99V4J7iL7oMMXY079Kaz0u3gAB4LwCaTmg0A==
+  dependencies:
+    "@rdf-esm/namespace" "^0.5.1"
+    "@rdfjs/types" "*"
+    commander "^7.2.0"
+    fs-extra "^10.0.0"
+
 "@tpluscode/rdf-string@^0.2.24":
   version "0.2.24"
   resolved "https://registry.yarnpkg.com/@tpluscode/rdf-string/-/rdf-string-0.2.24.tgz#9d9fcafca2b2cfdf2bf0e515f9136feb8e221c7a"

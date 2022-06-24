@@ -1,5 +1,5 @@
 import { expect } from '@open-wc/testing'
-import { dash, rdf, sh } from '@tpluscode/rdf-ns-builders/strict'
+import { dash, rdf, sh } from '@tpluscode/rdf-ns-builders'
 import { RoadshowController } from '../RoadshowController'
 import { RoadshowView } from '../index'
 import { blankNode } from './_support/clownface'

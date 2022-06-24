@@ -1,6 +1,6 @@
 import { html } from 'lit'
 import { MultiRenderer, Renderer, ViewerMatcher } from '@hydrofoil/roadshow'
-import { hydra, rdf } from '@tpluscode/rdf-ns-builders/strict'
+import { hydra, rdf } from '@tpluscode/rdf-ns-builders'
 import { namedNode } from '@rdf-esm/data-model'
 import { ResourceLoader } from '@hydrofoil/roadshow/ResourcesController'
 import clownface, { MultiPointer } from 'clownface'

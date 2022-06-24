@@ -19,7 +19,7 @@
     "@rdfine/schema": "^0.6.5",
     "@rdfine/shacl": "^0.8",
     "@roadshow/build-helpers": "0.0.0",
-    "@tpluscode/rdf-ns-builders": "^1.0.0",
+    "@tpluscode/rdf-ns-builders": "^2.0.0",
     "@tpluscode/rdfine": "^0.5.22",
     "clownface": "^1.2.0",
     "clownface-shacl-path": "^1.1.0",
