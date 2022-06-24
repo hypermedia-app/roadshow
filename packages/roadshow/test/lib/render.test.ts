@@ -3,7 +3,7 @@ import { fromPointer } from '@rdfine/shacl/lib/NodeShape'
 import { NodeShape } from '@rdfine/shacl'
 import { html } from 'lit'
 import sinon from 'sinon'
-import { dash, foaf, rdf, rdfs, schema, sh } from '@tpluscode/rdf-ns-builders/strict'
+import { dash, foaf, rdf, rdfs, schema, sh, xsd } from '@tpluscode/rdf-ns-builders/strict'
 import { Initializer } from '@tpluscode/rdfine/RdfResource'
 import { render } from '../../lib/render'
 import { blankNode, namedNode } from '../_support/clownface'
@@ -111,6 +111,31 @@ describe('@hydrofoil/roadshow/lib/render', () => {
 
       // then
       expect(result).dom.to.eq('<div><span>foo</span><span>bar</span></div>')
+    })
+
+    it('limits rendered child objects to those matching sh:datatype', async () => {
+      // given
+      const shape = createShape({
+        property: [{
+          path: rdfs.label,
+          viewer: ex.FooViewer,
+          datatype: xsd.integer,
+        }],
+      })
+      const focusNode = namedNode('/foo/bar')
+      focusNode
+        .addOut(rdfs.label, 2)
+        .addOut(rdfs.label, 'two')
+        .addOut(rdfs.label, focusNode.literal('dwa', 'pl'))
+        .addOut(rdfs.label, focusNode.literal('2', xsd.decimal))
+      const state: FocusNodeState = create({ shape, term: focusNode.term, pointer: focusNode })
+      renderers.set(ex.FooViewer, ptr => html`<span>${ptr.value}</span>`)
+
+      // when
+      const result = await fixture(html`<div>${render({ state, focusNode, controller, params })}</div>`)
+
+      // then
+      expect(result).dom.to.eq('<div><span>2</span></div>')
     })
 
     it('filters rendered child URI nodes by sh:class', async () => {
