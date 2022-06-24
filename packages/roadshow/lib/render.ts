@@ -8,7 +8,7 @@ import { sh } from '@tpluscode/rdf-ns-builders/loose'
 import { dataset } from '@rdf-esm/dataset'
 import { NodeShape } from '@rdfine/shacl'
 import { ResourceIdentifier } from '@tpluscode/rdfine'
-import graphPointer, { isLiteral } from 'is-graph-pointer'
+import graphPointer from 'is-graph-pointer'
 import { create, createPropertyState, FocusNodeState, ObjectState, PropertyState, RendererState } from './state'
 import {
   FocusNodeViewContext,
@@ -267,7 +267,7 @@ function showProperty(this: FocusNodeViewContext, show: Show) {
         return !!obj.has(rdf.type, clas.id).term
       }
       if (datatype) {
-        return isLiteral(obj) && obj.term.datatype.equals(datatype.id)
+        return graphPointer.isLiteral(obj) && obj.term.datatype.equals(datatype.id)
       }
 
       return true
