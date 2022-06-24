@@ -1,5 +1,5 @@
 import { Renderer, ViewerMatcher } from '@hydrofoil/roadshow/index'
-import { rdf, schema } from '@tpluscode/rdf-ns-builders/strict'
+import { rdf, schema } from '@tpluscode/rdf-ns-builders'
 import { html } from 'lit'
 import { ex } from '../lib/ns'
 

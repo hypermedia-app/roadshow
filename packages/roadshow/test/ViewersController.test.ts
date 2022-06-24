@@ -1,5 +1,5 @@
 import { expect } from '@open-wc/testing'
-import { dash } from '@tpluscode/rdf-ns-builders/strict'
+import { dash } from '@tpluscode/rdf-ns-builders'
 import sinon from 'sinon'
 import { ViewersController } from '../ViewersController'
 import { RoadshowView } from '../index'

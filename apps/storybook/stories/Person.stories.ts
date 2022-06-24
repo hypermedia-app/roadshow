@@ -1,5 +1,5 @@
 import { html } from 'lit'
-import { rdf, sh } from '@tpluscode/rdf-ns-builders/strict'
+import { rdf, sh } from '@tpluscode/rdf-ns-builders'
 import { Decorator, MultiRenderer, Renderer, ViewerMatcher } from '@hydrofoil/roadshow/index'
 import { MultiPointer } from 'clownface'
 import { runFactory } from '@roadshow/build-helpers/runFactory'

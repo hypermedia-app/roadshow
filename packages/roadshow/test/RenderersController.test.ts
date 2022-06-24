@@ -1,4 +1,4 @@
-import { dash, rdfs } from '@tpluscode/rdf-ns-builders/strict'
+import { dash, rdfs } from '@tpluscode/rdf-ns-builders'
 import { expect, nextFrame } from '@open-wc/testing'
 import { roadshow } from '@hydrofoil/vocabularies/builders'
 import sinon from 'sinon'
