@@ -1,5 +1,12 @@
 # @hydrofoil/roadshow
 
+## 0.4.6
+
+### Patch Changes
+
+- 16f18ba: If specified on a Property Shape, only display objects matching `sh:datatype`
+- 21e57a1: Update `@tpluscode/rdf-ns-builders`
+
 ## 0.4.5
 
 ### Patch Changes

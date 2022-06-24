@@ -1,5 +1,14 @@
 # storybook
 
+## 0.1.24
+
+### Patch Changes
+
+- 21e57a1: Update `@tpluscode/rdf-ns-builders`
+- Updated dependencies [16f18ba]
+- Updated dependencies [21e57a1]
+  - @hydrofoil/roadshow@0.4.6
+
 ## 0.1.23
 
 ### Patch Changes
