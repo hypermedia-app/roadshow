@@ -1,5 +1,12 @@
 # @hydrofoil/roadshow
 
+## 0.4.7
+
+### Patch Changes
+
+- f979c33: Multi viewer should render only nodes matching SHACL contraints
+- aa7f87f: Do not render Multi Viewer when there are no objects
+
 ## 0.4.6
 
 ### Patch Changes
