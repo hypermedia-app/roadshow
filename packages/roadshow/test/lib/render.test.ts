@@ -350,6 +350,49 @@ describe('@hydrofoil/roadshow/lib/render', () => {
         // then
         expect(result).dom.to.eq('<div>person,both</div>')
       })
+
+      it('renders empty if there are no objects', async () => {
+        // given
+        const shape = createShape({
+          property: [{
+            path: foaf.knows,
+            viewer: ex.FooViewer,
+            class: foaf.Person,
+          }],
+        })
+        sinon.stub(controller.viewers, 'isMultiViewer').returns(true)
+        const focusNode = namedNode('/foo')
+        const state: FocusNodeState = create({ shape, term: focusNode.term, pointer: focusNode })
+        renderers.set(ex.FooViewer, () => html`Should not have renderd`)
+
+        // when
+        const result = await fixture(html`<div>${render({ state, focusNode, controller, params })}</div>`)
+
+        // then
+        expect(result).dom.to.eq('<div></div>')
+      })
+
+      it('renders empty if all object get excluded by constraints', async () => {
+        // given
+        const shape = createShape({
+          property: [{
+            path: foaf.knows,
+            viewer: ex.FooViewer,
+            class: schema.Person,
+          }],
+        })
+        sinon.stub(controller.viewers, 'isMultiViewer').returns(true)
+        const focusNode = namedNode('/foo')
+          .addOut(foaf.knows, node => node.addOut(rdf.type, foaf.Person).addOut(rdfs.label, 'person'))
+        const state: FocusNodeState = create({ shape, term: focusNode.term, pointer: focusNode })
+        renderers.set(ex.FooViewer, () => html`Should not have renderd`)
+
+        // when
+        const result = await fixture(html`<div>${render({ state, focusNode, controller, params })}</div>`)
+
+        // then
+        expect(result).dom.to.eq('<div></div>')
+      })
     })
   })
 })
