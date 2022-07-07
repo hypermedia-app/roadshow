@@ -242,26 +242,8 @@ function showProperty(this: FocusNodeViewContext, show: Show) {
     property.viewer = show.viewer
   }
 
-  if (property.viewer && this.controller.viewers.isMultiViewer(property.viewer)) {
-    this.controller.initShapes(property, objects)
-
-    const context: PropertyViewContext = {
-      depth: this.depth,
-      controller: this.controller,
-      params: this.params,
-      state: property,
-      node: objects,
-      object: renderMultiRenderObject,
-      parent: this.state,
-      setRenderer,
-    }
-
-    const renderer = this.controller.initRenderer(context)
-    return renderFinal(renderer, context)
-  }
-
   const { maxCount, class: clas, datatype } = property.propertyShape
-  return html`${objects
+  const filteredPointers = objects
     .filter((obj) => {
       if (clas) {
         return !!obj.has(rdf.type, clas.id).term
@@ -273,7 +255,26 @@ function showProperty(this: FocusNodeViewContext, show: Show) {
       return true
     })
     .filter((obj, index) => (!maxCount || maxCount > index))
-    .map(renderPropertyObjectsIndividually(this, property))}`
+
+  if (property.viewer && this.controller.viewers.isMultiViewer(property.viewer)) {
+    this.controller.initShapes(property, filteredPointers)
+
+    const context: PropertyViewContext = {
+      depth: this.depth,
+      controller: this.controller,
+      params: this.params,
+      state: property,
+      node: filteredPointers,
+      object: renderMultiRenderObject,
+      parent: this.state,
+      setRenderer,
+    }
+
+    const renderer = this.controller.initRenderer(context)
+    return renderFinal(renderer, context)
+  }
+
+  return html`${filteredPointers.map(renderPropertyObjectsIndividually(this, property))}`
 }
 
 function renderState({ state, focusNode, controller, params }: Required<Render>): TemplateResult | string {
