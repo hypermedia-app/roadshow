@@ -275,6 +275,81 @@ describe('@hydrofoil/roadshow/lib/render', () => {
           'Foo', 'foo comment', 'Bar', 'bar comment', 'Baz', 'baz comment',
         ])
       })
+
+      it('limits rendered child objects to sh:maxCount', async () => {
+        // given
+        const shape = createShape({
+          property: [{
+            path: rdfs.label,
+            viewer: ex.FooViewer,
+            maxCount: 2,
+          }],
+        })
+        sinon.stub(controller.viewers, 'isMultiViewer').returns(true)
+        const focusNode = namedNode('/foo/bar')
+          .addOut(rdfs.label, 'foo')
+          .addOut(rdfs.label, 'bar')
+          .addOut(rdfs.label, 'baz')
+        const state: FocusNodeState = create({ shape, term: focusNode.term, pointer: focusNode })
+        renderers.set(ex.FooViewer, ptr => html`<span>${ptr.values.join(',')}</span>`)
+
+        // when
+        const result = await fixture(html`<div>${render({ state, focusNode, controller, params })}</div>`)
+
+        // then
+        expect(result).dom.to.eq('<div><span>foo,bar</span></div>')
+      })
+
+      it('limits rendered child objects to those matching sh:datatype', async () => {
+        // given
+        const shape = createShape({
+          property: [{
+            path: rdfs.label,
+            viewer: ex.FooViewer,
+            datatype: xsd.integer,
+          }],
+        })
+        sinon.stub(controller.viewers, 'isMultiViewer').returns(true)
+        const focusNode = namedNode('/foo/bar')
+        focusNode
+          .addOut(rdfs.label, 2)
+          .addOut(rdfs.label, 'two')
+          .addOut(rdfs.label, focusNode.literal('dwa', 'pl'))
+          .addOut(rdfs.label, focusNode.literal('2', xsd.decimal))
+        const state: FocusNodeState = create({ shape, term: focusNode.term, pointer: focusNode })
+        renderers.set(ex.FooViewer, ptr => html`<span>${ptr.values}</span>`)
+
+        // when
+        const result = await fixture(html`<div>${render({ state, focusNode, controller, params })}</div>`)
+
+        // then
+        expect(result).dom.to.eq('<div><span>2</span></div>')
+      })
+
+      it('filters rendered child URI nodes by sh:class', async () => {
+        // given
+        const shape = createShape({
+          property: [{
+            path: foaf.knows,
+            viewer: ex.FooViewer,
+            class: foaf.Person,
+          }],
+        })
+        sinon.stub(controller.viewers, 'isMultiViewer').returns(true)
+        const focusNode = namedNode('/foo')
+          .addOut(foaf.knows, node => node.addOut(rdf.type, foaf.Person).addOut(rdfs.label, 'person'))
+          .addOut(foaf.knows, node => node.addOut(rdf.type, foaf.Agent).addOut(rdfs.label, 'agent'))
+          .addOut(foaf.knows, node => node.addOut(rdf.type, [foaf.Agent, foaf.Person]).addOut(rdfs.label, 'both'))
+          .addOut(foaf.knows, node => node.addOut(rdfs.label, 'no type'))
+        const state: FocusNodeState = create({ shape, term: focusNode.term, pointer: focusNode })
+        renderers.set(ex.FooViewer, ptr => html`${ptr.out(rdfs.label).values.join(',')}`)
+
+        // when
+        const result = await fixture(html`<div>${render({ state, focusNode, controller, params })}</div>`)
+
+        // then
+        expect(result).dom.to.eq('<div>person,both</div>')
+      })
     })
   })
 })
