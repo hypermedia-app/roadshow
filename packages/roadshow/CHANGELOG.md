@@ -1,5 +1,13 @@
 # @hydrofoil/roadshow
 
+## 0.4.8
+
+### Patch Changes
+
+- 5ea9ed7: Context of an object node should have the type `object` and not `focusNode` when it appears as child of a property being rendered
+- 5ea9ed7: Decorators of properties would not execute when property objects were rendered one-by-one
+- 5ea9ed7: Added `type` and `isFocusNode` fields to contexts
+
 ## 0.4.7
 
 ### Patch Changes
