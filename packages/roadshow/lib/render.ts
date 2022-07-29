@@ -68,7 +68,7 @@ function setRenderer<S extends RendererState<any>>(this: ViewContext<any>, rende
   this.controller.host.requestUpdate()
 }
 
-function renderFinal(final: Renderer, context: ViewContext<any>) {
+function renderFinal(final: Pick<Renderer, 'render'>, context: ViewContext<any>) {
   const decorators = context.state.decorators as Array<Decorator<any>>
 
   const actualRendering = final.render.call(context, context.node)
@@ -138,11 +138,13 @@ function setShape(this: FocusNodeViewContext, shape: NodeShape | ResourceIdentif
   }
 }
 
-function createChildContext<T extends Term>(parent: ViewContext<any>, state: any, pointer: GraphPointer<T>) : T extends Literal ? ObjectViewContext : FocusNodeViewContext {
+function createChildContext<T extends Term>(parent: ViewContext<any>, state: any, pointer: GraphPointer<T>) : ObjectViewContext | FocusNodeViewContext {
   if (graphPointer.isResource(pointer)) {
     const childState = objectState<NamedNode | BlankNode>(state, pointer, parent.controller)
 
-    return <FocusNodeViewContext>{
+    return {
+      type: 'object',
+      isFocusNode: true,
       depth: parent.depth + 1,
       params: parent.params,
       controller: parent.controller,
@@ -152,11 +154,13 @@ function createChildContext<T extends Term>(parent: ViewContext<any>, state: any
       setShape,
       state: childState,
       parent: state,
-    } as any
+    }
   }
 
   const childState = objectState<Literal>(state, pointer as any, parent.controller)
   return <ObjectViewContext>{
+    type: 'object',
+    isFocusNode: false,
     depth: parent.depth + 1,
     controller: parent.controller,
     params: parent.params,
@@ -164,18 +168,18 @@ function createChildContext<T extends Term>(parent: ViewContext<any>, state: any
     node: pointer,
     parent: state,
     setRenderer,
-  } as any
+  }
 }
 
 function renderMultiRenderObject(this: PropertyViewContext, ...args: Parameters<PropertyViewContext['object']>) {
   const [object, render] = args
+  const childContext = createChildContext(this, this.state, object)
 
-  if (graphPointer.isResource(object) && render?.resource) {
-    return render.resource.call(createChildContext(this, this.state, object))
+  if (childContext.isFocusNode && render?.resource) {
+    return render.resource.call(childContext)
   }
 
-  if (graphPointer.isLiteral(object)) {
-    const childContext = createChildContext(this, this.state, object)
+  if (!childContext.isFocusNode) {
     const renderer = this.controller.initRenderer(childContext)
     const result = renderFinal(renderer, childContext)
     if (render?.literal) {
@@ -188,21 +192,17 @@ function renderMultiRenderObject(this: PropertyViewContext, ...args: Parameters<
   return ''
 }
 
-function renderPropertyObjectsIndividually(parent: FocusNodeViewContext, property: PropertyState) {
+function renderPropertyObjectsIndividually(parent: PropertyViewContext) {
   return (object: GraphPointer) => {
-    const context = createChildContext(parent, property, object)
+    const context = createChildContext(parent, parent.state, object)
     if (!context.state.viewer) {
       return 'No viewer found'
     }
 
     const renderer = parent.controller.initRenderer(context)
 
-    if ('properties' in context.state) {
+    if (context.isFocusNode) {
       parent.controller.initShapes(context.state, object)
-    }
-
-    if ('pointer' in context.state) {
-      return renderFinal(renderer, context)
     }
 
     return renderFinal(renderer, context)
@@ -257,7 +257,23 @@ function showProperty(this: FocusNodeViewContext, show: Show) {
     .filter((obj, index) => (!maxCount || maxCount > index))
 
   if (!(property.viewer && this.controller.viewers.isMultiViewer(property.viewer))) {
-    return html`${filteredPointers.map(renderPropertyObjectsIndividually(this, property))}`
+    const propertyContext: PropertyViewContext = {
+      type: 'property',
+      isFocusNode: false,
+      depth: this.depth,
+      controller: this.controller,
+      params: this.params,
+      state: property,
+      node: filteredPointers,
+      object: renderMultiRenderObject,
+      parent: this.state,
+      setRenderer,
+    }
+
+    this.controller.initRenderer(propertyContext)
+    return renderFinal({
+      render: () => html`${filteredPointers.map(renderPropertyObjectsIndividually(propertyContext))}`,
+    }, propertyContext)
   }
 
   if (filteredPointers.toArray().length === 0) {
@@ -267,6 +283,8 @@ function showProperty(this: FocusNodeViewContext, show: Show) {
   this.controller.initShapes(property, filteredPointers)
 
   const context: PropertyViewContext = {
+    type: 'property',
+    isFocusNode: false,
     depth: this.depth,
     controller: this.controller,
     params: this.params,
@@ -283,6 +301,8 @@ function showProperty(this: FocusNodeViewContext, show: Show) {
 
 function renderState({ state, focusNode, controller, params }: Required<Render>): TemplateResult | string {
   const context: FocusNodeViewContext = {
+    type: 'focusNode',
+    isFocusNode: true,
     depth: 0,
     state,
     params,
