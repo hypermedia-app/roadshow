@@ -12,6 +12,8 @@ export interface Params extends Record<string, any> {
 }
 
 export interface ViewContext<S, P = any> {
+  type: 'focusNode' | 'property' | 'object'
+  isFocusNode: boolean
   depth: number
   node: MultiPointer
   state: S
@@ -26,18 +28,23 @@ export interface Show {
   viewer?: NamedNode
 }
 
+export interface ObjectViewContext<R = unknown> extends ViewContext<ObjectState<R>, PropertyState> {
+  type: 'object'
+  isFocusNode: false
+}
+
 export interface FocusNodeViewContext<R = unknown> extends ViewContext<FocusNodeState<R>, PropertyState> {
+  type: 'object' | 'focusNode'
+  isFocusNode: true
   show(params: Show): unknown
   setShape(shape: NodeShape): void
 }
 
 export interface PropertyViewContext<R = unknown> extends ViewContext<PropertyState<R>, FocusNodeState> {
+  type: 'property'
+  isFocusNode: false
   object(object: GraphPointer, render?: {
     literal?(this: ViewContext<ObjectState>, content: TemplateResult | string): TemplateResult | string
     resource?(this: FocusNodeViewContext): TemplateResult | string
   }): TemplateResult | string
-}
-
-export interface ObjectViewContext<R = unknown> extends ViewContext<ObjectState<R>, PropertyState> {
-
 }

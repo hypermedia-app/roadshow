@@ -9,7 +9,6 @@ import * as defaultRenderers from './renderers'
 import { RendererNotFoundViewer } from './renderers'
 import { AnyState } from './lib/state'
 import { Renderer } from './lib/render'
-import { Decorates } from './lib/decorator'
 import { ViewContext } from './lib/ViewContext/index'
 
 const LOADER_KEY = 'renderer'
@@ -103,16 +102,7 @@ export class RenderersController implements ReactiveController {
   }
 
   getDecorators(context: ViewContext<AnyState>): Decorator[] {
-    const { state } = context
-    let decorates: Decorates
-
-    if ('properties' in state) {
-      decorates = 'focusNode'
-    } else if ('propertyShape' in state) {
-      decorates = 'property'
-    } else {
-      decorates = 'object'
-    }
+    const decorates = context.type
 
     return this.decorators.filter(decorator => (decorator.decorates.includes(decorates)) && decorator.appliesTo(context))
   }
