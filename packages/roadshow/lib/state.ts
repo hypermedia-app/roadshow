@@ -69,7 +69,7 @@ export interface FocusNodeState<R = unknown> extends ShapedNodeState<R>, Rendere
 
 export type AnyState = ObjectState | FocusNodeState | PropertyState
 
-export const createPropertyState = (focusNode: MultiPointer | undefined, focusNodeShape: NodeShape | undefined) => (arr: PropertyState[], shape: PropertyShape): PropertyState[] => {
+const createPropertyState = (focusNode: MultiPointer | undefined, focusNodeShape: NodeShape | undefined) => (arr: PropertyState[], shape: PropertyShape): PropertyState[] => {
   const path = shape.pointer.out(sh.path)
   if (!graphPointer.isGraphPointer(path)) {
     // eslint-disable-next-line no-console
@@ -104,12 +104,15 @@ interface Create {
   pointer?: GraphPointer<NamedNode | BlankNode>
 }
 
-export function create({ term, pointer, shape, viewer = dash.DetailsViewer }: Create): FocusNodeState {
-  const properties: PropertyShape[] = []
-  if (shape) {
-    properties.push(...getAllProperties(shape))
+export function initializeProperties(shape: NodeShape | undefined, pointer: MultiPointer | undefined): PropertyState[] {
+  if (!shape) {
+    return []
   }
 
+  return [...getAllProperties(shape)].reduce(createPropertyState(pointer, shape), [])
+}
+
+export function create({ term, pointer, shape, viewer = dash.DetailsViewer }: Create): FocusNodeState {
   return {
     shape,
     loading: new Set(),
@@ -117,7 +120,7 @@ export function create({ term, pointer, shape, viewer = dash.DetailsViewer }: Cr
     applicableShapes: [],
     applicableViewers: [],
     shapesLoaded: false,
-    properties: properties.reduce(createPropertyState(pointer, shape), []),
+    properties: initializeProperties(shape, pointer),
     viewer,
     renderers: [],
     decorators: [],
