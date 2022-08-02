@@ -9,7 +9,7 @@ import { dataset } from '@rdf-esm/dataset'
 import { NodeShape } from '@rdfine/shacl'
 import { ResourceIdentifier } from '@tpluscode/rdfine'
 import graphPointer from 'is-graph-pointer'
-import { create, createPropertyState, FocusNodeState, ObjectState, PropertyState, RendererState } from './state'
+import { create, FocusNodeState, initializeProperties, ObjectState, PropertyState, RendererState } from './state'
 import {
   FocusNodeViewContext,
   ObjectViewContext,
@@ -17,11 +17,10 @@ import {
   PropertyViewContext,
   Show,
   ViewContext,
-} from './ViewContext/index'
+} from './ViewContext'
 import type { RoadshowController } from '../RoadshowController'
 import { TRUE } from './clownface'
 import { Decorator } from './decorator'
-import { getAllProperties } from './shape'
 
 export interface RenderFunc<VC extends ViewContext<unknown>> {
   (this: VC, resource: MultiPointer): TemplateResult | string
@@ -133,7 +132,7 @@ function setShape(this: FocusNodeViewContext, shape: NodeShape | ResourceIdentif
 
     this.state.applicableViewers = applicableViewers
     this.state.viewer = viewer
-    this.state.properties = [...getAllProperties(found)].reduce(createPropertyState(this.node, found), [])
+    this.state.properties = initializeProperties(found, this.node)
     this.controller.host.requestUpdate()
   }
 }
@@ -224,6 +223,10 @@ function propertyStateTo(show: Show) {
 }
 
 function showProperty(this: FocusNodeViewContext, show: Show) {
+  if (!this.state.properties.length) {
+    this.state.properties = initializeProperties(this.state.shape, this.state.pointer)
+  }
+
   const property = this.state.properties.find(propertyStateTo(show))
 
   if (!property) {
