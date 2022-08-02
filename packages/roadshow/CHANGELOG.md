@@ -1,5 +1,11 @@
 # @hydrofoil/roadshow
 
+## 0.4.9
+
+### Patch Changes
+
+- f64dc70: In some cases, properties would not be initialized which caused an error when calling `this.show`
+
 ## 0.4.8
 
 ### Patch Changes
