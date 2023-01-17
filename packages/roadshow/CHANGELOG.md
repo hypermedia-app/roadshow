@@ -1,5 +1,11 @@
 # @hydrofoil/roadshow
 
+## 0.4.10
+
+### Patch Changes
+
+- 9c4193c: Added missing import extensiosn which caused errors in strict ES environments
+
 ## 0.4.9
 
 ### Patch Changes
