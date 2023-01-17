@@ -6,10 +6,10 @@ import { dash, sh } from '@tpluscode/rdf-ns-builders'
 import TermMap from '@rdf-esm/term-map'
 import { fromPointer } from '@rdfine/shacl/lib/NodeShape'
 import graphPointer from 'is-graph-pointer'
-import type { Renderer } from './render'
-import type { FocusNodeViewContext, ObjectViewContext, PropertyViewContext, ViewContext } from './ViewContext/index'
-import type { Decorator } from '../index'
-import { getAllProperties } from './shape'
+import type { Renderer } from './render.js'
+import type { FocusNodeViewContext, ObjectViewContext, PropertyViewContext, ViewContext } from './ViewContext/index.js'
+import type { Decorator } from '../index.js'
+import { getAllProperties } from './shape.js'
 
 export interface ViewerScore {
   pointer: GraphPointer<NamedNode>

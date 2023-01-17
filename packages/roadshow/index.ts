@@ -1,18 +1,18 @@
 import type { ReactiveControllerHost } from 'lit'
 import type { GraphPointer } from 'clownface'
 import type { BlankNode, NamedNode, Term } from '@rdfjs/types'
-import type { ShapesLoader } from './ShapesController'
-import type { ResourceLoader } from './ResourcesController'
-import type { PropertyViewContext, ViewContext } from './lib/ViewContext'
-import type { Decorator } from './lib/decorator'
-import { RenderFunc } from './lib/render'
-import './lib/rdfine'
+import type { ShapesLoader } from './ShapesController.js'
+import type { ResourceLoader } from './ResourcesController.js'
+import type { PropertyViewContext, ViewContext } from './lib/ViewContext/index.js'
+import type { Decorator } from './lib/decorator.js'
+import { RenderFunc } from './lib/render.js'
+import './lib/rdfine.js'
 
 export { html, css } from 'lit'
 
-export type { Decorator } from './lib/decorator'
-export type { RenderFunc } from './lib/render'
-export type { FocusNodeViewContext, PropertyViewContext, ObjectViewContext } from './lib/ViewContext'
+export type { Decorator } from './lib/decorator.js'
+export type { RenderFunc } from './lib/render.js'
+export type { FocusNodeViewContext, PropertyViewContext, ObjectViewContext } from './lib/ViewContext/index.js'
 
 export interface Renderer<VC extends ViewContext<any> = ViewContext<any>> {
   id?: NamedNode

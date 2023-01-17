@@ -9,6 +9,9 @@
   "parserOptions": {
     "project": "./tsconfig.json"
   },
+  "plugins": [
+    "require-extensions"
+  ],
   "rules": {
     "import/no-extraneous-dependencies": ["error", {"devDependencies": ["**/test/**", "**/demo/**"]}],
     "no-shadow": "off",
@@ -22,6 +25,11 @@
     "rules": {
       "no-unused-expressions": "warn",
       "babel/no-unused-expressions": "off"
+    }
+  }, {
+    "files": "packages/roadshow/**",
+    "rules": {
+      "require-extensions/require-extensions": "error"
     }
   }]
 }

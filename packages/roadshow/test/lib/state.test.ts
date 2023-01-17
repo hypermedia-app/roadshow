@@ -1,10 +1,10 @@
 import { fromPointer } from '@rdfine/shacl/lib/NodeShape'
 import { expect } from '@open-wc/testing'
 import { dash, rdf, rdfs, schema, sh } from '@tpluscode/rdf-ns-builders'
-import { blankNode } from '../_support/clownface'
-import { create } from '../../lib/state'
-import '../../lib/rdfine'
-import { ex } from '../_support/ns'
+import { blankNode } from '../_support/clownface.js'
+import { create } from '../../lib/state.js'
+import '../../lib/rdfine.js'
+import { ex } from '../_support/ns.js'
 
 describe('@hydrofoil/roadshow/lib/state', () => {
   describe('create', () => {

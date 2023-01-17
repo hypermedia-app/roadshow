@@ -9,7 +9,7 @@ import { dataset } from '@rdf-esm/dataset'
 import { NodeShape } from '@rdfine/shacl'
 import { ResourceIdentifier } from '@tpluscode/rdfine'
 import graphPointer from 'is-graph-pointer'
-import { create, FocusNodeState, initializeProperties, ObjectState, PropertyState, RendererState } from './state'
+import { create, FocusNodeState, initializeProperties, ObjectState, PropertyState, RendererState } from './state.js'
 import {
   FocusNodeViewContext,
   ObjectViewContext,
@@ -17,10 +17,10 @@ import {
   PropertyViewContext,
   Show,
   ViewContext,
-} from './ViewContext'
-import type { RoadshowController } from '../RoadshowController'
-import { TRUE } from './clownface'
-import { Decorator } from './decorator'
+} from './ViewContext/index.js'
+import type { RoadshowController } from '../RoadshowController.js'
+import { TRUE } from './clownface.js'
+import { Decorator } from './decorator.js'
 
 export interface RenderFunc<VC extends ViewContext<unknown>> {
   (this: VC, resource: MultiPointer): TemplateResult | string

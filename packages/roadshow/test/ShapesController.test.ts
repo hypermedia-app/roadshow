@@ -1,10 +1,10 @@
 import sinon from 'sinon'
 import { expect } from '@open-wc/testing'
-import { ShapesController } from '../ShapesController'
-import { RoadshowView } from '../index'
-import { blankNode } from './_support/clownface'
-import { focusNodeState } from './_support/state'
-import { ResourcesController } from '../ResourcesController'
+import { ShapesController } from '../ShapesController.js'
+import { RoadshowView } from '../index.js'
+import { blankNode } from './_support/clownface.js'
+import { focusNodeState } from './_support/state.js'
+import { ResourcesController } from '../ResourcesController.js'
 
 describe('@hydrofoil/roadshow/ShapesController', () => {
   let host: RoadshowView

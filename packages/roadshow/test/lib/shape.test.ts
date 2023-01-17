@@ -3,7 +3,7 @@ import { expect } from '@open-wc/testing'
 import RdfResource from '@tpluscode/rdfine'
 import { ShapeBundle } from '@rdfine/shacl/bundles'
 import { runFactory } from '@roadshow/build-helpers/runFactory'
-import { getAllProperties } from '../../lib/shape'
+import { getAllProperties } from '../../lib/shape.js'
 
 RdfResource.factory.addMixin(...ShapeBundle)
 

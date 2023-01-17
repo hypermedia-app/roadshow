@@ -1,7 +1,7 @@
 import { dash, rdfs, schema, skos } from '@tpluscode/rdf-ns-builders'
 import { html } from 'lit'
 import { NamedNode } from '@rdfjs/types'
-import { Renderer } from '../index'
+import { Renderer } from '../index.js'
 
 interface LabelRenderer extends Renderer {
   predicates: NamedNode[]

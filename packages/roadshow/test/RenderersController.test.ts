@@ -3,11 +3,11 @@ import { expect, nextFrame } from '@open-wc/testing'
 import { roadshow } from '@hydrofoil/vocabularies/builders'
 import sinon from 'sinon'
 import { namedNode } from '@rdf-esm/dataset'
-import { Initializable, RenderersController } from '../RenderersController'
-import { Decorator, RoadshowView } from '..'
-import { AnyState } from '../lib/state'
-import { Renderer } from '../lib/render'
-import { ViewContext } from '../lib/ViewContext/index'
+import { Initializable, RenderersController } from '../RenderersController.js'
+import { Decorator, RoadshowView } from '../index.js'
+import { AnyState } from '../lib/state.js'
+import { Renderer } from '../lib/render.js'
+import { ViewContext } from '../lib/ViewContext/index.js'
 
 describe('@hydrofoil/roadshow/RenderersController', () => {
   let host: RoadshowView

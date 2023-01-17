@@ -1,6 +1,6 @@
 import { dash } from '@tpluscode/rdf-ns-builders'
 import { html } from 'lit'
-import { Renderer } from '../index'
+import { Renderer } from '../index.js'
 
 export const URI: Renderer = {
   viewer: dash.URIViewer,

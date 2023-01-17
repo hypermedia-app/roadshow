@@ -1,8 +1,8 @@
 import { expect, fixture, html } from '@open-wc/testing'
 import { rdfs, schema, skos } from '@tpluscode/rdf-ns-builders'
-import { Label } from '../../renderers/Label'
-import { blankNode, namedNode } from '../_support/clownface'
-import { ViewContext } from '../../lib/ViewContext/index'
+import { Label } from '../../renderers/Label.js'
+import { blankNode, namedNode } from '../_support/clownface.js'
+import { ViewContext } from '../../lib/ViewContext/index.js'
 
 describe('@hydrofoil/roadshow/renderers/Label', () => {
   let context: ViewContext<any>

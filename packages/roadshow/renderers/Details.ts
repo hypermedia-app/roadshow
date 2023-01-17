@@ -1,7 +1,7 @@
 import { dash } from '@tpluscode/rdf-ns-builders'
 import { html } from 'lit'
-import { Renderer } from '../index'
-import { FocusNodeViewContext } from '../lib/ViewContext/index'
+import { Renderer } from '../index.js'
+import { FocusNodeViewContext } from '../lib/ViewContext/index.js'
 
 export const detailsView: Renderer<FocusNodeViewContext> = {
   viewer: dash.DetailsViewer,
