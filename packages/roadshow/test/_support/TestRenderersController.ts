@@ -1,6 +1,6 @@
 import TermMap from '@rdf-esm/term-map'
 import { NamedNode } from '@rdfjs/types'
-import { Renderer, RenderFunc } from '../../index'
+import { Renderer, RenderFunc } from '../../index.js'
 
 export class TestRenderersController {
   private renderers: Map<NamedNode, Renderer<any>>

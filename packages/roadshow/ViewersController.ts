@@ -4,9 +4,9 @@ import TermMap from '@rdf-esm/term-map'
 import { NamedNode, Term } from '@rdfjs/types'
 import * as $rdf from '@rdf-esm/dataset'
 import { dash, rdf } from '@tpluscode/rdf-ns-builders'
-import { RoadshowView, Viewer, ViewerMatcher } from './index'
-import * as defaultViewers from './viewers'
-import { ViewerScore } from './lib/state'
+import { RoadshowView, Viewer, ViewerMatcher } from './index.js'
+import * as defaultViewers from './viewers/index.js'
+import { ViewerScore } from './lib/state.js'
 
 function suitableViewers(resource: GraphPointer) {
   return (matched: ViewerScore[], { pointer, match }: Viewer): ViewerScore[] => {

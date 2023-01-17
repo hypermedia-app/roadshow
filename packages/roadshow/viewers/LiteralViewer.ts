@@ -1,5 +1,5 @@
 import { dash } from '@tpluscode/rdf-ns-builders'
-import { ViewerMatcher } from '../index'
+import { ViewerMatcher } from '../index.js'
 
 export const LiteralViewer: ViewerMatcher = {
   viewer: dash.LiteralViewer,

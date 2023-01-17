@@ -4,9 +4,9 @@ import { fromPointer } from '@rdfine/shacl/lib/NodeShape'
 import { BlankNode, NamedNode } from '@rdfjs/types'
 import { dash, sh } from '@tpluscode/rdf-ns-builders'
 import graphPointer from 'is-graph-pointer'
-import type { RoadshowView } from './index'
-import { FocusNodeState, PropertyState } from './lib/state'
-import { ResourcesController } from './ResourcesController'
+import type { RoadshowView } from './index.js'
+import { FocusNodeState, PropertyState } from './lib/state.js'
+import { ResourcesController } from './ResourcesController.js'
 
 const LOADER_KEY = 'shapes'
 

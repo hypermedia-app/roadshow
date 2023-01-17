@@ -1,5 +1,5 @@
-import { FocusNodeState } from '../../lib/state'
-import { ex } from './ns'
+import { FocusNodeState } from '../../lib/state.js'
+import { ex } from './ns.js'
 
 export function focusNodeState(term = ex.foo, viewer = ex.FooViewer): FocusNodeState {
   return {

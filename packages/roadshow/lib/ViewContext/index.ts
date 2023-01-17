@@ -3,9 +3,9 @@ import type { GraphPointer, MultiPointer } from 'clownface'
 import { TemplateResult } from 'lit'
 import { NodeShape, PropertyShape } from '@rdfine/shacl'
 import { NamedNode } from '@rdfjs/types'
-import type { RoadshowController } from '../../RoadshowController'
-import type { FocusNodeState, ObjectState, PropertyState } from '../state'
-import type { Renderer } from '../render'
+import type { RoadshowController } from '../../RoadshowController.js'
+import type { FocusNodeState, ObjectState, PropertyState } from '../state.js'
+import type { Renderer } from '../render.js'
 
 export interface Params extends Record<string, any> {
   language: string

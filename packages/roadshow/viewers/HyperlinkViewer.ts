@@ -1,5 +1,5 @@
 import { dash, xsd } from '@tpluscode/rdf-ns-builders'
-import { ViewerMatcher } from '../index'
+import { ViewerMatcher } from '../index.js'
 
 export const HyperlinkViewer: ViewerMatcher = {
   viewer: dash.HyperlinkViewer,

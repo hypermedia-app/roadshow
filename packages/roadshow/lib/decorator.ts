@@ -1,6 +1,6 @@
-import type { AnyState } from './state'
-import type { ViewContext } from './ViewContext/index'
-import type { RenderFunc } from '../index'
+import type { AnyState } from './state.js'
+import type { ViewContext } from './ViewContext/index.js'
+import type { RenderFunc } from '../index.js'
 
 export type Decorates = 'focusNode' | 'property' | 'object'
 
