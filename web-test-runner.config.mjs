@@ -1,9 +1,9 @@
-import { esbuildPlugin } from '@web/dev-server-esbuild';
+import { esbuildPlugin } from '@web/dev-server-esbuild'
 import rdfjs from 'rdfjs-eds-plugin'
 import { fromRollup } from '@web/dev-server-rollup'
 import commonjs from '@rollup/plugin-commonjs'
 import fs from 'fs'
-import turtle from '@roadshow/build-helpers/transformTurtle.js'
+import turtle from '@roadshow/build-helpers/transformTurtle.cjs'
 
 const nodeResolveFix = {
   serve(context) {
@@ -18,6 +18,7 @@ const nodeResolveFix = {
 const config = {
   groups: [
     { name: 'core', files: 'packages/roadshow/test/**/*.test.ts' },
+    { name: 'ng', files: 'packages/roadshow-ng/test/**/*.test.ts' }
   ],
   mimeTypes: {
     '**/*.ttl': 'js',

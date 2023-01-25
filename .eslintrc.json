@@ -21,7 +21,7 @@
     "no-param-reassign": ["error", { "props": false }]
   },
   "overrides": [{
-    "files": "**/test/**/*.ts",
+    "files": "**/*.(test|spec).ts",
     "rules": {
       "no-unused-expressions": "warn",
       "babel/no-unused-expressions": "off"

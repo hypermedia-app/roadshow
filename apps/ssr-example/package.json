@@ -1,0 +1,19 @@
+{
+  "name": "ssr-test",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "node --loader ts-node/esm server.ts",
+    "test": "playwright test"
+  },
+  "dependencies": {
+    "@hydrofoil/roadshow-vite": "^0.0.0",
+    "@playwright/test": "^1.29.2",
+    "@tpluscode/rdf-ns-builders": "^2",
+    "@types/express": "^4",
+    "clownface": "^1.5.1",
+    "express": "^4.18.2",
+    "test-data": "*"
+  }
+}

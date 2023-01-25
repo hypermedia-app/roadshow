@@ -1,0 +1,18 @@
+PREFIX ex: <http://example.org/>
+PREFIX schema: <http://schema.org/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX dash: <http://datashapes.org/dash#>
+PREFIX sh: <http://www.w3.org/ns/shacl#>
+prefix roadshow: <https://hypermedia.app/roadshow#>
+
+ex:HeaderOnlyShape
+  a sh:NodeShape ;
+  dash:viewer ex:LayoutViewer ;
+  roadshow:selector "ex-layout" ;
+  sh:property
+  [
+    sh:path schema:title ;
+    sh:group [ schema:identifier "header" ] ;
+    dash:viewer ex:header ;
+  ] ;
+.

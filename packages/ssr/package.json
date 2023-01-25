@@ -1,0 +1,24 @@
+{
+  "name": "@hydrofoil/roadshow-ssr",
+  "version": "0.0.0",
+  "type": "module",
+  "dependencies": {
+    "@hydrofoil/roadshow-ng": "^0.0.0",
+    "@lit-labs/ssr": "^3.0.1",
+    "@rdfjs-elements/formats-pretty": "^0.5.1",
+    "@tpluscode/rdf-ns-builders": "^2.0.1",
+    "get-stream": "^6.0.1",
+    "lit": "^2.6.1",
+    "nanoid": "^4.0.0",
+    "rdf-dataset-ext": "^1.0.1"
+  },
+  "devDependencies": {
+    "@lit-labs/testing": "^0.2.0",
+    "@types/chai": "^4.3.4",
+    "@types/rdf-dataset-ext": "^1.0.3",
+    "chai": "^4.3.7",
+    "ts-node": "^10.9.1"
+  },
+  "main": "index.js",
+  "license": "MIT"
+}

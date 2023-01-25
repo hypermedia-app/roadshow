@@ -1,0 +1,8 @@
+PREFIX ex: <http://example.org/>
+PREFIX dash: <http://datashapes.org/dash#>
+PREFIX schema: <http://schema.org/>
+
+ex:PageWithTitle
+  a schema:WebPage ;
+  schema:title "Test page resource" ;
+.

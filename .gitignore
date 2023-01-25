@@ -4,3 +4,7 @@ dist/
 *.d.ts
 *.map
 coverage/
+/test-results/
+playwright-report/
+playwright/.cache/
+yarn-error.log
