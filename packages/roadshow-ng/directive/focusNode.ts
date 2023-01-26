@@ -1,7 +1,6 @@
 import { Directive, directive } from 'lit/directive.js'
 import type { GraphPointer } from 'clownface'
 import type { BlankNode, NamedNode } from '@rdfjs/types'
-// import { roadshow } from '@hydrofoil/vocabularies/builders'
 import { sh } from '@tpluscode/rdf-ns-builders'
 import { findNodes } from 'clownface-shacl-path'
 import { html } from 'lit'
@@ -21,7 +20,7 @@ class FocusNodeDirective extends Directive {
       values: findNodes(focusNode, propShape.out(sh.path)),
     })}`)
 
-    return html`<ex-layout @click="${() => alert('lol')}">${properties}</ex-layout>`
+    return html`<material-layout>${properties}</material-layout>`
   }
 }
 
