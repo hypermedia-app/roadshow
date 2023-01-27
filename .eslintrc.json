@@ -31,5 +31,10 @@
     "rules": {
       "require-extensions/require-extensions": "error"
     }
+  }, {
+    "files": "apps/ssr-example/**",
+    "rules": {
+      "import/no-extraneous-dependencies": "warn"
+    }
   }]
 }

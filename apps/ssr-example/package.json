@@ -10,9 +10,10 @@
     "build:server": "vite build --outDir dist/server --ssr src/server.ts"
   },
   "dependencies": {
+    "@hydrofoil/roadshow-ssr": "^0.0.0",
     "@hydrofoil/roadshow-vite": "^0.0.0",
-    "@material/mwc-top-app-bar": "^0.27.0",
     "@tpluscode/rdf-ns-builders": "^2",
+    "@vaadin/vaadin": "^23.2.15",
     "clownface": "^1.5.1",
     "express": "^4.18.2",
     "lit": "^2.6.1",

@@ -20,7 +20,7 @@ class FocusNodeDirective extends Directive {
       values: findNodes(focusNode, propShape.out(sh.path)),
     })}`)
 
-    return html`<material-layout>${properties}</material-layout>`
+    return html`<ex-layout>${properties}</ex-layout>`
   }
 }
 
