@@ -1,9 +1,9 @@
 import { expect } from '@open-wc/testing'
 import { dash, rdf, sh } from '@tpluscode/rdf-ns-builders'
+import { ex } from 'test-data/ns.js'
 import { RoadshowController } from '../RoadshowController.js'
 import { RoadshowView } from '../index.js'
 import { blankNode } from './_support/clownface.js'
-import { ex } from './_support/ns.js'
 
 describe('@hydrofoil/roadshow/RoadshowController', () => {
   let view: RoadshowView

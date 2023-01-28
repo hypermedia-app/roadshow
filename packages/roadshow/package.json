@@ -34,7 +34,8 @@
     "@types/rdfjs__term-map": "*",
     "@types/rdfjs__term-set": "*",
     "@types/sinon": "^10.0.2",
-    "sinon": "^11.1.2"
+    "sinon": "^11.1.2",
+    "test-data": "*"
   },
   "scripts": {
     "prepack": "tsc"

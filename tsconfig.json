@@ -24,9 +24,10 @@
   },
   "include": [
     "packages",
-    "apps",
+    "apps/ssr-example",
+    "apps/storybook/global.d.ts",
     "test-setup.js",
     "test-karma-setup.js",
     "web-dev-server.config.mjs"
-  ]
+  ],
 }
