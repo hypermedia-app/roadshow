@@ -26,7 +26,7 @@ class PropertyDirective extends Directive {
 
     if ('renderProperty' in viewer) {
       // TODO introduce value directive
-      content = viewer.renderProperty(values)
+      content = viewer.renderProperty(values.toArray())
     }
 
     if ('renderTerm' in viewer) {

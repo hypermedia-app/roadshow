@@ -1,13 +1,27 @@
 import { html, fixture, expect } from '@open-wc/testing'
 import { runFactory } from '@roadshow/build-helpers/runFactory.js'
-import { ex } from 'test-data/ns.js'
+import { ex } from 'test-data/ns'
 import { view } from '../../directive/view'
+import '../../viewers.js'
+import { viewers } from '../../lib/viewers.js'
+
+const defaultViewers = [...viewers.entries()]
 
 describe('@hydrofoil/roadshow/directive/view', () => {
+  beforeEach(() => {
+    viewers.clear()
+    defaultViewers.forEach(([key, value]) => viewers.set(key, value))
+  })
+
   it('renders', async () => {
     // given
-    const shape = runFactory(await import('test-data/shape/only-header.ttl')).node(ex.HeaderOnlyShape)
-    const focusNode = runFactory(await import('test-data/example/page.ttl')).node(ex.PageWithTitle)
+    const shape = runFactory(await import('test-data/shape/only-header.ttl')).namedNode('shape/only-header')
+    const focusNode = runFactory(await import('test-data/example/page.ttl')).namedNode('example/page')
+    viewers.set(ex.LayoutViewer, {
+      renderFocusNode(pointer, innerContent) {
+        return html`<ex-layout>${innerContent}</ex-layout>`
+      },
+    })
 
     // when
     const result = await fixture(html`${view({ shape, focusNode })}`)

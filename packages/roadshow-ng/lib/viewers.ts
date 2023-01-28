@@ -1,13 +1,13 @@
 import TermMap from '@rdfjs/term-map'
 import type { NamedNode } from '@rdfjs/types'
-import { GraphPointer, MultiPointer } from 'clownface'
+import { GraphPointer } from 'clownface'
 
 export interface SingleViewer {
   renderTerm(pointer: GraphPointer): unknown
 }
 
 export interface MultiViewer {
-  renderProperty(pointer: MultiPointer): unknown
+  renderProperty(values: GraphPointer[]): unknown
 }
 
 export interface FocusNodeViewer {
