@@ -10,6 +10,7 @@ interface ViewArgs {
   focusNode: GraphPointer<NamedNode | BlankNode>
 }
 
+// TODO maybe remove?
 class ViewDirective extends Directive {
   render(arg: ViewArgs) {
     return html`${focusNode(arg)}`

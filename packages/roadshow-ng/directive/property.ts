@@ -1,8 +1,11 @@
 import { directive, Directive } from 'lit/directive.js'
 import { GraphPointer, MultiPointer } from 'clownface'
-import { schema, sh } from '@tpluscode/rdf-ns-builders'
+import { dash, schema, sh } from '@tpluscode/rdf-ns-builders'
+import { roadshow } from '@hydrofoil/vocabularies/builders'
+import type { NamedNode } from '@rdfjs/types'
 import { html } from 'lit'
 import { ifDefined } from 'lit/directives/if-defined.js'
+import { viewers } from '../lib/viewers.js'
 
 interface PropertyArgs {
   shape: GraphPointer
@@ -11,12 +14,31 @@ interface PropertyArgs {
 
 class PropertyDirective extends Directive {
   render({ shape, values }: PropertyArgs) {
-    // const editor = shape.out(dash.viewer).value
-    const slotName = shape.out(sh.group).out(schema.identifier).value
+    const viewerTerm = <NamedNode>shape.out(dash.viewer).term
+    const selector = shape.out(roadshow.selector).value
+    const slot = shape.out(sh.group).out(schema.identifier).value
 
-    const viewers = values.map(value => html`${value.value}`)
+    let content: unknown
+    const viewer = viewers.get(viewerTerm)
+    if (!viewer) {
+      throw new Error(`No viewer found for ${viewerTerm.value}`)
+    }
 
-    return html`<h1 slot="${ifDefined(slotName)}">${viewers}</h1>`
+    if ('renderProperty' in viewer) {
+      // TODO introduce value directive
+      content = viewer.renderProperty(values)
+    }
+
+    if ('renderTerm' in viewer) {
+      content = html`${values.toArray().map(value => html`${viewer.renderTerm(value)}`)}`
+    }
+
+    if (selector === 'h1') {
+      // TODO create HTML tag functions dynamically
+      return html`<h1 slot="${ifDefined(slot)}">${content}</h1>`
+    }
+
+    return content
   }
 }
 

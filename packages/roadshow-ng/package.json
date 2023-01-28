@@ -5,6 +5,11 @@
   "scripts": {
     "prepack": "tsc"
   },
+  "exports": {
+    ".": "./index.js",
+    "./rs-view.js": "./rs-view.js",
+    "./viewers.js": "./viewers.js"
+  },
   "dependencies": {
     "@hydrofoil/vocabularies": "^0.3",
     "@tpluscode/rdf-ns-builders": "^2",

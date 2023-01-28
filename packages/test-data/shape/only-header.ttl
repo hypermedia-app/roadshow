@@ -5,13 +5,14 @@ PREFIX dash: <http://datashapes.org/dash#>
 PREFIX sh: <http://www.w3.org/ns/shacl#>
 prefix roadshow: <https://hypermedia.app/roadshow#>
 
-ex:HeaderOnlyShape
+<shape/only-header>
   a sh:NodeShape ;
-  dash:viewer ex:MaterialLayoutViewer ;
+  dash:viewer ex:LayoutViewer ;
   sh:property
   [
     sh:path schema:title ;
     sh:group [ schema:identifier "header" ] ;
-    dash:viewer ex:header ;
+    dash:viewer dash:LiteralViewer ;
+    roadshow:selector "h1" ;
   ] ;
 .

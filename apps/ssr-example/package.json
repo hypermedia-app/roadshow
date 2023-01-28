@@ -17,6 +17,7 @@
     "clownface": "^1.5.1",
     "express": "^4.18.2",
     "lit": "^2.6.1",
+    "rdf-ext": "^2",
     "test-data": "*"
   },
   "devDependencies": {
