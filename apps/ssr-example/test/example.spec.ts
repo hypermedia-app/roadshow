@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test'
 
 test('simple page', async ({ page }) => {
-  await page.goto('/foo')
+  await page.goto('/example/page')
 
   const h1 = page.getByText('Test page resource')
 

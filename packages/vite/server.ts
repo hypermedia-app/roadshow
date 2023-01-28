@@ -26,12 +26,15 @@ export async function middleware({ modulePath, vite, indexPath, ssrPlaceholder =
       const { render } = await viteServer.ssrLoadModule(modulePath)
 
       const appHtml = await render({ req })
+      if (!appHtml) {
+        return next()
+      }
 
       const html = template.replace(ssrPlaceholder, appHtml)
-      res.status(200).set({ 'Content-Type': 'text/html' }).end(html)
+      return res.status(200).set({ 'Content-Type': 'text/html' }).end(html)
     } catch (e: any) {
       viteServer.ssrFixStacktrace(e)
-      next(e)
+      return next(e)
     }
   })
 

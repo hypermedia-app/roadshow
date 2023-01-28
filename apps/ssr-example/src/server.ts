@@ -10,12 +10,19 @@ import isGraphPointer from 'is-graph-pointer'
 export async function render({ req }: { req: express.Request }) {
   const id = req.originalUrl.substring(1)
 
-  const dataset = await $rdf.dataset().import(loadData(id))
+  const stream = loadData(id)
+  if (!stream) {
+    return undefined
+  }
+  const dataset = await $rdf.dataset().import(stream)
   const pointer = clownface({ dataset }).namedNode(id)
 
   const shape = pointer.out(dash.shape)
   if (isGraphPointer.isNamedNode(shape)) {
-    await dataset.import(loadData(shape.value))
+    const shapeStream = loadData(shape.value)
+    if (shapeStream) {
+      await dataset.import(shapeStream)
+    }
   }
 
   return roadshow.render({ pointer })
