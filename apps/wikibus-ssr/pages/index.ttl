@@ -1,0 +1,16 @@
+base <http://localhost:3000/>
+PREFIX dash: <http://datashapes.org/dash#>
+PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
+PREFIX schema: <http://schema.org/>
+prefix canvas: <https://themes.semicolonweb.com/canvas/>
+
+<>
+  a schema:WebPage ;
+  hydra:title "wikibus.org" ;
+  hydra:description "Online public transport encyclopedia" ;
+  schema:mainEntity <https://new.wikibus.org/> ;
+  dash:shape
+  [
+    dash:viewer canvas:FullWidthPage ;
+  ] ;
+.

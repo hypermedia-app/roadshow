@@ -1,0 +1,44 @@
+vaadin-combo-box-overlay {
+  z-index: 2000;
+}
+
+vaadin-date-picker-overlay {
+  z-index: 10000;
+}
+
+body {
+  --track-color: var(--theme-color);
+}
+
+canvas-header {
+  sl-button::part(base) {
+    background-color: var(--btn-bg-color, var(--secondary));
+  }
+
+  sl-button::part(label), sl-button::part(caret) {
+    color: var(--header-text-color);
+  }
+
+  sl-button::part(label) {
+    font-size: 1.3em;
+  }
+}
+
+section#content {
+  img#main-image {
+    max-width: 300px;
+    float: left;
+    margin-right: 10px;
+    margin-bottom: 5px;
+  }
+}
+
+.sl-toast-stack {
+  top: 105px !important;
+}
+
+@media (max-width: 992px) {
+  .sl-toast-stack {
+    top: 95px !important;
+  }
+}

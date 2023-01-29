@@ -36,5 +36,10 @@
     "rules": {
       "import/no-extraneous-dependencies": "warn"
     }
+  }, {
+    "files": "apps/wikibus-ssr/**",
+    "globals": {
+      "JQueryStatic": "readonly"
+    }
   }]
 }

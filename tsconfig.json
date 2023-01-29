@@ -25,6 +25,7 @@
   "include": [
     "packages",
     "apps/ssr-example",
+    "apps/wikibus-ssr",
     "apps/storybook/global.d.ts",
     "test-setup.js",
     "test-karma-setup.js",

@@ -17,7 +17,7 @@ class FocusNodeDirective extends Directive {
   render({ focusNode, shape }: FocusNodeArgs) {
     const viewerPtr = shape.out(dash.viewer)
     if (!isGraphPointer.isNamedNode(viewerPtr)) {
-      throw new Error('dash:viewer must be a NamedNode')
+      throw new Error(`dash:viewer must be a NamedNode but found ${viewerPtr.value} for shape ${shape.value}`)
     }
 
     const viewer = viewers.get(viewerPtr.term)

@@ -2,12 +2,11 @@ import module from 'module'
 import { fromFile } from 'rdf-utils-fs'
 import type { Stream } from 'rdf-js'
 
-const require = module.createRequire(import.meta.url)
-
-export function loadData(path: string): Stream | null {
+export function loadData(path: string, base = import.meta.url): Stream | null {
+  const require = module.createRequire(base)
   let fullPath: string
   try {
-    fullPath = require.resolve(`./${path}.ttl`)
+    fullPath = require.resolve(`${path}.ttl`)
   } catch (e: any) {
     if (e.message.includes('Cannot find module')) {
       return null

@@ -16,7 +16,7 @@ export abstract class RoadshowViewElement extends LitElement {
   async connectedCallback() {
     const dataGraph = document.querySelector<HTMLScriptElement>(`script[data-view="${this.id}"]`)
     const focusNode = this.getAttribute('focus-node')
-    if (dataGraph && focusNode) {
+    if (dataGraph && focusNode !== null) {
       this.resource = clownface({
         dataset: await this.parse(dataGraph),
       }).namedNode(focusNode)
