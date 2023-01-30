@@ -16,7 +16,7 @@ function isFocusNodeState(state: any): state is FocusNodeState {
 
 export class RoadshowController implements ReactiveController {
   state: FocusNodeState
-  public shapes: ShapesController;
+  public shapes: ShapesController
 
   constructor(
     public host: RoadshowView,

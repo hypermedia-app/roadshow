@@ -18,7 +18,7 @@ describe('@hydrofoil/roadshow/directive/view', () => {
     const shape = runFactory(await import('test-data/shape/only-header.ttl')).namedNode('shape/only-header')
     const focusNode = runFactory(await import('test-data/example/page.ttl')).namedNode('example/page')
     viewers.set(ex.LayoutViewer, {
-      renderFocusNode(pointer, innerContent) {
+      renderElement({ innerContent }) {
         return html`<ex-layout>${innerContent}</ex-layout>`
       },
     })

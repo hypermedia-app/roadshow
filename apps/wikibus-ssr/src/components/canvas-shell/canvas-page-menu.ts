@@ -20,7 +20,7 @@ export class CanvasPageMenu extends CanvasShellBase(LitElement) {
   }
 
   @property({ type: Boolean, reflect: true })
-  open?: boolean
+    open?: boolean
 
   __hideOnOutsideClick: any
 

@@ -21,22 +21,22 @@ export class RoadshowViewElement extends LitElement implements RoadshowView {
   private roadshow: RoadshowController
 
   @property({ type: Object })
-  resource: GraphPointer<BlankNode | NamedNode> | undefined
+    resource: GraphPointer<BlankNode | NamedNode> | undefined
 
   @property({ type: Object })
-  resourceId: NamedNode | undefined
+    resourceId: NamedNode | undefined
 
   @property({ type: Object })
-  params: Partial<Params> = {}
+    params: Partial<Params> = {}
 
   @property({ type: Array })
-  renderers: Renderer[] = []
+    renderers: Renderer[] = []
 
   @property({ type: Array })
-  decorators: Decorator[] | undefined
+    decorators: Decorator[] | undefined
 
   @property({ type: Array })
-  viewers: ViewerMatcher[] = []
+    viewers: ViewerMatcher[] = []
 
   resourceLoader?: ResourceLoader
   shapesLoader?: ShapesLoader

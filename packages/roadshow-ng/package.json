@@ -7,8 +7,8 @@
   },
   "exports": {
     ".": "./index.js",
-    "./rs-view.js": "./rs-view.js",
-    "./viewers.js": "./viewers.js"
+    "./rs-view": "./rs-view.js",
+    "./viewers": "./viewers.js"
   },
   "dependencies": {
     "@hydrofoil/vocabularies": "^0.3",
@@ -25,6 +25,7 @@
   },
   "devDependencies": {
     "@open-wc/testing": "^3.1.2",
+    "@roadshow/build-helpers": "*",
     "@types/rdfjs__dataset": "^2",
     "sinon": "^11",
     "test-data": "*"

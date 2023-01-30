@@ -1,2 +1,2 @@
-import '@hydrofoil/roadshow-ng/viewers.js'
+import '@hydrofoil/roadshow-ng/viewers'
 import './element/ex-layout.js'
