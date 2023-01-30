@@ -21,7 +21,7 @@ class PropertyDirective extends Directive {
     let content: unknown
     const viewer = viewers.get(viewerTerm)
     if (!viewer) {
-      throw new Error(`No viewer found for ${viewerTerm.value}`)
+      throw new Error(`Viewer not found '${viewerTerm?.value}'`)
     }
 
     if ('renderProperty' in viewer) {
@@ -31,6 +31,10 @@ class PropertyDirective extends Directive {
 
     if ('renderTerm' in viewer) {
       content = html`${values.toArray().map(value => html`${viewer.renderTerm(value)}`)}`
+    }
+
+    if ('renderElement' in viewer) {
+      content = html`${values.toArray().map(pointer => html`${viewer.renderElement({ shape, pointer })}`)}`
     }
 
     if (selector === 'h1') {

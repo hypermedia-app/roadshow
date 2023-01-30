@@ -1,7 +1,6 @@
 import { html, LitElement, css } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import CanvasShellBase from './CanvasShellBase'
-import './canvas-icon'
 
 @customElement('canvas-featured-box')
 export class CanvasFeaturedBox extends CanvasShellBase(LitElement) {
@@ -67,12 +66,20 @@ export class CanvasFeaturedBox extends CanvasShellBase(LitElement) {
           top: -5px;
           height: 45px;
         }
+
+        .fbox-icon i {
+          display: flex !important;
+          align-content: center;
+          flex-wrap: wrap;
+          justify-content: center;
+          font-size: 3.9em !important;
+        }
       `,
     ]
   }
 
   public render() {
-    let link = html`<canvas-icon icon="${this.icon}"></canvas-icon> `
+    let link = html`<i><ion-icon name="${this.icon}"></ion-icon></i>`
 
     if (this.href) {
       link = html` <a href="${this.href}">${link}</a> `

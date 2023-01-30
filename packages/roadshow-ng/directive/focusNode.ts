@@ -25,8 +25,8 @@ class FocusNodeDirective extends Directive {
       throw new Error(`Viewer not found ${viewerPtr.value}`)
     }
 
-    if (!('renderFocusNode' in viewer)) {
-      throw new Error('Focus node must be rendered with an ElementViewer')
+    if (!('renderElement' in viewer)) {
+      throw new Error('Focus node must be rendered with an CustomElementViewer')
     }
 
     const properties = shape.out(sh.property).map(propShape => html`${property({
@@ -34,7 +34,11 @@ class FocusNodeDirective extends Directive {
       values: findNodes(focusNode, propShape.out(sh.path)),
     })}`)
 
-    return viewer.renderFocusNode(focusNode, properties)
+    return viewer.renderElement({
+      shape,
+      pointer: focusNode,
+      innerContent: properties,
+    })
   }
 }
 

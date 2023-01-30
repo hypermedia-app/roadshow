@@ -4,12 +4,14 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "prepare": "sass public/allstyle.scss public/allstyle.css",
     "start": "node --loader ts-node/esm server.ts"
   },
   "dependencies": {
     "@hydrofoil/roadshow-ng": "^0.0.0",
     "@hydrofoil/roadshow-ssr": "^0.0.0",
     "@hydrofoil/roadshow-vite": "^0.0.0",
+    "@hydrofoil/shape-to-query": "^0.3.2",
     "@rdfjs-elements/lit-helpers": "^0.3.5",
     "@rdfjs/namespace": "^2.0.0",
     "@tpluscode/rdf-ns-builders": "^2.0.1",
@@ -21,11 +23,13 @@
     "is-graph-pointer": "^1.2.2",
     "lit": "^2",
     "rdf-ext": "^2",
+    "sparql-http-client": "^2.4.2",
     "test-data": "*"
   },
   "devDependencies": {
     "@types/absolute-url": "^1",
     "@types/jquery": "^3.5.16",
+    "@types/sparql-http-client": "^2",
     "sass": "^1.57.1"
   }
 }

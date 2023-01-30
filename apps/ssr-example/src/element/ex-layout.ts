@@ -4,7 +4,6 @@ import '@vaadin/app-layout/vaadin-app-layout.js'
 import { ex } from 'test-data/ns.js'
 import { defineViewer } from '@hydrofoil/roadshow-ng'
 
-@defineViewer(ex.LayoutViewer, 'ex-layout')
 @customElement('ex-layout')
 export class ExLayout extends LitElement {
   render() {
@@ -14,3 +13,5 @@ export class ExLayout extends LitElement {
     `
   }
 }
+
+defineViewer(ex.LayoutViewer, 'ex-layout')

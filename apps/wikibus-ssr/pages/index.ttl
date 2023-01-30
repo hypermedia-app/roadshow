@@ -3,6 +3,9 @@ PREFIX dash: <http://datashapes.org/dash#>
 PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
 PREFIX schema: <http://schema.org/>
 prefix canvas: <https://themes.semicolonweb.com/canvas/>
+PREFIX wba: <https://wikibus.org/api#>
+PREFIX sh: <http://www.w3.org/ns/shacl#>
+prefix roadshow: <https://hypermedia.app/roadshow#>
 
 <>
   a schema:WebPage ;
@@ -10,7 +13,33 @@ prefix canvas: <https://themes.semicolonweb.com/canvas/>
   hydra:description "Online public transport encyclopedia" ;
   schema:mainEntity <https://new.wikibus.org/> ;
   dash:shape
-  [
-    dash:viewer canvas:FullWidthPage ;
-  ] ;
+    [
+      a sh:NodeShape ;
+      dash:viewer canvas:FullWidthPage ;
+      sh:property
+        [
+          sh:path hydra:title ;
+          sh:group _:header ;
+          dash:viewer dash:LiteralViewer ;
+          roadshow:selector "h1" ;
+        ],
+        [
+          sh:path ( schema:mainEntity wba:catalog ) ;
+          sh:name "catalog" ;
+          sh:description "Producers, brands and their products" ;
+          dash:viewer canvas:FeaturedBoxViewer ;
+          canvas:icon "bus" ;
+        ],
+        [
+          sh:path ( schema:mainEntity wba:library ) ;
+          sh:name "library" ;
+          sh:description "Collection of physical and digital media about public transport" ;
+          dash:viewer canvas:FeaturedBoxViewer ;
+          canvas:icon "library" ;
+        ] ;
+    ] ;
+.
+
+_:header
+  schema:identifier "page-title" ;
 .

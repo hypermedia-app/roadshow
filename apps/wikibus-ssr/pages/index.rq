@@ -1,0 +1,11 @@
+CONSTRUCT {
+  <https://new.wikibus.org/> <https://wikibus.org/api#catalog> ?resource_0 .
+  <https://new.wikibus.org/> <https://wikibus.org/api#library> ?resource_1 .
+}
+WHERE {
+  {
+    <https://new.wikibus.org/> <https://wikibus.org/api#catalog> ?resource_0 .
+  } UNION {
+    <https://new.wikibus.org/> <https://wikibus.org/api#library> ?resource_1 .
+  }
+}

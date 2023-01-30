@@ -1,4 +1,4 @@
-import { css, LitElement, unsafeCSS } from 'lit'
+import { css, isServer, LitElement, unsafeCSS } from 'lit'
 import bootstrap from '../../css/bootstrap.css?inline'
 import style from '../../style.scss?inline'
 import dark from '../../sass/dark.scss?inline'
@@ -13,13 +13,17 @@ export interface CanvasShellBase {
 
 type ReturnConstructor = new (...args: any[]) => LitElement & CanvasShellBase
 
+const baseStyle = isServer
+  ? css`@import '/allstyle.css';`
+  : css`${unsafeCSS(bootstrap)} ${unsafeCSS(style)} ${unsafeCSS(dark)} ${unsafeCSS(rs)} ${unsafeCSS(fonts)}`
+
 export default function mixin<B extends ShellConstructor>(Base: B): B & ReturnConstructor {
   return class CanvasShellElement extends Base {
     private _$: JQueryStatic | null = null
 
     public static get styles() {
       return css`
-        ${unsafeCSS(bootstrap)} ${unsafeCSS(style)} ${unsafeCSS(dark)} ${unsafeCSS(rs)} ${unsafeCSS(fonts)}
+        ${baseStyle}
       `
     }
 

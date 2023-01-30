@@ -10,8 +10,12 @@ export interface MultiViewer {
   renderProperty(values: GraphPointer[]): unknown
 }
 
-export interface FocusNodeViewer {
-  renderFocusNode(pointer: GraphPointer, innerContent?: unknown) : unknown
+export interface CustomElementViewer {
+  renderElement(arg: {
+    shape: GraphPointer
+    pointer: GraphPointer
+    innerContent?: unknown
+  }) : unknown
 }
 
-export const viewers = new TermMap<NamedNode, SingleViewer | MultiViewer | FocusNodeViewer>()
+export const viewers = new TermMap<NamedNode, SingleViewer | MultiViewer | CustomElementViewer>()
