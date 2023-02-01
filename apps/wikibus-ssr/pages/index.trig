@@ -1,0 +1,93 @@
+prefix ex: <http://example.org/>
+base <http://localhost:3000/>
+PREFIX dash: <http://datashapes.org/dash#>
+PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
+PREFIX schema: <http://schema.org/>
+prefix canvas: <https://themes.semicolonweb.com/canvas/>
+PREFIX wba: <https://wikibus.org/api#>
+PREFIX sh: <http://www.w3.org/ns/shacl#>
+prefix roadshow: <https://hypermedia.app/roadshow#>
+
+graph <> {
+  <>
+    a schema:WebPage ;
+    hydra:title "wikibus.org" ;
+    hydra:description "Online public transport encyclopedia" ;
+    schema:mainEntity <https://new.wikibus.org/> ;
+    ex:query <file:index.rq> ;
+    dash:shape
+      [
+        a sh:NodeShape ;
+        dash:viewer canvas:FullWidthPage ;
+        sh:property
+          [
+            sh:path hydra:title ;
+            sh:group _:header ;
+            dash:viewer dash:LiteralViewer ;
+            roadshow:selector "h1" ;
+          ],
+          [
+            sh:path ( schema:mainEntity wba:catalog ) ;
+            sh:name "catalog" ;
+            sh:description "Producers, brands and their products" ;
+            dash:viewer canvas:FeaturedBoxViewer ;
+            canvas:icon "bus" ;
+          ],
+          [
+            sh:path ( schema:mainEntity wba:library ) ;
+            sh:name "library" ;
+            sh:description "Collection of physical and digital media about public transport" ;
+            dash:viewer canvas:FeaturedBoxViewer ;
+            canvas:icon "library" ;
+          ] ;
+      ] ;
+  .
+
+  _:header
+    schema:identifier "page-title" ;
+  .
+}
+
+graph <catalog> {
+  <catalog>
+    a schema:WebPage ;
+    hydra:title "Wikibus.org Catalog" ;
+    hydra:description "Information about manufacturers, brands, and vehicles" ;
+    schema:mainEntity <https://new.wikibus.org/catalog> ;
+    ex:query <file:catalog.rq> ;
+    dash:shape
+      [
+        a sh:NodeShape ;
+        dash:viewer canvas:FullWidthPage ;
+        sh:property
+          [
+            sh:path hydra:title ;
+            sh:group _:header ;
+            dash:viewer dash:LiteralViewer ;
+            roadshow:selector "h1" ;
+          ],
+          [
+            sh:path ( schema:mainEntity wba:vehicles ) ;
+            sh:name "vehicles" ;
+            dash:viewer canvas:FeaturedBoxViewer ;
+            canvas:icon "bus" ;
+          ],
+          [
+            sh:path ( schema:mainEntity wba:brands ) ;
+            sh:name "brands" ;
+            dash:viewer canvas:FeaturedBoxViewer ;
+            canvas:icon "star-outline" ;
+          ],
+          [
+            sh:path ( schema:mainEntity wba:companies ) ;
+            sh:name "companies" ;
+            dash:viewer canvas:FeaturedBoxViewer ;
+            canvas:icon "business-outline" ;
+          ] ;
+      ] ;
+  .
+
+  _:header
+    schema:identifier "page-title" ;
+  .
+}

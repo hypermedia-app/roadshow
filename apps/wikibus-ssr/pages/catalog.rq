@@ -1,0 +1,14 @@
+CONSTRUCT {
+  <https://new.wikibus.org/catalog> <https://wikibus.org/api#vehicles> ?resource_0 .
+  <https://new.wikibus.org/catalog> <https://wikibus.org/api#brands> ?resource_1 .
+  <https://new.wikibus.org/catalog> <https://wikibus.org/api#companies> ?resource_2 .
+}
+WHERE {
+  {
+    <https://new.wikibus.org/catalog> <https://wikibus.org/api#vehicles> ?resource_0 .
+  } UNION {
+    <https://new.wikibus.org/catalog> <https://wikibus.org/api#brands> ?resource_1 .
+  } UNION {
+    <https://new.wikibus.org/catalog> <https://wikibus.org/api#companies> ?resource_2 .
+  }
+}

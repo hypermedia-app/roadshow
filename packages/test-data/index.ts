@@ -6,7 +6,7 @@ export function loadData(path: string, base = import.meta.url): Stream | null {
   const require = module.createRequire(base)
   let fullPath: string
   try {
-    fullPath = require.resolve(`${path}.ttl`)
+    fullPath = require.resolve(`${path}`)
   } catch (e: any) {
     if (e.message.includes('Cannot find module')) {
       return null
