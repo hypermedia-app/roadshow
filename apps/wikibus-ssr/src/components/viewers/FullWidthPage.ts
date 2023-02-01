@@ -22,6 +22,16 @@ export class FullWidthPage extends CanvasShellBase(LitElement) {
         font-size: 28px;
         text-transform: uppercase;
       }
+
+      #content slot {
+        display: flex;
+        flex-wrap: wrap;
+        align-content: space-around;
+      }
+
+      #content slot::slotted(*) {
+        flex: 1;
+      }
     `
   }
 
