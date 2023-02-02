@@ -110,7 +110,7 @@ label {
 	display: inline-block;
 	font-size: 13px;
 	font-weight: 700;
-	font-family: $heading-font;
+	font-family: var(--heading-font);
 	text-transform: uppercase;
 	letter-spacing: 1px;
 	color: #555;
@@ -748,7 +748,7 @@ button {
 		font-weight: bold;
 		text-align: right;
 		text-transform: uppercase;
-		font-family: $heading-font;
+		font-family: var(--heading-font);
 		letter-spacing: 2px;
 	}
 	.last-name {

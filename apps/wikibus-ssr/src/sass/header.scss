@@ -84,7 +84,7 @@ body.stretched #header.full-header .container {
 #logo {
 	position: relative;
 	float: left;
-	font-family: $heading-font;
+	font-family: var(--heading-font);
 	font-size: 36px;
 	line-height: 100%;
 	margin-right: 40px;
@@ -207,7 +207,7 @@ body.stretched #header.full-header .container {
 	font-size: $primary-menu-font-size;
 	letter-spacing: $primary-menu-font-spacing;
 	text-transform: $primary-menu-font-tt;
-	font-family: $heading-font;
+	font-family: var(--heading-font);
 	@include transition(margin .4s ease, padding .4s ease);
   cursor: pointer;
 }
@@ -834,7 +834,7 @@ body:not(.device-md):not(.device-sm):not(.device-xs) #primary-menu.style-2.cente
   color: var(--body-color);
 	font-weight: 700;
 	margin-top: 0 !important;
-	font-family: $heading-font;
+	font-family: var(--heading-font);
 	letter-spacing: 2px;
 }
 

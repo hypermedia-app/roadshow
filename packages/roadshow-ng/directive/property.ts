@@ -42,6 +42,11 @@ class PropertyDirective extends Directive {
       return html`<h1 slot="${ifDefined(slot)}">${content}</h1>`
     }
 
+    if (selector === 'span') {
+      // TODO create HTML tag functions dynamically
+      return html`<span slot="${ifDefined(slot)}">${content}</span>`
+    }
+
     return content
   }
 }

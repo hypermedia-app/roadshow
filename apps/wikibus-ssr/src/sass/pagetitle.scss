@@ -26,16 +26,8 @@
 		font-weight: 600;
 		letter-spacing: 1px;
 		color: #333;
-		font-size: $page-title-size;
+		font-size: var(--page-title-size);
 		text-transform: uppercase;
-	}
-
-	span {
-		display: block;
-		margin-top: 10px;
-		font-weight: 300;
-		color: #777;
-		font-size: $page-title-subtitle-size;
 	}
 }
 

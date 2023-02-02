@@ -27,6 +27,12 @@ graph <> {
             roadshow:selector "h1" ;
           ],
           [
+            sh:path hydra:description ;
+            sh:group _:header ;
+            dash:viewer dash:LiteralViewer ;
+            roadshow:selector "span" ; # TODO: default container for dash:viewers
+          ],
+          [
             sh:path ( schema:mainEntity wba:catalog ) ;
             sh:name "catalog" ;
             sh:description "Producers, brands and their products" ;
@@ -65,6 +71,12 @@ graph <catalog> {
             sh:group _:header ;
             dash:viewer dash:LiteralViewer ;
             roadshow:selector "h1" ;
+          ],
+          [
+            sh:path hydra:description ;
+            sh:group _:header ;
+            dash:viewer dash:LiteralViewer ;
+            roadshow:selector "span" ;
           ],
           [
             sh:path ( schema:mainEntity wba:vehicles ) ;

@@ -19,8 +19,17 @@ export class FullWidthPage extends CanvasShellBase(LitElement) {
         font-weight: 600;
         letter-spacing: 1px;
         color: rgb(51, 51, 51);
-        font-size: 28px;
+        font-size: 28px !important;
         text-transform: uppercase;
+        font-family: var(--heading-font);
+      }
+
+      slot[name="page-title"]::slotted(span) {
+        display: block;
+        margin-top: 10px;
+        font-weight: 300;
+        color: #777;
+        font-size: var(--page-title-subtitle-size);
       }
 
       #content slot {

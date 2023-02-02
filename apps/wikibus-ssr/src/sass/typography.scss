@@ -84,7 +84,7 @@ h6 {
 	font-weight: 600;
 	line-height: $line-height-base;
 	margin: 0 0 30px 0;
-	font-family: $heading-font;
+	font-family: var(--heading-font);
 }
 
 h5,

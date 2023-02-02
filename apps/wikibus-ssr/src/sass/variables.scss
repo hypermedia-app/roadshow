@@ -9,6 +9,9 @@
   --heading-color: #444;
   --footer-color: #777;
   --footer-color-light: #999;
+  --page-title-subtitle-size:	18px;
+  --page-title-size: 28px;
+  --heading-font: 'Raleway', sans-serif;
 }
 
 //-------------------- Line Height Variables --------------------//
@@ -28,7 +31,6 @@ $margin-big:                    80px;
 //-------------------- Font Families --------------------//
 
 $body-font:                     'Lato', sans-serif;
-$heading-font:                  'Raleway', sans-serif;
 $secondary-font:                'Crete Round', serif;
 
 
@@ -88,7 +90,7 @@ $side-header-bg:                #FFF;
 $primary-menu-padding:					( $header-height - 22 ) / 2;
 $sticky-menu-padding:					( $sticky-header-height - 22 ) / 2;
 
-$primary-menu-font:             		$heading-font;
+$primary-menu-font:             		var(--heading-font);
 $primary-menu-font-weight:      		bold;
 $primary-menu-font-size:        		13px;
 $primary-menu-font-tt:          		uppercase;
@@ -104,7 +106,7 @@ $primary-menu-submenu-font-weight:      700;
 
 
 // Primary Mega menu
-$mega-menu-title:               		$heading-font;
+$mega-menu-title:               		var(--heading-font);
 
 
 
@@ -116,9 +118,6 @@ $page-title-mini-padding:				20px;
 
 $page-title-bg:							#F5F5F5;
 $page-title-bg-dark:					#333;
-
-$page-title-size:						28px;
-$page-title-subtitle-size:				18px;
 
 $page-title-parallax-size:				40px;
 $page-title-parallax-subtitle-size:		22px;

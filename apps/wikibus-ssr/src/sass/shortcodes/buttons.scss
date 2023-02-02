@@ -85,7 +85,7 @@ body:not(.device-touch) .button {
 	font-size: 22px;
 	height: auto;
 	line-height: 1;
-	font-family: $heading-font;
+	font-family: var(--heading-font);
 }
 
 .button.button-desc span {
