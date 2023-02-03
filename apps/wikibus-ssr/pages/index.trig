@@ -25,12 +25,14 @@ graph <> {
             sh:group _:header ;
             dash:viewer dash:LiteralViewer ;
             roadshow:selector "h1" ;
+            sh:order 1 ;
           ],
           [
             sh:path hydra:description ;
             sh:group _:header ;
             dash:viewer dash:LiteralViewer ;
             roadshow:selector "span" ; # TODO: default container for dash:viewers
+            sh:order 2 ;
           ],
           [
             sh:path ( schema:mainEntity wba:catalog ) ;
@@ -38,6 +40,7 @@ graph <> {
             sh:description "Producers, brands and their products" ;
             dash:viewer canvas:FeaturedBoxViewer ;
             canvas:icon "bus" ;
+            sh:order 3 ;
           ],
           [
             sh:path ( schema:mainEntity wba:library ) ;
@@ -45,6 +48,7 @@ graph <> {
             sh:description "Collection of physical and digital media about public transport" ;
             dash:viewer canvas:FeaturedBoxViewer ;
             canvas:icon "library" ;
+            sh:order 4 ;
           ] ;
       ] ;
   .
@@ -71,30 +75,35 @@ graph <catalog> {
             sh:group _:header ;
             dash:viewer dash:LiteralViewer ;
             roadshow:selector "h1" ;
+            sh:order 1 ;
           ],
           [
             sh:path hydra:description ;
             sh:group _:header ;
             dash:viewer dash:LiteralViewer ;
             roadshow:selector "span" ;
+            sh:order 2 ;
           ],
           [
             sh:path ( schema:mainEntity wba:vehicles ) ;
             sh:name "vehicles" ;
             dash:viewer canvas:FeaturedBoxViewer ;
             canvas:icon "bus" ;
+            sh:order 3 ;
           ],
           [
             sh:path ( schema:mainEntity wba:brands ) ;
             sh:name "brands" ;
             dash:viewer canvas:FeaturedBoxViewer ;
             canvas:icon "star-outline" ;
+            sh:order 4 ;
           ],
           [
             sh:path ( schema:mainEntity wba:companies ) ;
             sh:name "companies" ;
             dash:viewer canvas:FeaturedBoxViewer ;
             canvas:icon "business-outline" ;
+            sh:order 5 ;
           ] ;
       ] ;
   .

@@ -1538,7 +1538,7 @@
     clownface "^1"
     once "^1.4.0"
 
-"@tpluscode/sparql-builder@^0.3":
+"@tpluscode/sparql-builder@^0.3", "@tpluscode/sparql-builder@^0.3.26":
   version "0.3.26"
   resolved "https://registry.yarnpkg.com/@tpluscode/sparql-builder/-/sparql-builder-0.3.26.tgz#d21dec44f549adfd74786a895766486d1b01bf32"
   integrity sha512-LwCz852OJcENTdhjqnuNMajCYkNZ9ONXAAZiSRELQtjlPBePpqs9korMIM9MmlO/Rwxnpxe5q8zO79muoph5fQ==
@@ -1982,13 +1982,6 @@
   integrity sha512-l6kcSp57s0K4kGEWqjGR/LEe/Fya11Kd5S9Ta8gfIiRyESmvvA8JePPaTnq4r0MT6FKvNMJ7/KS15B85Fxm5ng==
   dependencies:
     rdf-js "^4.0.2"
-
-"@types/through2@^2.0.38":
-  version "2.0.38"
-  resolved "https://registry.yarnpkg.com/@types/through2/-/through2-2.0.38.tgz#a4e957b5a41dd8d2bd01d6d1bed2b29a22db2853"
-  integrity sha512-YFu+nHmjxMurkH1BSzA0Z1WrKDAY8jUKPZctNQn7mc+/KKtp2XxnclHFXxdB1m7Iqnzb5aywgP8TMK283LezGQ==
-  dependencies:
-    "@types/node" "*"
 
 "@types/trusted-types@^2.0.2":
   version "2.0.2"
@@ -7310,6 +7303,11 @@ log-update@^4.0.0:
     slice-ansi "^4.0.0"
     wrap-ansi "^6.2.0"
 
+loglevel@^1.8.1:
+  version "1.8.1"
+  resolved "https://registry.yarnpkg.com/loglevel/-/loglevel-1.8.1.tgz#5c621f83d5b48c54ae93b6156353f555963377b4"
+  integrity sha512-tCRIJM51SHjAayKwC+QAg8hT8vg6z7GSgLJKGvzuPb1Wc+hLzqtuVLxp6/HzSPOozuK+8ErAhy7U/sVzw8Dgfg==
+
 loose-envify@^1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/loose-envify/-/loose-envify-1.4.0.tgz#71ee51fa7be4caec1a63839f7e682d8132d30caf"
@@ -8465,7 +8463,7 @@ readable-error@^1.0.0:
   dependencies:
     readable-stream "^2.3.3"
 
-"readable-stream@2 || 3", readable-stream@3, readable-stream@^3.0.2, readable-stream@^3.1.1, readable-stream@^3.4.0, readable-stream@^3.5.0, readable-stream@^3.6.0:
+"readable-stream@2 || 3", readable-stream@^3.0.2, readable-stream@^3.1.1, readable-stream@^3.4.0, readable-stream@^3.5.0, readable-stream@^3.6.0:
   version "3.6.0"
   resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-3.6.0.tgz#337bbda3adc0706bd3e024426a286d4b4b2c9198"
   integrity sha512-BViHy7LKeTz4oNnkcLJ+lVSL6vpiFeX6/d3oSH8zCW7UxP2onchk+vTGB143xuFjHS3deTgkKoXXymXqymiIdA==
@@ -9376,13 +9374,6 @@ through2@^3.0.1:
   dependencies:
     inherits "^2.0.4"
     readable-stream "2 || 3"
-
-through2@^4.0.2:
-  version "4.0.2"
-  resolved "https://registry.yarnpkg.com/through2/-/through2-4.0.2.tgz#a7ce3ac2a7a8b0b966c80e7c49f0484c3b239764"
-  integrity sha512-iOqSav00cVxEEICeD7TjLB1sueEL+81Wpzp2bY17uZjZN0pWZPuo4suZ/61VujxmqSGFfgOcNuTZ85QJwNZQpw==
-  dependencies:
-    readable-stream "3"
 
 through@2, through@^2.3.8:
   version "2.3.8"

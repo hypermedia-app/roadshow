@@ -20,6 +20,7 @@
     "clownface-shacl-path": "^1.4.0",
     "is-graph-pointer": "^1.2.1",
     "lit": "^2.6.1",
+    "loglevel": "^1.8.1",
     "rdf-dataset-ext": "^1.0.1",
     "string-to-stream": "^3.0.1"
   },

@@ -5,6 +5,8 @@ import { roadshow } from '@hydrofoil/vocabularies/builders'
 import type { NamedNode } from '@rdfjs/types'
 import { html } from 'lit'
 import { ifDefined } from 'lit/directives/if-defined.js'
+import { toSparql } from 'clownface-shacl-path'
+import { info } from 'loglevel'
 import { viewers } from '../lib/viewers.js'
 
 interface PropertyArgs {
@@ -14,6 +16,8 @@ interface PropertyArgs {
 
 class PropertyDirective extends Directive {
   render({ shape, values }: PropertyArgs) {
+    info(`Property path: ${toSparql(shape.out(sh.path)).toString({ prologue: false })}`)
+
     const viewerTerm = <NamedNode>shape.out(dash.viewer).term
     const selector = shape.out(roadshow.selector).value
     const slot = shape.out(sh.group).out(schema.identifier).value
