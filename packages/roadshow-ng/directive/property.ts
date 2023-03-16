@@ -33,12 +33,16 @@ class PropertyDirective extends Directive {
       content = viewer.renderProperty(values.toArray())
     }
 
-    if ('renderTerm' in viewer) {
-      content = html`${values.toArray().map(value => html`${viewer.renderTerm(value)}`)}`
-    }
-
     if ('renderElement' in viewer) {
-      content = html`${values.toArray().map(pointer => html`${viewer.renderElement({ shape, pointer })}`)}`
+      content = html`${values.toArray().map((pointer) => {
+        const innerContent = viewer.renderInner?.({ pointer })
+
+        return html`${viewer.renderElement({
+          shape,
+          pointer,
+          innerContent,
+        })}`
+      })}`
     }
 
     if (selector === 'h1') {

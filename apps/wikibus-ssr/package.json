@@ -11,7 +11,7 @@
     "@hydrofoil/roadshow-ng": "^0.0.0",
     "@hydrofoil/roadshow-ssr": "^0.0.0",
     "@hydrofoil/roadshow-vite": "^0.0.0",
-    "@hydrofoil/shape-to-query": "^0.3.2",
+    "@hydrofoil/shape-to-query": "^0.5",
     "@rdfjs-elements/lit-helpers": "^0.3.5",
     "@rdfjs/namespace": "^2.0.0",
     "@tpluscode/rdf-ns-builders": "^2.0.1",

@@ -2,7 +2,8 @@ import type { NamedNode } from '@rdfjs/types'
 import { html } from 'lit'
 import type { GraphPointer } from 'clownface'
 import { ifDefined } from 'lit/directives/if-defined.js'
-import { CustomElementViewer, SingleViewer, MultiViewer, viewers } from './viewers.js'
+import { schema, sh } from '@tpluscode/rdf-ns-builders'
+import { SingleViewer, MultiViewer, viewers } from './viewers.js'
 
 interface MapAttributeFn {
   (arg: { shape: GraphPointer; pointer: GraphPointer }): string | boolean | undefined
@@ -10,11 +11,12 @@ interface MapAttributeFn {
 
 interface CustomElementViewerDefinition {
   mapAttributes?: Record<string, MapAttributeFn>
+  renderInner?(arg: {pointer: GraphPointer}): unknown
 }
 
-export function defineViewer(viewerUri: NamedNode, viewer: SingleViewer | MultiViewer): void
+export function defineViewer(viewerUri: NamedNode, viewer: MultiViewer): void
 export function defineViewer(viewerUri: NamedNode, tagName: string, viewer?: CustomElementViewerDefinition): void
-export function defineViewer(viewerUri: NamedNode, arg: string | SingleViewer | MultiViewer, viewer?: CustomElementViewerDefinition): void {
+export function defineViewer(viewerUri: NamedNode, arg: string | MultiViewer, viewer?: CustomElementViewerDefinition): void {
   if (typeof arg === 'string') {
     viewers.set(viewerUri, createElementViewer(arg, viewer))
     return
@@ -23,7 +25,7 @@ export function defineViewer(viewerUri: NamedNode, arg: string | SingleViewer | 
   viewers.set(viewerUri, arg)
 }
 
-function createElementViewer(tagName: string, { mapAttributes = {} }: CustomElementViewerDefinition = {}): CustomElementViewer {
+function createElementViewer(tagName: string, { mapAttributes = {}, renderInner }: CustomElementViewerDefinition = {}): SingleViewer {
   const argumentBindings = Object.keys(mapAttributes)
     .map(attr => `${attr}="$\{ifDefined(mapAttributes['${attr}'](arg))}"`)
     .join(' ')
@@ -35,14 +37,16 @@ function createElementViewer(tagName: string, { mapAttributes = {} }: CustomElem
     'arg',
     `
         const { html, ifDefined } = lit
-        const { mapAttributes } = ctx
+        const { mapAttributes, ns } = ctx
         const { shape, innerContent } = arg
-        return html\`<${tagName} ${argumentBindings}>$\{innerContent}</${tagName}>\`
+        const slot = shape.out(ns.sh.group).out(ns.schema.identifier).value
+        return html\`<${tagName} ${argumentBindings} slot="$\{ifDefined(slot)}">$\{innerContent}</${tagName}>\`
     `,
   )
-    .bind(null, { html, ifDefined }, { mapAttributes })
+    .bind(null, { html, ifDefined }, { mapAttributes, ns: { sh, schema } })
 
   return {
     renderElement,
+    renderInner,
   }
 }

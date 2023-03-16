@@ -673,16 +673,16 @@
   resolved "https://registry.yarnpkg.com/@humanwhocodes/object-schema/-/object-schema-1.2.1.tgz#b520529ec21d8e5945a1851dfd1c32e94e39ff45"
   integrity sha512-ZnQMnLV4e7hDlUvw8H+U8ASL02SS2Gn6+9Ac3wGGLIe7+je2AeAOxPY+izIPJDfFDb7eDjev0Us8MO1iFRN8hA==
 
-"@hydrofoil/shape-to-query@^0.3.2":
-  version "0.3.2"
-  resolved "https://registry.yarnpkg.com/@hydrofoil/shape-to-query/-/shape-to-query-0.3.2.tgz#ccda2cd8e78df7ad5cee62956f7a08fa4cf83559"
-  integrity sha512-fCTAz27wApzSXxlqU4Yw2mGudsdCVX+WqEx9qaSXE9mNkHS6DghwqgyK3jK9o9M2Qy8/uyejBFc8vvNvAzOOZA==
+"@hydrofoil/shape-to-query@^0.4":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@hydrofoil/shape-to-query/-/shape-to-query-0.4.0.tgz#b5e71d6559adfcdaab62a3378f6607b84968b381"
+  integrity sha512-2/Cs7claJnHUN3w4Py9wuf4hJatu6OoRflzH7rRnU8X5xh9m0JbxxoWVgSb0NE3WybO+gMBG5cDXuUfEF8EBRA==
   dependencies:
     "@rdfjs/data-model" "^1"
-    "@rdfjs/term-set" "^1"
+    "@rdfjs/term-map" "^1"
     "@tpluscode/rdf-ns-builders" "^2.0.1"
-    "@tpluscode/rdf-string" "^0.2.26"
-    "@tpluscode/sparql-builder" "^0.3"
+    "@tpluscode/sparql-builder" "^0.3.27"
+    clownface-shacl-path "^1.5.1"
     is-graph-pointer "^1.2.2"
 
 "@hydrofoil/vocabularies@^0.3", "@hydrofoil/vocabularies@^0.3.0":
@@ -1370,6 +1370,13 @@
   resolved "https://registry.yarnpkg.com/@rdfjs/sink/-/sink-1.0.3.tgz#cdbb4ecf0ff34e6ad6c301a5bc221508c820568c"
   integrity sha512-2KfYa8mAnptRNeogxhQqkWNXqfYVWO04jQThtXKepySrIwYmz83+WlevQtA4VDLFe+kFd2TwgL29ekPe5XVUfA==
 
+"@rdfjs/term-map@^1":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@rdfjs/term-map/-/term-map-1.1.0.tgz#253b863ca3f8c0f8c3b05ec5df301c6a0a05ba58"
+  integrity sha512-utCLVQEZdEL664XoYuBQwMIk0Q5MD6qNPEt12DcmuAlQUS0b0kQ+WL50wyJP1BpWYjOJLokIVTUtphZWnj25BQ==
+  dependencies:
+    "@rdfjs/to-ntriples" "^2.0.0"
+
 "@rdfjs/term-map@^1.0.0":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@rdfjs/term-map/-/term-map-1.0.1.tgz#5d929c5c98ef213e408275effe58abc24b7ab40a"
@@ -1384,7 +1391,7 @@
   dependencies:
     "@rdfjs/to-ntriples" "^2.0.0"
 
-"@rdfjs/term-set@^1", "@rdfjs/term-set@^1.0.1":
+"@rdfjs/term-set@^1.0.1":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@rdfjs/term-set/-/term-set-1.1.0.tgz#36adb73683262e94f135f0bb0cdf71d983e70960"
   integrity sha512-QQ4yzVe1Rvae/GN9SnOhweHNpaxQtnAjeOVciP/yJ0Gfxtbphy2tM56ZsRLV04Qq5qMcSclZIe6irYyEzx/UwQ==
@@ -1538,7 +1545,7 @@
     clownface "^1"
     once "^1.4.0"
 
-"@tpluscode/sparql-builder@^0.3", "@tpluscode/sparql-builder@^0.3.26":
+"@tpluscode/sparql-builder@^0.3.26":
   version "0.3.26"
   resolved "https://registry.yarnpkg.com/@tpluscode/sparql-builder/-/sparql-builder-0.3.26.tgz#d21dec44f549adfd74786a895766486d1b01bf32"
   integrity sha512-LwCz852OJcENTdhjqnuNMajCYkNZ9ONXAAZiSRELQtjlPBePpqs9korMIM9MmlO/Rwxnpxe5q8zO79muoph5fQ==
@@ -1548,6 +1555,19 @@
     "@rdfjs/types" "*"
     "@tpluscode/rdf-ns-builders" "^2.0.0"
     "@tpluscode/rdf-string" "^0.2.27"
+    debug "^4.1.1"
+
+"@tpluscode/sparql-builder@^0.3.27":
+  version "0.3.27"
+  resolved "https://registry.yarnpkg.com/@tpluscode/sparql-builder/-/sparql-builder-0.3.27.tgz#e09abff1accd98c5ea951f45430b4e174c46a026"
+  integrity sha512-FS9MnZwXgc4jGYUqZg6cKJCRQhRoUwilSngTncRQiFPScdSNMbxGU3GPs0EGScqolXWIYSNhjNv2y2oq4ICkiA==
+  dependencies:
+    "@rdf-esm/data-model" "^0.5.4"
+    "@rdf-esm/term-set" "^0.5.0"
+    "@rdfjs/types" "*"
+    "@tpluscode/rdf-ns-builders" "^2.0.0"
+    "@tpluscode/rdf-string" "^0.2.27"
+    "@types/sparql-http-client" "^2"
     debug "^4.1.1"
 
 "@tsconfig/node10@^1.0.7":
@@ -4195,6 +4215,15 @@ clownface-shacl-path@^1.1, clownface-shacl-path@^1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/clownface-shacl-path/-/clownface-shacl-path-1.4.0.tgz#28a307570d329c05a980a5b992b07856ce458121"
   integrity sha512-87AFtxaJzIYxC+cJ7AsayDRkiubxFrBhSWpxF60d8EFOJU3I8T4c/DpaYjurbebZuxOslHuBPtfZSDJqERLm5g==
+  dependencies:
+    "@rdf-esm/term-set" "^0.5.0"
+    "@tpluscode/rdf-ns-builders" "^2.0.0"
+    "@tpluscode/rdf-string" "^0.2.26"
+
+clownface-shacl-path@^1.5.1:
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/clownface-shacl-path/-/clownface-shacl-path-1.5.1.tgz#f2e28ae6fe906291dbeee57f117b7f0f35c24fba"
+  integrity sha512-p7mNA/rtl0x6zfIdbbqcwrrgH53dkq3yCAepRH0LMT6ZJTR7zQZ7ggM2ZKcXZWSvH+v2j6MjJjrp8PQpFNX+TA==
   dependencies:
     "@rdf-esm/term-set" "^0.5.0"
     "@tpluscode/rdf-ns-builders" "^2.0.0"

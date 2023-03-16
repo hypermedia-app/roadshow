@@ -1,5 +1,9 @@
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 prefix ex: <http://example.org/>
-base <http://localhost:3000/>
+base <https://new.wikibus.org/>
 PREFIX dash: <http://datashapes.org/dash#>
 PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
 PREFIX schema: <http://schema.org/>
@@ -8,16 +12,54 @@ PREFIX wba: <https://wikibus.org/api#>
 PREFIX sh: <http://www.w3.org/ns/shacl#>
 prefix roadshow: <https://hypermedia.app/roadshow#>
 
+graph <_include/HeaderShape> {
+  <_include/HeaderShape>
+    sh:property
+      [
+        sh:path ( hydra:apiDocumentation hydra:entrypoint ) ;
+        sh:order 5 ;
+        sh:group _:nav ;
+        dash:viewer dash:LabelViewer ;
+      ],
+      [
+        sh:path ( hydra:apiDocumentation hydra:entrypoint wba:catalog ) ;
+        dash:viewer dash:LabelViewer ;
+        sh:order 6 ;
+        sh:group _:nav ;
+        sh:node
+          [
+            sh:property
+              [
+                sh:path rdfs:label ;
+                sh:values "Catalog"
+              ] ;
+          ] ;
+      ],
+      [
+        sh:path ( hydra:apiDocumentation hydra:entrypoint wba:library ) ;
+        dash:viewer dash:LabelViewer ;
+        sh:order 7 ;
+        sh:group _:nav ;
+        sh:node
+          [
+            sh:property
+              [
+                sh:path rdfs:label ;
+                sh:values "Library"
+              ] ;
+          ] ;
+      ] .
+}
+
 graph <> {
   <>
     a schema:WebPage ;
-    hydra:title "wikibus.org" ;
-    hydra:description "Online public transport encyclopedia" ;
-    schema:mainEntity <https://new.wikibus.org/> ;
-    ex:query <file:index.rq> ;
     dash:shape
       [
         a sh:NodeShape ;
+        owl:imports <_include/HeaderShape> ;
+        sh:and ( <_include/HeaderShape> ) ;
+        sh:targetNode <https://new.wikibus.org/page> ;
         dash:viewer canvas:FullWidthPage ;
         sh:property
           [
@@ -56,18 +98,20 @@ graph <> {
   _:header
     schema:identifier "page-title" ;
   .
+
+  _:nav
+    schema:identifier "nav" ;
+  .
 }
 
 graph <catalog> {
   <catalog>
     a schema:WebPage ;
-    hydra:title "Wikibus.org Catalog" ;
-    hydra:description "Information about manufacturers, brands, and vehicles" ;
-    schema:mainEntity <https://new.wikibus.org/catalog> ;
-    ex:query <file:catalog.rq> ;
     dash:shape
       [
         a sh:NodeShape ;
+        sh:and ( <_include/HeaderShape> ) ;
+        sh:targetNode <https://new.wikibus.org/page/catalog> ;
         dash:viewer canvas:FullWidthPage ;
         sh:property
           [
@@ -110,5 +154,80 @@ graph <catalog> {
 
   _:header
     schema:identifier "page-title" ;
+  .
+
+  _:nav
+    schema:identifier "nav" ;
+  .
+}
+
+graph <brands> {
+  <brands>
+    a schema:WebPage ;
+    hydra:title "Brands" ;
+    hydra:apiDocumentation <https://new.wikibus.org/api> ;
+    hydra:search
+      [
+        hydra:template "{?page,i}" ;
+      ] ;
+    dash:shape
+      [
+        a sh:NodeShape ;
+        sh:targetNode <https://new.wikibus.org/page/brands> ;
+        owl:imports <_include/HeaderShape> ;
+        sh:and ( <_include/HeaderShape> ) ;
+        dash:viewer canvas:FullWidthPage ;
+        sh:property
+          [
+            sh:path hydra:title ;
+            sh:group _:header ;
+            dash:viewer dash:LiteralViewer ;
+            roadshow:selector "h1" ;
+            sh:order 1 ;
+          ],
+          [
+            sh:path hydra:description ;
+            sh:group _:header ;
+            dash:viewer dash:LiteralViewer ;
+            roadshow:selector "span" ;
+            sh:order 2 ;
+          ],
+          [
+            sh:path schema:mainEntity ;
+            sh:node
+              [
+                sh:property
+                  [
+                    sh:path hydra:member ;
+                    sh:values
+                      [
+                        sh:nodes
+                          [
+                            sh:nodes [ sh:path ( rdf:type hydra:memberAssertion ) ] ; # $this rdf:type/hydra:memberAssertion ?ma .
+                            sh:filterShape                                            # ?ma hydra:property rdf:type .
+                              [
+                                sh:path hydra:property ;
+                                sh:hasValue rdf:type ;
+                              ] ;
+                            sh:path hydra:object ;                                    # ?ma hydra:object ?result .
+                          ] ;
+                        sh:orderBy [ sh:path rdfs:label ] ;
+                        sh:limit 39 ;
+                      ] ;
+                    sh:node
+                      [
+                        sh:property
+                          [
+                            sh:path skos:prefLabel ;
+                          ] ;
+                        sh:property
+                          [
+                            sh:path ( schema:image schema:contentUrl ) ;
+                          ] ;
+                      ] ;
+                  ] ;
+              ] ;
+          ] ;
+      ] ;
   .
 }

@@ -46,7 +46,9 @@ export class FullWidthPage extends CanvasShellBase(LitElement) {
 
   protected render() {
     return html`
-      <canvas-header></canvas-header>
+      <canvas-header>
+        <slot name="nav" slot="menu-link"></slot>
+      </canvas-header>
       <section id="page-title">
         <div class="container clearfix">
           <slot name="page-title"></slot>

@@ -38,6 +38,7 @@ export class CanvasHeader extends CanvasShellBase(LitElement) {
       }
 
       slot[name="menu-link"]::slotted(a) {
+        text-decoration: none;
         color: var(--header-text-color) !important;
         font-weight: bold;
         font-size: 13px;
