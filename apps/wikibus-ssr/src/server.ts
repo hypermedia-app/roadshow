@@ -6,11 +6,13 @@ import $rdf from 'rdf-ext'
 import { loadData } from 'test-data'
 import clownface, { AnyContext, AnyPointer, GraphPointer } from 'clownface'
 import onetime from 'onetime'
-import { rdf, schema, sh } from '@tpluscode/rdf-ns-builders'
-import { isGraphPointer } from 'is-graph-pointer'
+import { owl, rdf, schema, sh } from '@tpluscode/rdf-ns-builders'
+import { isResource } from 'is-graph-pointer'
 import type DatasetExt from 'rdf-ext/lib/Dataset'
 import { Term, NamedNode, Quad } from 'rdf-js'
 import { constructQuery } from '@hydrofoil/shape-to-query'
+import TermSet from '@rdfjs/term-set'
+import addAll from 'rdf-dataset-ext/addAll.js'
 import sparql from './sparql.js'
 
 const loadPages = onetime(async () => {
@@ -55,12 +57,30 @@ function findShape(allpages: AnyPointer<AnyContext, DatasetExt>, term: NamedNode
     dataset: allpages.dataset.match(null, null, null, term),
   })
   const shape = graph.has(sh.targetNode)
-  if (isGraphPointer(shape)) {
-    return shape as any
+  if (isResource(shape)) {
+    return withImports(allpages, shape)
   }
 
   console.warn(`Page not found <${term.value}>`)
   return null
+}
+
+function withImports<G extends GraphPointer>({ dataset }: AnyPointer, ptr: G): G {
+  const imported = new TermSet()
+  const queue = ptr.any().has(owl.imports).out(owl.imports).terms.splice(0)
+
+  while (queue.length) {
+    const current = queue.pop()
+    if (current && !imported.has(current)) {
+      const imported = dataset.match(null, null, null, current)
+      for (const { object } of imported.match(null, owl.imports)) {
+        queue.push(object)
+      }
+      addAll(ptr.dataset, imported)
+    }
+  }
+
+  return ptr
 }
 
 function rewriteBase({ subject, predicate, object }: Quad) {

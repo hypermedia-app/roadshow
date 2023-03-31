@@ -16,6 +16,20 @@ graph <_include/HeaderShape> {
   <_include/HeaderShape>
     sh:property
       [
+        sh:path hydra:title ;
+        sh:group _:header ;
+        dash:viewer dash:LiteralViewer ;
+        roadshow:selector "h1" ;
+        sh:order 1 ;
+      ],
+      [
+        sh:path hydra:description ;
+        sh:group _:header ;
+        dash:viewer dash:LiteralViewer ;
+        roadshow:selector "span" ;
+        sh:order 2 ;
+      ],
+      [
         sh:path ( hydra:apiDocumentation hydra:entrypoint ) ;
         sh:order 5 ;
         sh:group _:nav ;
@@ -49,6 +63,14 @@ graph <_include/HeaderShape> {
               ] ;
           ] ;
       ] .
+
+  _:header
+    schema:identifier "page-title" ;
+  .
+
+  _:nav
+    schema:identifier "nav" ;
+  .
 }
 
 graph <> {
@@ -62,20 +84,6 @@ graph <> {
         sh:targetNode <https://new.wikibus.org/page> ;
         dash:viewer canvas:FullWidthPage ;
         sh:property
-          [
-            sh:path hydra:title ;
-            sh:group _:header ;
-            dash:viewer dash:LiteralViewer ;
-            roadshow:selector "h1" ;
-            sh:order 1 ;
-          ],
-          [
-            sh:path hydra:description ;
-            sh:group _:header ;
-            dash:viewer dash:LiteralViewer ;
-            roadshow:selector "span" ; # TODO: default container for dash:viewers
-            sh:order 2 ;
-          ],
           [
             sh:path ( schema:mainEntity wba:catalog ) ;
             sh:name "catalog" ;
@@ -94,14 +102,6 @@ graph <> {
           ] ;
       ] ;
   .
-
-  _:header
-    schema:identifier "page-title" ;
-  .
-
-  _:nav
-    schema:identifier "nav" ;
-  .
 }
 
 graph <catalog> {
@@ -114,20 +114,6 @@ graph <catalog> {
         sh:targetNode <https://new.wikibus.org/page/catalog> ;
         dash:viewer canvas:FullWidthPage ;
         sh:property
-          [
-            sh:path hydra:title ;
-            sh:group _:header ;
-            dash:viewer dash:LiteralViewer ;
-            roadshow:selector "h1" ;
-            sh:order 1 ;
-          ],
-          [
-            sh:path hydra:description ;
-            sh:group _:header ;
-            dash:viewer dash:LiteralViewer ;
-            roadshow:selector "span" ;
-            sh:order 2 ;
-          ],
           [
             sh:path ( schema:mainEntity wba:vehicles ) ;
             sh:name "vehicles" ;
@@ -151,14 +137,6 @@ graph <catalog> {
           ] ;
       ] ;
   .
-
-  _:header
-    schema:identifier "page-title" ;
-  .
-
-  _:nav
-    schema:identifier "nav" ;
-  .
 }
 
 graph <brands> {
@@ -176,20 +154,6 @@ graph <brands> {
         sh:and ( <_include/HeaderShape> ) ;
         dash:viewer canvas:FullWidthPage ;
         sh:property
-          [
-            sh:path hydra:title ;
-            sh:group _:header ;
-            dash:viewer dash:LiteralViewer ;
-            roadshow:selector "h1" ;
-            sh:order 1 ;
-          ],
-          [
-            sh:path hydra:description ;
-            sh:group _:header ;
-            dash:viewer dash:LiteralViewer ;
-            roadshow:selector "span" ;
-            sh:order 2 ;
-          ],
           [
             sh:path schema:mainEntity ;
             sh:node

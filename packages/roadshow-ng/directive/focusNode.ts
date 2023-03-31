@@ -31,8 +31,10 @@ class FocusNodeDirective extends Directive {
       throw new Error('Focus node must be rendered with an CustomElementViewer')
     }
 
-    const properties = shape.out(sh.property)
-      .toArray()
+    const properties = [
+      ...shape.out(sh.property).toArray(),
+      ...[...shape.out(sh.and).list() || []].flatMap(s => s.out(sh.property).toArray()),
+    ]
       .sort((a, b) => {
         const aOrder = parseInt(a.out(sh.order).value || '0', 10)
         const bOrder = parseInt(b.out(sh.order).value || '0', 10)
