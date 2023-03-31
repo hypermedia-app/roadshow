@@ -11,7 +11,7 @@ export default <InlineConfig>{
   },
   resolve: {
     alias: {
-      process: 'process/browser',
+      // process: 'process/browser',
       stream: 'readable-stream',
       zlib: 'browserify-zlib',
       util: 'util',
