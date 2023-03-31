@@ -13,6 +13,7 @@
   "dependencies": {
     "@hydrofoil/vocabularies": "^0.3",
     "@tpluscode/rdf-ns-builders": "^2",
+    "@rdfjs/data-model": "^2.0.1",
     "@rdfjs/dataset": "^2.0.1",
     "@rdfjs/term-map": "^2.0.0",
     "@rdf-esm/formats-common": "^0.5.6",
