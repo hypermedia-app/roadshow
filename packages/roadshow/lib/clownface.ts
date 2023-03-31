@@ -1,4 +1,4 @@
 import { xsd } from '@tpluscode/rdf-ns-builders'
-import { literal } from '@rdf-esm/dataset'
+import $rdf from '@rdfjs/dataset'
 
-export const TRUE = literal('true', xsd.boolean)
+export const TRUE = $rdf.literal('true', xsd.boolean)

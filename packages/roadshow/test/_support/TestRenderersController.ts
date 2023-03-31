@@ -1,4 +1,4 @@
-import TermMap from '@rdf-esm/term-map'
+import TermMap from '@rdfjs/term-map'
 import { NamedNode } from '@rdfjs/types'
 import { Renderer, RenderFunc } from '../../index.js'
 

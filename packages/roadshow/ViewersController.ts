@@ -1,8 +1,9 @@
 import { ReactiveController } from 'lit'
 import clownface, { AnyPointer, GraphPointer } from 'clownface'
-import TermMap from '@rdf-esm/term-map'
+import TermMap from '@rdfjs/term-map'
 import { NamedNode, Term } from '@rdfjs/types'
-import * as $rdf from '@rdf-esm/dataset'
+import factory from '@rdfjs/data-model'
+import $rdf from '@rdfjs/dataset'
 import { dash, rdf } from '@tpluscode/rdf-ns-builders'
 import { RoadshowView, Viewer, ViewerMatcher } from './index.js'
 import * as defaultViewers from './viewers/index.js'
@@ -43,8 +44,8 @@ export class ViewersController implements ReactiveController {
       return
     }
     this.__dashLoaded = true
-    const Dash = await import('@zazuko/rdf-vocabularies/datasets/dash')
-    for (const quad of Dash.default($rdf)) {
+    const Dash = await import('@vocabulary/dash')
+    for (const quad of Dash.default({ factory })) {
       ViewersController.viewerMeta.dataset.add(quad)
     }
   }

@@ -3,7 +3,7 @@ PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 prefix ex: <http://example.org/>
-base <https://new.wikibus.org/>
+base <http://localhost:3000/>
 PREFIX dash: <http://datashapes.org/dash#>
 PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
 PREFIX schema: <http://schema.org/>
@@ -164,8 +164,6 @@ graph <catalog> {
 graph <brands> {
   <brands>
     a schema:WebPage ;
-    hydra:title "Brands" ;
-    hydra:apiDocumentation <https://new.wikibus.org/api> ;
     hydra:search
       [
         hydra:template "{?page,i}" ;
@@ -201,18 +199,38 @@ graph <brands> {
                     sh:path hydra:member ;
                     sh:values
                       [
+                        sh:limit 39 ;
                         sh:nodes
                           [
-                            sh:nodes [ sh:path ( rdf:type hydra:memberAssertion ) ] ; # $this rdf:type/hydra:memberAssertion ?ma .
-                            sh:filterShape                                            # ?ma hydra:property rdf:type .
+                            sh:offset 78 ;
+                            sh:nodes
                               [
-                                sh:path hydra:property ;
-                                sh:hasValue rdf:type ;
+                                sh:orderBy [ sh:path rdfs:label ] ;
+                                sh:nodes
+                                  [
+                                    sh:path [ sh:inversePath rdf:type ] ;
+                                    sh:nodes
+                                      [
+                                        sh:path hydra:object ;
+                                        sh:nodes
+                                          [
+                                            sh:filterShape
+                                              [
+                                                sh:property
+                                                  [
+                                                    sh:path hydra:property ;
+                                                    sh:hasValue rdf:type ;
+                                                  ] ;
+                                              ] ;
+                                            sh:nodes
+                                              [
+                                                sh:path ( [ sh:zeroOrMorePath rdf:type ] hydra:memberAssertion )
+                                              ] ;
+                                          ] ;
+                                      ] ;
+                                  ] ;
                               ] ;
-                            sh:path hydra:object ;                                    # ?ma hydra:object ?result .
                           ] ;
-                        sh:orderBy [ sh:path rdfs:label ] ;
-                        sh:limit 39 ;
                       ] ;
                     sh:node
                       [

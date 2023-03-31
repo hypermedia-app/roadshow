@@ -4,8 +4,9 @@
   "private": true,
   "type": "module",
   "dependencies": {
-    "@rdf-esm/dataset": "^0.5.0",
-    "@rdf-esm/formats-common": "^0.5.5",
+    "@rdfjs/dataset": "^2.0.1",
+    "@rdfjs/data-model": "^2.0.1",
+    "@rdfjs/formats-common": "^3.1.0",
     "clownface": "^1",
     "string-to-stream": "^3.0.1",
     "stream-to-string": "^1.2.0",

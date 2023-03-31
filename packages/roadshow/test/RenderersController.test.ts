@@ -2,7 +2,7 @@ import { dash, rdfs } from '@tpluscode/rdf-ns-builders'
 import { expect, nextFrame } from '@open-wc/testing'
 import { roadshow } from '@hydrofoil/vocabularies/builders'
 import sinon from 'sinon'
-import { namedNode } from '@rdf-esm/dataset'
+import $rdf from '@rdfjs/data-model'
 import { Initializable, RenderersController } from '../RenderersController.js'
 import { Decorator, RoadshowView } from '../index.js'
 import { AnyState } from '../lib/state.js'
@@ -63,7 +63,7 @@ describe('@hydrofoil/roadshow/RenderersController', () => {
     it('runs renderer meta factory with given id', () => {
       // when
       renderers.set([{
-        id: namedNode('test'),
+        id: $rdf.namedNode('test'),
         viewer: dash.ImageViewer,
         render: () => '',
         meta(ptr) {
@@ -73,7 +73,7 @@ describe('@hydrofoil/roadshow/RenderersController', () => {
 
       // then
       const [renderer] = renderers.get(dash.ImageViewer)
-      expect(renderer.meta.term).to.deep.eq(namedNode('test'))
+      expect(renderer.meta.term).to.deep.eq($rdf.namedNode('test'))
       expect(renderer.meta.out(rdfs.label).value).to.eq('Test')
     })
 

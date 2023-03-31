@@ -1,9 +1,9 @@
 import { ReactiveController } from 'lit'
 import { NamedNode, Term } from '@rdfjs/types'
-import TermMap from '@rdf-esm/term-map'
+import TermMap from '@rdfjs/term-map'
 import { roadshow } from '@hydrofoil/vocabularies/builders'
 import clownface from 'clownface'
-import { dataset } from '@rdf-esm/dataset'
+import $rdf from '@rdfjs/dataset'
 import { Decorator, Renderer as RendererInit, RoadshowView } from './index.js'
 import * as defaultRenderers from './renderers/index.js'
 import { RendererNotFoundViewer } from './renderers/index.js'
@@ -18,7 +18,7 @@ type Uninitialized<T> = T & { initialized: boolean; init: (context: any) => Prom
 export type Initializable<T> = Initialized<T> | Uninitialized<T>
 
 function initRenderer({ init, render, viewer, id, meta }: RendererInit<any>): Renderer<any> {
-  const graph = clownface({ dataset: dataset() })
+  const graph = clownface({ dataset: $rdf.dataset() })
   const node = id ? graph.node(id) : graph.blankNode()
   meta?.(node)
 

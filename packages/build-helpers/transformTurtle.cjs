@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-const { parsers } = require('@rdf-esm/formats-common')
+const formats = require('@rdfjs/formats-common')
 const toStream = require('string-to-stream')
 const toString = require('stream-to-string')
 const Serializer = require('@rdfjs/serializer-rdfjs')
@@ -16,7 +16,7 @@ module.exports = function turtle() {
     name: 'turtle-transform',
     async transform(code, id) {
       if (!filter(id)) return
-      const stream = await parsers.import('application/trig', toStream(code))
+      const stream = await formats.parsers.import('application/trig', toStream(code))
 
       // eslint-disable-next-line consistent-return
       return {

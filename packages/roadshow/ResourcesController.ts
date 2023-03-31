@@ -1,6 +1,6 @@
 import { NamedNode, Term } from '@rdfjs/types'
 import type { GraphPointer } from 'clownface'
-import TermMap from '@rdf-esm/term-map'
+import TermMap from '@rdfjs/term-map'
 import { RoadshowView } from './index.js'
 import { FocusNodeState } from './lib/state.js'
 

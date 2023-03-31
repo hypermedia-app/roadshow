@@ -5,7 +5,7 @@ import { BlankNode, Literal, NamedNode, Term } from '@rdfjs/types'
 import { roadshow } from '@hydrofoil/vocabularies/builders'
 import { dash, rdf } from '@tpluscode/rdf-ns-builders'
 import { sh } from '@tpluscode/rdf-ns-builders/loose'
-import { dataset } from '@rdf-esm/dataset'
+import $rdf from '@rdfjs/dataset'
 import { NodeShape } from '@rdfine/shacl'
 import { ResourceIdentifier } from '@tpluscode/rdfine'
 import graphPointer from 'is-graph-pointer'
@@ -326,7 +326,7 @@ export function render({ focusNode, ...rest }: Render): TemplateResult | string 
     return renderState({ focusNode, ...rest })
   }
 
-  const pointer = clownface({ dataset: dataset() }).blankNode()
+  const pointer = clownface({ dataset: $rdf.dataset() }).blankNode()
   return renderState({
     ...rest,
     focusNode: pointer,

@@ -1,4 +1,4 @@
-import * as RDF from '@rdf-esm/dataset'
+import RDF from '@rdfjs/dataset'
 import create from 'clownface'
 import { NamedNode } from '@rdfjs/types'
 

@@ -1,4 +1,4 @@
-import namespace from '@rdf-esm/namespace'
+import namespace from '@rdfjs/namespace'
 
 export const hex = namespace('https://w3id.org/hydra/extension#')
 export const ex = namespace('https://example.com/')

@@ -1,8 +1,8 @@
 import type { GraphPointer } from 'clownface'
 import type { NodeShape, PropertyShape, Shape } from '@rdfine/shacl'
 import { dash, rdf, rdfs, sh } from '@tpluscode/rdf-ns-builders'
-import TermSet from '@rdf-esm/term-set'
-import TermMap from '@rdf-esm/term-map'
+import TermSet from '@rdfjs/term-set'
+import TermMap from '@rdfjs/term-map'
 
 export function suitableShape(resource: GraphPointer): Parameters<Array<NodeShape>['filter']>[0] {
   return (shape) => {

@@ -1,7 +1,7 @@
 import { html } from 'lit'
 import { MultiRenderer, Renderer, ViewerMatcher } from '@hydrofoil/roadshow'
 import { hydra, rdf } from '@tpluscode/rdf-ns-builders'
-import { namedNode } from '@rdf-esm/data-model'
+import $rdf from '@rdfjs/data-model'
 import { ResourceLoader } from '@hydrofoil/roadshow/ResourcesController'
 import clownface, { MultiPointer } from 'clownface'
 import { runFactory } from '@roadshow/build-helpers/runFactory'
@@ -46,7 +46,7 @@ async function selectShape(arg: MultiPointer) {
 }
 
 const Template = template<ViewStoryParams>(({ resource, viewers = [], renderers }) => html`
-    <roadshow-view .resourceId="${namedNode(resource)}"
+    <roadshow-view .resourceId="${$rdf.namedNode(resource)}"
                    .shapesLoader="${selectShape}"
                    .viewers="${viewers}"
                    .resourceLoader="${load}"
