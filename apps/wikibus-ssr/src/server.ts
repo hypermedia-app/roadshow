@@ -37,7 +37,9 @@ export async function render({ req }: { req: express.Request }) {
   }
 
   const target = shape.out(sh.targetNode).term
-  let dataset = await shape.dataset.import(await constructQuery(shape).execute(sparql.query))
+  let dataset = await shape.dataset.import(await constructQuery(shape).execute(sparql.query, {
+    operation: 'postDirect',
+  }))
   dataset = dataset.map(({ subject, predicate, object, graph }) => $rdf.quad(
     subject.equals(target) ? resource : subject,
     predicate,
