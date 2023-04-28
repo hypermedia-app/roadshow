@@ -1,0 +1,35 @@
+PREFIX sh: <http://www.w3.org/ns/shacl#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX dash: <http://datashapes.org/dash#>
+PREFIX schema: <http://schema.org/>
+prefix canvas: <https://themes.semicolonweb.com/canvas/>
+PREFIX wba: <https://wikibus.org/api#>
+
+<>
+  a schema:WebPage ;
+  dash:shape
+    [
+      a sh:NodeShape ;
+      owl:imports <_include/HeaderShape> ;
+      sh:and ( <_include/HeaderShape> ) ;
+      sh:targetNode <https://new.wikibus.org/page> ;
+      dash:viewer canvas:FullWidthPage ;
+      sh:property
+        [
+          sh:path ( schema:mainEntity wba:catalog ) ;
+          sh:name "catalog" ;
+          sh:description "Producers, brands and their products" ;
+          dash:viewer canvas:FeaturedBoxViewer ;
+          canvas:icon "bus" ;
+          sh:order 3 ;
+        ],
+        [
+          sh:path ( schema:mainEntity wba:library ) ;
+          sh:name "library" ;
+          sh:description "Collection of physical and digital media about public transport" ;
+          dash:viewer canvas:FeaturedBoxViewer ;
+          canvas:icon "library" ;
+          sh:order 4 ;
+        ] ;
+    ] ;
+.
