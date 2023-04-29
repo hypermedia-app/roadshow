@@ -1,3 +1,4 @@
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
 PREFIX schema: <http://schema.org/>
 PREFIX dash: <http://datashapes.org/dash#>
 PREFIX sh: <http://www.w3.org/ns/shacl#>
@@ -9,6 +10,7 @@ PREFIX wba: <https://wikibus.org/api#>
   dash:shape
     [
       a sh:NodeShape ;
+      owl:imports <_include/HeaderShape> ;
       sh:and ( <_include/HeaderShape> ) ;
       sh:targetNode <https://new.wikibus.org/page/catalog> ;
       dash:viewer canvas:FullWidthPage ;

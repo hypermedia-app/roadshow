@@ -11,7 +11,7 @@ prefix canvas: <https://themes.semicolonweb.com/canvas/>
 prefix hex: <https://w3id.org/hydra/extension#>
 prefix : <http://example.org/>
 
-<brands>
+<vehicles>
   a schema:WebPage ;
   hydra:search
     [
@@ -20,8 +20,8 @@ prefix : <http://example.org/>
   dash:shape
     [
       a sh:NodeShape ;
-      sh:targetNode <https://new.wikibus.org/page/brands> ;
-      owl:imports <_include/HeaderShape>, <_include/CollectionMembers> ;
+      sh:targetNode <https://new.wikibus.org/page/vehicles> ;
+      owl:imports <_include/HeaderShape>, <_include/PartialCollectionView>, <_include/CollectionMembers> ;
       sh:and ( <_include/HeaderShape> ) ;
       dash:viewer canvas:FullWidthPage ;
       sh:property
@@ -30,7 +30,7 @@ prefix : <http://example.org/>
           dash:viewer dash:LiteralViewer ;
           sh:node
             [
-              sh:and ( _:alphabeticalView ) ;
+              sh:and ( <_include/PartialCollectionView> ) ;
               sh:property
                 [
                   sh:path hydra:member ;
@@ -40,7 +40,7 @@ prefix : <http://example.org/>
                       sh:limit 39 ;
                       sh:nodes
                         [
-                          sh:offset [ :param "offset" ; sh:defaultValue 0 ] ;
+                          sh:offset 0 ;
                           sh:nodes
                             [
                               sh:orderBy [ sh:path rdfs:label ] ;
@@ -67,56 +67,4 @@ prefix : <http://example.org/>
     ] ;
 .
 
-_:alphabeticalView
-  sh:rule
-    [
-      sh:subject sh:this ;
-      sh:predicate hydra:view ;
-      sh:object _:alphabeticalViewId ;
-    ],
-    [
-      sh:subject _:alphabeticalViewId ;
-      sh:predicate rdf:type ;
-      sh:object hex:AlphabeticallyPagedView ;
-    ],
-    [
-      sh:subject _:alphabeticalViewId ;
-      sh:predicate hex:page ;
-      sh:object
-        [
-        #BIND(IRI(CONCAT(STR(?this),"?p=", STR(UCASE(substr(?label, 1, 1))))) as ?letter)
-          dash-sparql:iri
-            (
-              [
-                dash-sparql:concat
-                  (
-                    [ dash-sparql:str ( sh:this ) ]
-                    "?i="
-                    [
-                      dash-sparql:encode_for_uri ( [ dash-sparql:lcase ( _:initials ) ] )
-                    ]
-                  )
-              ]
-            )
-        ] ;
-    ] ;
-.
 
-_:initials
-  dash-sparql:substr
-    (
-      [
-        sh:path skos:prefLabel ;
-        sh:nodes <_include/CollectionMembers> ;
-      ]
-      1
-      1
-    )
-.
-
-_:alphabeticalViewId
-  dash-sparql:iri
-    (
-      [ dash-sparql:concat ( [ dash-sparql:str ( sh:this ) ] "#alphabetical-index" ) ]
-    )
-.

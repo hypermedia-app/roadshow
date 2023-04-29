@@ -4,17 +4,13 @@ import './viewers.js'
 import express from 'express'
 import $rdf from 'rdf-ext'
 import clownface, { GraphPointer } from 'clownface'
-import onetime from 'onetime'
-import { owl, rdf, sh } from '@tpluscode/rdf-ns-builders'
+import { owl, sh } from '@tpluscode/rdf-ns-builders'
 import { isResource } from 'is-graph-pointer'
 import type DatasetExt from 'rdf-ext/lib/Dataset'
 import { Term, NamedNode, Quad } from 'rdf-js'
 import { constructQuery } from '@hydrofoil/shape-to-query'
 import TermSet from '@rdfjs/term-set'
-import addAll from 'rdf-dataset-ext/addAll.js'
-import { n3reasoner } from 'eyereasoner'
 import { turtle } from '@tpluscode/rdf-string'
-import fs from 'fs/promises'
 import log from 'loglevel'
 import sparql from './sparql.js'
 import { ex } from './ns.js'
@@ -22,10 +18,9 @@ import load from './store.js'
 
 log.enableAll()
 
-const loadRules = onetime(() => fs.readFile(new URL('../pages/rules.n3', import.meta.url)))
-
 export async function render({ req }: { req: express.Request }) {
-  const path = req.originalUrl.substring(1, req.originalUrl.indexOf('?'))
+  const queryStart = req.originalUrl.indexOf('?')
+  const path = req.originalUrl.substring(1, queryStart === -1 ? undefined : queryStart)
 
   const resource = $rdf.namedNode(`http://localhost:3000/${path}`)
 
@@ -60,29 +55,43 @@ async function prepareShape(shape: GraphPointer | null, req: express.Request) {
   const params = requestParams(req)
   console.log('params', turtle`${params}`.toString())
 
-  const rules = await loadRules()
-  const dataset = $rdf.dataset(await n3reasoner([...shape.dataset, ...params], rules.toString(), {
-    outputType: 'quads',
-  }))
+  const shapeGraph = shape.any()
+  const parametrised = shapeGraph.has(ex.param)
 
-  const changes = clownface({ dataset }).has(ex.param)
+  for (const parametrisedNode of parametrised.toArray()) {
+    const param = parametrisedNode.out(ex.param).value
+    const defaultValue = parametrisedNode.out(sh.defaultValue)
+    const subjects = shapeGraph.dataset.match(null, null, parametrisedNode.term)
+    const objects = shapeGraph.dataset.match(parametrisedNode.term)
+    const value = params.has(ex.param, param).out(ex.value).term
 
-  console.log('changes', turtle`${changes.dataset}`.toString())
+    console.log(`param '${param}'; default value ${defaultValue.values}; value: ${value}`)
 
-  for (const change of changes.toArray()) {
-    shape.any()
-      .has(ex.param, change.out(ex.param))
-      .deleteOut(change.out(rdf.predicate))
-      .addOut(change.out(rdf.predicate), change.out(rdf.object))
+    parametrisedNode.deleteIn().deleteOut()
+
+    for (const { subject, predicate } of subjects) {
+      shapeGraph.node(subject)
+        .addOut(predicate, value || defaultValue)
+    }
+    for (const { predicate, object } of objects) {
+      if (!predicate.equals(sh.defaultValue) && !predicate.equals(ex.param)) {
+        shapeGraph.node(object)
+          .addIn(predicate, value || defaultValue)
+      }
+    }
   }
 }
 
 function requestParams(req: express.Request) {
   const sub = $rdf.blankNode()
-  return Object.entries(req.query).flatMap(([key, value]) => [
+  const quads = Object.entries(req.query).flatMap(([key, value]: any) => [
     $rdf.quad(sub, ex.param, $rdf.literal(key)),
     $rdf.quad(sub, ex.value, $rdf.literal(value)),
   ])
+
+  return clownface({
+    dataset: $rdf.dataset(quads),
+  })
 }
 
 async function findShape(term: NamedNode): Promise<GraphPointer<Term, DatasetExt> | null> {
@@ -105,11 +114,15 @@ async function withImports<G extends GraphPointer>(ptr: G): Promise<G> {
   while (queue.length) {
     const current = queue.pop()
     if (current && !imported.has(current)) {
-      const imported = await load(current)
-      for (const { object } of imported.match(null, owl.imports)) {
-        queue.push(object)
+      imported.add(current)
+      // eslint-disable-next-line no-await-in-loop
+      const quads = await load(current)
+      for (const quad of quads) {
+        ptr.dataset.add(quad)
+        if (quad.predicate.equals(owl.imports)) {
+          queue.push(quad.object)
+        }
       }
-      addAll(ptr.dataset, imported)
     }
   }
 

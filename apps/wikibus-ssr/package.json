@@ -22,12 +22,11 @@
     "absolute-url": "^1.2.2",
     "clownface": "^1.5.1",
     "clownface-shacl-path": "^2.0.0",
-    "eyereasoner": "^4.20.1",
     "express": "^4.18.2",
     "ionicons": "^6.1.1",
     "is-graph-pointer": "^2.0.0",
     "lit": "^2",
-    "onetime": "^6.0.0",
+    "loglevel": "^1.8.1",
     "rdf-dataset-ext": "^1.0.1",
     "rdf-ext": "^2",
     "rdf-store-fs": "^1.1.0",
@@ -38,6 +37,7 @@
   "devDependencies": {
     "@types/absolute-url": "^1",
     "@types/jquery": "^3.5.16",
+    "@types/rdf-utils-fs": "^2.1.0",
     "@types/sparql-http-client": "^2",
     "sass": "^1.57.1"
   }
