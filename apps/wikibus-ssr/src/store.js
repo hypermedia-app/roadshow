@@ -13,8 +13,6 @@ const resolver = new FlatFilenameResolver({
 })
 
 export default async function (term) {
-  // eslint-disable-next-line no-console
-  console.log(`loading ${term.value}`)
   const path = await resolver.resolve(term)
   return $rdf.dataset().import(fromFile(path.replace('%2F', '/'), {
     baseIRI,

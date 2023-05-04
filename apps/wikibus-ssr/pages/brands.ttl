@@ -11,6 +11,15 @@ prefix canvas: <https://themes.semicolonweb.com/canvas/>
 prefix hex: <https://w3id.org/hydra/extension#>
 prefix : <http://example.org/>
 
+<brands/index>
+  hex:page <brands?i=a>, <brands?i=b>, <brands?i=c>, <brands?i=d>
+.
+
+<brands?i=a> rdfs:label "A" .
+<brands?i=b> rdfs:label "B" .
+<brands?i=c> rdfs:label "C" .
+<brands?i=d> rdfs:label "D" .
+
 <brands>
   a schema:WebPage ;
   hydra:search
@@ -21,30 +30,46 @@ prefix : <http://example.org/>
     [
       a sh:NodeShape ;
       sh:targetNode <https://new.wikibus.org/page/brands> ;
-      owl:imports <_include/HeaderShape>, <_include/CollectionMembers> ;
+      owl:imports <_include/HeaderShape> ;
       sh:and ( <_include/HeaderShape> ) ;
       dash:viewer canvas:FullWidthPage ;
       sh:property
         [
-          sh:path schema:mainEntity ;
-          dash:viewer dash:LiteralViewer ;
+          sh:path hydra:view ;
+          dash:viewer (canvas:AlphabeticPager dash:DetailsViewer) ;
+          sh:values <brands/index> ;
           sh:node
             [
-              sh:and ( _:alphabeticalView ) ;
+              sh:property
+                [
+                  sh:path hex:page ;
+                  dash:viewer dash:LabelViewer ;
+                ] ;
+            ] ;
+        ],
+        [
+          sh:path schema:mainEntity ;
+          dash:viewer dash:DetailsViewer ;
+          sh:node
+            [
               sh:property
                 [
                   sh:path hydra:member ;
-                  dash:viewer hex:CollectionMembersViewer ;
+                  dash:viewer (hex:GridViewer canvas:PortfolioItem dash:DetailsViewer) ;
                   sh:values
                     [
                       sh:limit 39 ;
                       sh:nodes
                         [
-                          sh:offset [ :param "offset" ; sh:defaultValue 0 ] ;
+                          sh:offset
+                            [
+                              :param "offset" ;
+                              sh:defaultValue 0
+                            ] ;
                           sh:nodes
                             [
                               sh:orderBy [ sh:path rdfs:label ] ;
-                              sh:nodes <_include/CollectionMembers> ;
+                              sh:nodes _:includeCollectionMembers ;
                             ] ;
                         ] ;
                     ] ;
@@ -58,7 +83,8 @@ prefix : <http://example.org/>
                       sh:property
                         [
                           sh:path ( schema:image schema:contentUrl ) ;
-                          dash:viewer dash:LiteralViewer ;
+                          dash:viewer dash:ImageViewer ;
+                          sh:group [ schema:identifier "image" ] ;
                         ] ;
                     ] ;
                 ] ;
@@ -67,56 +93,24 @@ prefix : <http://example.org/>
     ] ;
 .
 
-_:alphabeticalView
-  sh:rule
+_:includeCollectionMembers
+  sh:path [ sh:inversePath rdf:type ] ;
+  sh:nodes
     [
-      sh:subject sh:this ;
-      sh:predicate hydra:view ;
-      sh:object _:alphabeticalViewId ;
-    ],
-    [
-      sh:subject _:alphabeticalViewId ;
-      sh:predicate rdf:type ;
-      sh:object hex:AlphabeticallyPagedView ;
-    ],
-    [
-      sh:subject _:alphabeticalViewId ;
-      sh:predicate hex:page ;
-      sh:object
+      sh:path hydra:object ;
+      sh:nodes
         [
-        #BIND(IRI(CONCAT(STR(?this),"?p=", STR(UCASE(substr(?label, 1, 1))))) as ?letter)
-          dash-sparql:iri
-            (
-              [
-                dash-sparql:concat
-                  (
-                    [ dash-sparql:str ( sh:this ) ]
-                    "?i="
-                    [
-                      dash-sparql:encode_for_uri ( [ dash-sparql:lcase ( _:initials ) ] )
-                    ]
-                  )
-              ]
-            )
+          sh:filterShape
+            [
+              sh:property
+                [
+                  sh:path hydra:property ;
+                  sh:hasValue rdf:type ;
+                ] ;
+            ] ;
+          sh:nodes
+            [
+              sh:path ( [ sh:zeroOrMorePath rdf:type ] hydra:memberAssertion )
+            ] ;
         ] ;
-    ] ;
-.
-
-_:initials
-  dash-sparql:substr
-    (
-      [
-        sh:path skos:prefLabel ;
-        sh:nodes <_include/CollectionMembers> ;
-      ]
-      1
-      1
-    )
-.
-
-_:alphabeticalViewId
-  dash-sparql:iri
-    (
-      [ dash-sparql:concat ( [ dash-sparql:str ( sh:this ) ] "#alphabetical-index" ) ]
-    )
-.
+    ] .

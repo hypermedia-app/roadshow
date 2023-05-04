@@ -22,6 +22,36 @@ export class CanvasPager extends CanvasShellBase(LitElement) {
           margin-bottom: 0;
           flex-wrap: wrap;
         }
+
+        slot::slotted(a) {
+          position: relative;
+          display: block;
+          padding: 0.5rem 0.75rem;
+          margin-left: -1px;
+          line-height: 1.25;
+          color: #007bff;
+          background-color: #fff;
+          border: 1px solid #dee2e6;
+          text-decoration: none;
+          color: #222;
+        }
+
+        slot::slotted(a:hover) {
+          border-color: transparent !important;
+          color: #FFF;
+          background-color: var(--theme-color);
+        }
+
+        slot::slotted(a:first-child) {
+          margin-left: 0;
+          border-top-left-radius: 0.25rem;
+          border-bottom-left-radius: 0.25rem;
+        }
+
+        slot::slotted(a:last-child) {
+          border-top-right-radius: 0.25rem;
+          border-bottom-right-radius: 0.25rem;
+        }
       `,
     ]
   }
@@ -38,19 +68,12 @@ export class CanvasPager extends CanvasShellBase(LitElement) {
   @property({ type: String })
   public size?: 'lg' | 'sm'
 
-  @property({ type: Array })
-  public links: Array<{ href: string; label: string }> = []
-
   render() {
     const sizeClass = this.size === 'lg' || this.size === 'sm' ? `pagination-${this.size}` : ''
 
-    const buttons = this.pagerStyle === 'links'
-      ? this.renderLinks()
-      : this.renderPrevNext()
-
     return html`
       <ul class="pagination pagination-inside-transparent justify-content-center ${sizeClass}">
-        ${buttons}
+        <slot></slot>
       </ul>`
   }
 

@@ -33,7 +33,6 @@ export class FullWidthPage extends CanvasShellBase(LitElement) {
       }
 
       #content slot {
-        display: flex;
         flex-wrap: wrap;
         align-content: space-around;
       }

@@ -16,20 +16,8 @@ interface FocusNodeArgs {
 
 class FocusNodeDirective extends Directive {
   render({ focusNode, shape }: FocusNodeArgs) {
-    info(`Focus node: ${focusNode.value}`)
     const viewerPtr = shape.out(dash.viewer)
-    if (!isGraphPointer.isNamedNode(viewerPtr)) {
-      throw new Error(`dash:viewer must be a NamedNode but found ${viewerPtr.value} for shape ${shape.value}`)
-    }
-
-    const viewer = viewers.get(viewerPtr.term)
-    if (!viewer) {
-      throw new Error(`Viewer not found ${viewerPtr.value}`)
-    }
-
-    if (!('renderElement' in viewer)) {
-      throw new Error('Focus node must be rendered with an CustomElementViewer')
-    }
+    info(`Focus node: ${focusNode.value}, ${viewerPtr.value}`)
 
     const properties = [
       ...shape.out(sh.property).toArray(),
@@ -44,6 +32,19 @@ class FocusNodeDirective extends Directive {
         shape: propShape,
         values: findNodes(focusNode, propShape.out(sh.path)),
       })}`)
+
+    if (!isGraphPointer.isNamedNode(viewerPtr)) {
+      return properties
+    }
+
+    const viewer = viewers.get(viewerPtr.term)
+    if (!viewer) {
+      throw new Error(`Viewer not found ${viewerPtr.value}`)
+    }
+
+    if (!('renderElement' in viewer)) {
+      throw new Error('Focus node must be rendered with an CustomElementViewer')
+    }
 
     return viewer.renderElement({
       shape,

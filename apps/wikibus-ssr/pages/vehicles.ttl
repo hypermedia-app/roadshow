@@ -21,7 +21,7 @@ prefix : <http://example.org/>
     [
       a sh:NodeShape ;
       sh:targetNode <https://new.wikibus.org/page/vehicles> ;
-      owl:imports <_include/HeaderShape>, <_include/PartialCollectionView>, <_include/CollectionMembers> ;
+      owl:imports <_include/HeaderShape>, <_include/PartialCollectionView> ;
       sh:and ( <_include/HeaderShape> ) ;
       dash:viewer canvas:FullWidthPage ;
       sh:property
@@ -44,7 +44,7 @@ prefix : <http://example.org/>
                           sh:nodes
                             [
                               sh:orderBy [ sh:path rdfs:label ] ;
-                              sh:nodes <_include/CollectionMembers> ;
+                              sh:nodes _:includeCollectionMembers ;
                             ] ;
                         ] ;
                     ] ;
@@ -67,4 +67,24 @@ prefix : <http://example.org/>
     ] ;
 .
 
-
+_:includeCollectionMembers
+  sh:path [ sh:inversePath rdf:type ] ;
+  sh:nodes
+    [
+      sh:path hydra:object ;
+      sh:nodes
+        [
+          sh:filterShape
+            [
+              sh:property
+                [
+                  sh:path hydra:property ;
+                  sh:hasValue rdf:type ;
+                ] ;
+            ] ;
+          sh:nodes
+            [
+              sh:path ( [ sh:zeroOrMorePath rdf:type ] hydra:memberAssertion )
+            ] ;
+        ] ;
+    ] .

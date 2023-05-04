@@ -1,10 +1,8 @@
 import { css, html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
-import { GraphPointer } from 'clownface'
 import { taggedLiteral } from '@rdfjs-elements/lit-helpers/taggedLiteral.js'
 import { skos, schema } from '@tpluscode/rdf-ns-builders'
 import { findNodes } from 'clownface-shacl-path'
-import { isGraphPointer } from 'is-graph-pointer'
 import CanvasShellBase from './CanvasShellBase'
 
 @customElement('canvas-portfolio-item')
@@ -14,28 +12,28 @@ export class CanvasPortfolioItem extends CanvasShellBase(LitElement) {
       :host {
         display: block;
       }
-      
+
       .portfolio-image {
         position: relative;
-        height: var(--portfolio-image-height);
+        height: var(--portfolio-image-height, 200px);
         width: var(--portfolio-image-width);
         display: flex;
         align-items: center;
         justify-content: center;
       }
 
-      .portfolio-image img {
+      .portfolio-image slot::slotted(img) {
         max-width: var(--portfolio-image-width, 100%);
         max-height: var(--portfolio-image-height);
       }
-      
+
       .portfolio-overlay {
         pointer-events: none;
         display: flex;
         align-items: center;
         justify-content: center;
       }
-      
+
       .portfolio-overlay a {
         background-color: rgb(245, 245, 245);
         font-size: 18px;
@@ -54,36 +52,32 @@ export class CanvasPortfolioItem extends CanvasShellBase(LitElement) {
     `]
   }
 
-  @property({ type: Object })
-  public image?: GraphPointer
+  @property({ type: String })
+  public image?: string
 
-  @property({ type: Object })
-  public resource!: GraphPointer
-
-  @property({ type: Object })
-  public titlePath?: GraphPointer
-
-  private get _titlePath() {
-    return isGraphPointer(this.titlePath) ? this.titlePath : this.resource.node(skos.prefLabel)
-  }
+  @property({ type: String, attribute: 'resource-id' })
+  public resourceId!: string
 
   render() {
     return html`
       <div class="portfolio-image">
-        <a href="${this.resource.value}">
-          ${this.renderImage()}
+        <a href="${this.resourceId}">
+          <slot name="image">
+          </slot>
         </a>
 
         <div class="portfolio-overlay">
-          <a href="${this.resource.value}">
-            <i class="icon-line-ellipsis"></i>
+          <a href="${this.resourceId}">
+            <ion-icon name="ellipsis-horizontal-outline"></ion-icon>
           </a>
         </div>
 
       </div>
 
       <div class="portfolio-desc">
-        <h3><a href="${this.resource.value}">${taggedLiteral(findNodes(this.resource, this._titlePath))}</a></h3>
+        <h3><a href="${this.resourceId}">
+          <slot></slot>
+        </a></h3>
       </div>
     `
   }

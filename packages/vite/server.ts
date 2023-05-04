@@ -25,7 +25,7 @@ export async function middleware({ modulePath, vite, indexPath, ssrPlaceholder =
 
       const { render } = await viteServer.ssrLoadModule(modulePath)
 
-      const appHtml = await render({ req })
+      const appHtml = await render({ req, res })
       if (!appHtml) {
         return next()
       }

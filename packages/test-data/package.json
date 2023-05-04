@@ -5,6 +5,7 @@
   "type": "module",
   "dependencies": {
     "@rdfjs/namespace": "^2",
+    "@types/n3": "^1",
     "@types/rdf-ext": "^2",
     "@types/rdf-utils-fs": "^2.1.0",
     "clownface": "^1.5.1",

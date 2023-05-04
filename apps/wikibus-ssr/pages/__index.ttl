@@ -4,6 +4,7 @@ PREFIX dash: <http://datashapes.org/dash#>
 PREFIX schema: <http://schema.org/>
 prefix canvas: <https://themes.semicolonweb.com/canvas/>
 PREFIX wba: <https://wikibus.org/api#>
+base <http://localhost:3000/>
 
 <>
   a schema:WebPage ;

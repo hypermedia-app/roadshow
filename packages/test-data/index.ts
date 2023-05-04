@@ -1,8 +1,10 @@
 import module from 'module'
-import { fromFile } from 'rdf-utils-fs'
+import { createReadStream } from 'fs'
+import { StreamParser } from 'n3'
 import type { Stream } from 'rdf-js'
 
 export function loadData(path: string, base = import.meta.url): Stream | null {
+  const parser = new StreamParser({ format: 'text/n3' })
   const require = module.createRequire(base)
   let fullPath: string
   try {
@@ -15,5 +17,5 @@ export function loadData(path: string, base = import.meta.url): Stream | null {
     throw e
   }
 
-  return fromFile(fullPath)
+  return parser.import(createReadStream(fullPath))
 }

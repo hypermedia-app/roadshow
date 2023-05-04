@@ -6,51 +6,51 @@ import { html } from 'lit'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import { toSparql } from 'clownface-shacl-path'
 import { info } from 'loglevel'
-import { isNamedNode } from 'is-graph-pointer'
-import { NamedNode } from 'rdf-js'
-import { viewers } from '../lib/viewers.js'
+import { isGraphPointer, isNamedNode } from 'is-graph-pointer'
+import { MultiViewer, SingleViewer, viewers } from '../lib/viewers.js'
 
 interface PropertyArgs {
   shape: GraphPointer
   values: MultiPointer
 }
 
+type ViewerChain = [MultiViewer[], SingleViewer[]]
+
+const emptyResult = html``
+
 class PropertyDirective extends Directive {
+  viewerChain?: ViewerChain
+
   render({ shape, values }: PropertyArgs) {
     info(`Property path: ${toSparql(shape.out(sh.path)).toString({ prologue: false })}`)
 
-    const viewerPtr = shape.out(dash.viewer)
-    let viewerTerm: NamedNode
+    const [multiViewers, singleViewers] = this.prepareViewers(shape)
+
+    const singleViewerResults = values.toArray()
+      .sort((l, r) => l.value.localeCompare(r.value))
+      .map(pointer => singleViewers.reduceRight<unknown>((previous, viewer) => {
+        const innerContent = viewer.renderInner?.({ pointer, shape }) || previous
+
+        return viewer.renderElement({
+          pointer,
+          shape,
+          innerContent,
+        })
+      }, emptyResult))
+
+    const content = multiViewers.reduceRight<unknown>((previous, viewer) => {
+      const pointer = values
+      const innerContent = viewer.renderInner?.({ pointer, shape }) || previous
+
+      return viewer.renderElement({
+        pointer,
+        shape,
+        innerContent,
+      })
+    }, html`${singleViewerResults}`)
+
     const selector = shape.out(roadshow.selector).value
     const slot = shape.out(sh.group).out(schema.identifier).value
-    if (isNamedNode(viewerPtr)) {
-      viewerTerm = viewerPtr.term
-    } else {
-      viewerTerm = dash.URIViewer
-    }
-
-    let content: unknown
-    const viewer = viewers.get(viewerTerm)
-    if (!viewer) {
-      throw new Error(`Viewer not found '${viewerTerm?.value}'`)
-    }
-
-    if ('renderProperty' in viewer) {
-      // TODO introduce value directive
-      content = viewer.renderProperty(values.toArray())
-    }
-
-    if ('renderElement' in viewer) {
-      content = html`${values.toArray().map((pointer) => {
-        const innerContent = viewer.renderInner?.({ pointer })
-
-        return html`${viewer.renderElement({
-          shape,
-          pointer,
-          innerContent,
-        })}`
-      })}`
-    }
 
     if (selector === 'h1') {
       // TODO create HTML tag functions dynamically
@@ -63,6 +63,45 @@ class PropertyDirective extends Directive {
     }
 
     return content
+  }
+
+  prepareViewers(shape: GraphPointer): ViewerChain {
+    if (!this.viewerChain) {
+      const viewerPtr = shape.out(dash.viewer)
+      if (!isGraphPointer(viewerPtr)) {
+        throw new Error('Property must have at most one value of `dash:viewer` property')
+      }
+
+      const pointers = viewerPtr.isList()
+        ? [...viewerPtr.list()]
+        : [viewerPtr]
+
+      let [multi, single] = pointers.reduce<[MultiViewer[], SingleViewer[], boolean]>(([multi, single, previousWasSingle], current) => {
+        if (!isNamedNode(current)) {
+          throw new Error('Viewer must be a named node')
+        }
+
+        const viewer = viewers.get(current.term)
+        if (!viewer) {
+          throw new Error(`Viewer not found '${current.value}'`)
+        }
+
+        if (!viewer.multiViewer) {
+          return [multi, [...single, viewer], true]
+        }
+
+        if (previousWasSingle) {
+          throw new Error('SingleViewer cannot be followed by a MultiViewer')
+        }
+
+        return [[...multi, viewer], single, false]
+      }, [[], [], false])
+      single = single.length ? single : [viewers.get(dash.URIViewer)]
+      this.viewerChain = [multi, single]
+      return [multi, single]
+    }
+
+    return this.viewerChain
   }
 }
 
