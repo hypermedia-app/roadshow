@@ -14,21 +14,27 @@ import load from './store.js'
 import sparql from './sparql.js'
 
 export const loadResource: RequestHandler = async (req, res, next) => {
-  try {
-    const queryStart = req.originalUrl.indexOf('?')
-    const path = req.originalUrl.substring(1, queryStart === -1 ? undefined : queryStart)
+  let shape: GraphPointer<Term, DatasetExt> | null
+  let resource: GraphPointer<Term, DatasetExt>
+  const queryStart = req.originalUrl.indexOf('?')
+  const path = req.originalUrl.substring(1, queryStart === -1 ? undefined : queryStart)
+  const term = $rdf.namedNode(`http://localhost:3000/${path}`)
 
-    const term = $rdf.namedNode(`http://localhost:3000/${path}`)
-    const resource = clownface({
+  try {
+    resource = clownface({
       dataset: await load(term),
       term,
     })
 
-    const shape = await findShape(resource)
+    shape = await findShape(resource)
     if (!shape) {
       return res.sendStatus(404)
     }
+  } catch {
+    return next()
+  }
 
+  try {
     await prepareShape(shape, req)
 
     const target = shape.out(sh.targetNode).term
@@ -57,7 +63,8 @@ export const loadResource: RequestHandler = async (req, res, next) => {
     res.locals.resource = clownface({ dataset })
       .node(resource)
     return next()
-  } catch {
+  } catch (e) {
+    console.error(e)
     return next()
   }
 }

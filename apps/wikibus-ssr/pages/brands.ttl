@@ -82,9 +82,17 @@ prefix : <http://example.org/>
                         ] ;
                       sh:property
                         [
-                          sh:path ( schema:image schema:contentUrl ) ;
+                          sh:path :image ;
                           dash:viewer dash:ImageViewer ;
                           sh:group [ schema:identifier "image" ] ;
+                          sh:values
+                          [
+                            dash-sparql:coalesce
+                              (
+                                [ sh:optional [ sh:path ( schema:image schema:contentUrl ) ] ]
+                                _:fallbackImage
+                              )
+                          ] ;
                         ] ;
                     ] ;
                 ] ;
@@ -92,6 +100,18 @@ prefix : <http://example.org/>
         ] ;
     ] ;
 .
+
+_:fallbackImage
+  dash-sparql:iri
+    (
+      [
+        dash-sparql:concat
+          (
+            "https://dummyimage.com/300x200/f5f5f5/64bfdb&text="
+            [ dash-sparql:encode_for_uri ( [ dash-sparql:str ( [ sh:path skos:prefLabel ] ) ] ) ]
+          )
+      ]
+    ) .
 
 _:includeCollectionMembers
   sh:path [ sh:inversePath rdf:type ] ;

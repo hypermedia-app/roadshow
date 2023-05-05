@@ -9,6 +9,10 @@ log.enableAll()
 export async function render({ res }: { res: express.Response }) {
   const pointer = res.locals.resource
 
+  if (!pointer) {
+    return 'Not found'
+  }
+
   console.log(`Rendering ${pointer.value}`)
   return roadshow.render({
     pointer,

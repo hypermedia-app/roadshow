@@ -1,8 +1,5 @@
 import { css, html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
-import { taggedLiteral } from '@rdfjs-elements/lit-helpers/taggedLiteral.js'
-import { skos, schema } from '@tpluscode/rdf-ns-builders'
-import { findNodes } from 'clownface-shacl-path'
 import CanvasShellBase from './CanvasShellBase'
 
 @customElement('canvas-portfolio-item')
@@ -80,17 +77,5 @@ export class CanvasPortfolioItem extends CanvasShellBase(LitElement) {
         </a></h3>
       </div>
     `
-  }
-
-  renderImage() {
-    /* eslint-disable lit/no-invalid-html */
-    const image = this.resource.out(schema.image)
-    const thumbUrl = image.out(schema.thumbnail).out(schema.contentUrl).value
-    const imageUrl = thumbUrl || image.out(schema.contentUrl).value
-    const title = findNodes(this.resource, this._titlePath)
-    return imageUrl
-      ? html`<img src="${imageUrl}" alt="${taggedLiteral(title)} Logo">`
-      : html`<img src="https://dummyimage.com/300x200/f5f5f5/64bfdb&amp;text=${taggedLiteral(title)}"
-                alt="${taggedLiteral(this.resource.out(skos.prefLabel))} Logo">`
   }
 }
