@@ -69,7 +69,19 @@ prefix : <http://example.org/>
                           sh:nodes
                             [
                               sh:orderBy [ sh:path rdfs:label ] ;
-                              sh:nodes _:includeCollectionMembers ;
+                              sh:nodes
+                                [
+                                  sh:filterShape
+                                  [
+                                    sh:property
+                                    [
+                                      sh:path rdfs:label ;
+                                      sh:pattern "^s" ;
+                                      sh:flags "i" ;
+                                    ] ;
+                                  ];
+                                  sh:nodes _:includeCollectionMembers ;
+                                ] ;
                             ] ;
                         ] ;
                     ] ;
