@@ -3,12 +3,12 @@ import express, { RequestHandler } from 'express'
 import $rdf from 'rdf-ext'
 import { owl, rdf, schema, sh } from '@tpluscode/rdf-ns-builders'
 import { constructQuery } from '@hydrofoil/shape-to-query'
-import clownface, { GraphPointer } from 'clownface'
+import clownface, { AnyPointer, GraphPointer } from 'clownface'
 import { turtle } from '@tpluscode/rdf-string'
 import { ex } from 'test-data/ns.js'
 import { Quad, Term } from 'rdf-js'
 import DatasetExt from 'rdf-ext/lib/Dataset'
-import { isGraphPointer, isResource } from 'is-graph-pointer'
+import { isGraphPointer, isLiteral, isResource } from 'is-graph-pointer'
 import TermSet from '@rdfjs/term-set'
 import load from './store.js'
 import sparql from './sparql.js'
@@ -79,13 +79,19 @@ async function prepareShape(shape: GraphPointer | null, req: express.Request) {
   const parametrised = shapeGraph.has(ex.param)
 
   for (const parametrisedNode of parametrised.toArray()) {
-    const param = parametrisedNode.out(ex.param).value
+    const param = parametrisedNode.out(ex.param)
     const defaultValue = parametrisedNode.out(sh.defaultValue)
     const subjects = shapeGraph.dataset.match(null, null, parametrisedNode.term)
     const objects = shapeGraph.dataset.match(parametrisedNode.term)
-    const value = params.has(ex.param, param).out(ex.value).term
+    let value: Term | undefined
 
-    console.log(`param '${param}'; default value ${defaultValue.values}; value: ${value}`)
+    if (isLiteral(param) && param.term.datatype.equals(ex.template)) {
+      value = evalTemplateLiteral(param.value, params)
+    } else {
+      value = params.has(ex.param, param).out(ex.value).term
+    }
+
+    console.log(`param '${param.value}'; default value ${defaultValue.values}; value: ${value}`)
 
     parametrisedNode.deleteIn().deleteOut()
 
@@ -99,6 +105,22 @@ async function prepareShape(shape: GraphPointer | null, req: express.Request) {
           .addIn(predicate, value || defaultValue)
       }
     }
+  }
+}
+
+function evalTemplateLiteral(content: string, params: AnyPointer) {
+  try {
+    const keys = params.has(ex.param).out(ex.param).values
+    console.log(keys)
+
+    const values = keys.map(param => params.has(ex.param, param)
+      .out(ex.value).term)
+    const template = Function(...keys, `return \`${content}\``) // eslint-disable-line no-new-func
+
+    return template(...values)
+  } catch (e: any) {
+    console.log(e)
+    return ex.error
   }
 }
 

@@ -57,34 +57,34 @@ prefix : <http://example.org/>
                   sh:path hydra:member ;
                   dash:viewer (hex:GridViewer canvas:PortfolioItem dash:DetailsViewer) ;
                   sh:values
+                  (
+                    [ sh:limit 39 ]
                     [
-                      sh:limit 39 ;
-                      sh:nodes
+                      sh:offset
+                      [
+                        :param "offset" ;
+                        sh:defaultValue 0
+                      ] ;
+                    ]
+                    [
+                      sh:orderBy [ sh:path rdfs:label ] ;
+                    ]
+                    [
+                      sh:filterShape
                         [
-                          sh:offset
+                          sh:property
                             [
-                              :param "offset" ;
-                              sh:defaultValue 0
+                              sh:path rdfs:label ;
+                              sh:pattern
+                              [
+                                :param "^${i}"^^:template ;
+                              ] ;
+                              sh:flags "i" ;
                             ] ;
-                          sh:nodes
-                            [
-                              sh:orderBy [ sh:path rdfs:label ] ;
-                              sh:nodes
-                                [
-                                  sh:filterShape
-                                  [
-                                    sh:property
-                                    [
-                                      sh:path rdfs:label ;
-                                      sh:pattern "^s" ;
-                                      sh:flags "i" ;
-                                    ] ;
-                                  ];
-                                  sh:nodes _:includeCollectionMembers ;
-                                ] ;
-                            ] ;
-                        ] ;
-                    ] ;
+                        ];
+                    ]
+                    _:includeCollectionMembers
+                  ) ;
                   sh:node
                     [
                       sh:property
