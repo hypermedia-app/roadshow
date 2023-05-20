@@ -39,7 +39,9 @@ export const loadResource: RequestHandler = async (req, res, next) => {
 
     const target = shape.out(sh.targetNode).term
     const t0 = performance.now()
-    let dataset = await shape.dataset.import(await constructQuery(shape)
+    const query = constructQuery(shape)
+    console.log(query.build())
+    let dataset = await shape.dataset.import(await query
       .execute(sparql.query, {
         operation: 'postDirect',
       }))
