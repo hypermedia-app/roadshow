@@ -58,13 +58,13 @@ prefix : <http://example.org/>
                   dash:viewer (hex:GridViewer canvas:PortfolioItem dash:DetailsViewer) ;
                   sh:values
                   (
-                    [ sh:limit 39 ]
                     [
-                      sh:offset
-                      [
-                        :param "offset" ;
-                        sh:defaultValue 0
-                      ] ;
+                      hydra:limit 39 ;
+                      hydra:pageIndex
+                        [
+                          :param "page" ;
+                          sh:defaultValue 1 ;
+                        ] ;
                     ]
                     [
                       sh:orderBy [ sh:path rdfs:label ] ;
