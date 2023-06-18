@@ -1,6 +1,6 @@
 import { css, html, LitElement } from 'lit'
 import { property } from 'lit/decorators.js'
-import { ChevronUp } from '../icons'
+// import { ChevronUp } from '../icons'
 import CanvasShellBase from './CanvasShellBase'
 
 export class CanvasGototop extends CanvasShellBase(LitElement) {
@@ -62,7 +62,8 @@ export class CanvasGototop extends CanvasShellBase(LitElement) {
   }
 
   public render() {
-    return html` <div id="gotoTop" ?visible="${this.visible}">${ChevronUp()}</div> `
+    const up = '⬆'
+    return html` <div id="gotoTop" ?visible="${this.visible}">${up}</div> `
   }
 
   protected firstUpdated(): void {

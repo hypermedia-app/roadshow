@@ -1,7 +1,6 @@
 import { css, html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
-import { repeat } from 'lit/directives/repeat.js'
 import CanvasShellBase from './CanvasShellBase'
 
 @customElement('canvas-pager')
@@ -75,14 +74,6 @@ export class CanvasPager extends CanvasShellBase(LitElement) {
       <ul class="pagination pagination-inside-transparent justify-content-center ${sizeClass}">
         <slot></slot>
       </ul>`
-  }
-
-  renderLinks() {
-    return html`${repeat(this.links, link => link.href, link => html`
-      <li class="page-item">
-        <a class="page-link" href="${link.href}">${link.label}</a>
-      </li>
-    `)}`
   }
 
   renderPrevNext() {

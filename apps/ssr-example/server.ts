@@ -11,8 +11,15 @@ async function createServer() {
 
   app.use(await roadshow.middleware({
     vite: config,
-    modulePath: path.resolve(__dirname, './src/server.ts'),
-    indexPath: path.resolve(__dirname, 'index.html'),
+    production: {
+      modulePath: path.resolve(__dirname, './src/server.ts'),
+      indexPath: path.resolve(__dirname, 'index.html'),
+      clientBuildPath: '',
+    },
+    dev: {
+      modulePath: path.resolve(__dirname, './src/server.ts'),
+      indexPath: path.resolve(__dirname, 'index.html'),
+    },
   }))
 
   app.listen(3000)

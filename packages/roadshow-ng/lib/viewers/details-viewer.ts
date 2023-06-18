@@ -1,16 +1,16 @@
 import { dash, sh } from '@tpluscode/rdf-ns-builders'
-import { info } from 'loglevel'
 import { findNodes } from 'clownface-shacl-path'
 import { defineViewer } from '../defineViewer'
 import { html } from '../../index.js'
 import { property } from '../../directive/property'
+import log from '../log.js'
 
 defineViewer(dash.DetailsViewer, {
   renderElement(arg) {
     const shape = arg.shape.out(sh.node)
     const focusNode = arg.pointer
     const viewerPtr = shape.out(dash.viewer)
-    info(`Focus node: ${focusNode.value}, ${viewerPtr.value}`)
+    log.info(`Focus node: ${focusNode.value}, ${viewerPtr.value}`)
 
     const properties = [
       ...shape.out(sh.property).toArray(),

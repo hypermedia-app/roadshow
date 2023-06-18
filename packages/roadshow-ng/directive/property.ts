@@ -5,9 +5,9 @@ import { roadshow } from '@hydrofoil/vocabularies/builders'
 import { html } from 'lit'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import { toSparql } from 'clownface-shacl-path'
-import { info } from 'loglevel'
 import { isGraphPointer, isNamedNode } from 'is-graph-pointer'
 import { MultiViewer, SingleViewer, viewers } from '../lib/viewers.js'
+import log from '../lib/log.js'
 
 interface PropertyArgs {
   shape: GraphPointer
@@ -22,7 +22,7 @@ class PropertyDirective extends Directive {
   viewerChain?: ViewerChain
 
   render({ shape, values }: PropertyArgs) {
-    info(`Property path: ${toSparql(shape.out(sh.path)).toString({ prologue: false })}`)
+    log.info(`Property path: ${toSparql(shape.out(sh.path)).toString({ prologue: false })}`)
 
     const [multiViewers, singleViewers] = this.prepareViewers(shape)
 
@@ -96,7 +96,7 @@ class PropertyDirective extends Directive {
 
         return [[...multi, viewer], single, false]
       }, [[], [], false])
-      single = single.length ? single : [viewers.get(dash.URIViewer)]
+      single = single.length ? single : [<SingleViewer>viewers.get(dash.URIViewer)]
       this.viewerChain = [multi, single]
       return [multi, single]
     }

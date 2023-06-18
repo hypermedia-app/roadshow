@@ -1,3 +1,4 @@
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
 PREFIX dash: <http://datashapes.org/dash#>
@@ -12,6 +13,7 @@ prefix hex: <https://w3id.org/hydra/extension#>
 prefix : <http://example.org/>
 
 <brands/index>
+  a :AlphabeticPager ;
   hex:page <brands?i=a>, <brands?i=b>, <brands?i=c>, <brands?i=d>
 .
 
@@ -36,8 +38,10 @@ prefix : <http://example.org/>
       sh:property
         [
           sh:path hydra:view ;
-          dash:viewer (canvas:AlphabeticPager dash:DetailsViewer) ;
+          dash:viewer ( canvas:AlphabeticPager dash:DetailsViewer ) ;
           sh:values <brands/index> ;
+          # sh:class :AlphabeticPager ;
+          sh:order 1 ;
           sh:node
             [
               sh:property
@@ -48,43 +52,145 @@ prefix : <http://example.org/>
             ] ;
         ],
         [
+          sh:path hydra:view ;
+          # sh:class hydra:PartialCollectionView ;
+          sh:values <brands/pager> ;
+          dash:viewer ( canvas:AlphabeticPager dash:DetailsViewer ) ;
+          sh:order 3 ;
+          sh:node
+            [
+              sh:property
+                [
+                  sh:path hydra:first ;
+                  sh:values
+                    [
+                      dash-sparql:iri ( [ dash-sparql:str ( <brands> ) ] )
+                    ] ;
+                  dash:viewer dash:LabelViewer ;
+                  sh:node
+                    [
+                      sh:rule
+                        [
+                          sh:subject sh:this ;
+                          sh:predicate rdfs:label ;
+                          sh:object "First"
+                        ] ;
+                    ]
+                ] ;
+              sh:property
+                [
+                  sh:path hydra:previous ;
+                  dash:viewer dash:LabelViewer ;
+                  sh:node
+                    [
+                      sh:rule
+                        [
+                          sh:subject sh:this ;
+                          sh:predicate rdfs:label ;
+                          sh:object "Previous"
+                        ] ;
+                    ]
+                ] ;
+              sh:property
+                [
+                  sh:path hydra:next ;
+                  dash:viewer dash:LabelViewer ;
+                  sh:node
+                    [
+                      sh:rule
+                        [
+                          sh:subject sh:this ;
+                          sh:predicate rdfs:label ;
+                          sh:object "Next"
+                        ] ;
+                    ]
+                ] ;
+              sh:property
+                [
+                  sh:path hydra:last ;
+                  dash:viewer dash:LabelViewer ;
+                  sh:values
+                    [
+                      dash-sparql:iri
+                        (
+                          [
+                            dash-sparql:concat
+                              (
+                                [ dash-sparql:str ( <brands> ) ]
+                                "?page="
+                                [
+                                  dash-sparql:str
+                                    (
+                                      [
+                                        xsd:int
+                                          (
+                                            [
+                                              dash-sparql:ceil
+                                                (
+                                                  [
+                                                    dash-sparql:divide
+                                                      (
+                                                        [ sh:count ( _:filteredCollection ) ]
+                                                        39
+                                                      )]
+                                                )
+                                            ]
+                                          )
+                                      ]
+                                    )
+                                ]
+                              )
+                          ]
+                        )
+                    ] ;
+                  sh:node
+                    [
+                      sh:rule
+                        [
+                          sh:subject sh:this ;
+                          sh:predicate rdfs:label ;
+                          sh:object "Last"
+                        ] ;
+                    ]
+                ] ;
+            ] ;
+        ],
+        [
           sh:path schema:mainEntity ;
+          sh:order 2 ;
           dash:viewer dash:DetailsViewer ;
           sh:node
             [
               sh:property
                 [
-                  sh:path hydra:member ;
-                  dash:viewer (hex:GridViewer canvas:PortfolioItem dash:DetailsViewer) ;
+                  sh:path hydra:totalItems ;
+                  sh:order 2 ;
+                  dash:viewer dash:LiteralViewer ;
                   sh:values
-                  (
                     [
-                      hydra:limit 39 ;
-                      hydra:pageIndex
-                        [
-                          :param "page" ;
-                          sh:defaultValue 1 ;
-                        ] ;
-                    ]
-                    [
-                      sh:orderBy [ sh:path rdfs:label ] ;
-                    ]
-                    [
-                      sh:filterShape
-                        [
-                          sh:property
-                            [
-                              sh:path rdfs:label ;
-                              sh:pattern
-                              [
-                                :param "^${i}"^^:template ;
-                              ] ;
-                              sh:flags "i" ;
-                            ] ;
-                        ];
-                    ]
-                    _:includeCollectionMembers
-                  ) ;
+                      sh:count ( _:filteredCollection )
+                    ] ;
+                ] ;
+              sh:property
+                [
+                  sh:path hydra:member ;
+                  sh:order 1 ;
+                  dash:viewer ( hex:GridViewer canvas:PortfolioItem dash:DetailsViewer ) ;
+                  sh:values
+                    (
+                      [
+                        hydra:limit 39 ;
+                        hydra:pageIndex
+                          [
+                            :param "page" ;
+                            sh:defaultValue 1 ;
+                          ] ;
+                      ]
+                      [
+                        sh:orderBy [ sh:path rdfs:label ] ;
+                      ]
+                      _:filteredCollection
+                    ) ;
                   sh:node
                     [
                       sh:property
@@ -98,13 +204,13 @@ prefix : <http://example.org/>
                           dash:viewer dash:ImageViewer ;
                           sh:group [ schema:identifier "image" ] ;
                           sh:values
-                          [
-                            dash-sparql:coalesce
-                              (
-                                [ sh:optional [ sh:path ( schema:image schema:contentUrl ) ] ]
-                                _:fallbackImage
-                              )
-                          ] ;
+                            [
+                              dash-sparql:coalesce
+                                (
+                                  [ sh:optional [ sh:path ( schema:image schema:contentUrl ) ] ]
+                                  _:fallbackImage
+                                )
+                            ] ;
                         ] ;
                     ] ;
                 ] ;
@@ -124,6 +230,22 @@ _:fallbackImage
           )
       ]
     ) .
+
+_:filteredCollection
+  sh:filterShape
+    [
+      sh:property
+        [
+          sh:path rdfs:label ;
+          sh:pattern
+            [
+              :param "^${i}"^^:template ;
+            ] ;
+          sh:flags "i" ;
+        ] ;
+    ] ;
+  sh:nodes _:includeCollectionMembers
+.
 
 _:includeCollectionMembers
   sh:path [ sh:inversePath rdf:type ] ;

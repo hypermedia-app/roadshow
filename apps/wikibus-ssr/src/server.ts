@@ -1,10 +1,8 @@
-/* eslint-disable no-console */
+import 'anylogger-console'
 import * as roadshow from '@hydrofoil/roadshow-ssr'
-import './viewers.js'
 import express from 'express'
-import log from 'loglevel'
-
-log.enableAll()
+import log from 'anylogger'
+import './viewers.js'
 
 export async function render({ res }: { res: express.Response }) {
   const pointer = res.locals.resource
@@ -13,7 +11,7 @@ export async function render({ res }: { res: express.Response }) {
     return 'Not found'
   }
 
-  console.log(`Rendering ${pointer.value}`)
+  log('wikibus').info(`Rendering ${pointer.value}`)
   return roadshow.render({
     pointer,
   })

@@ -5,7 +5,7 @@ import { dash, sh } from '@tpluscode/rdf-ns-builders'
 import { findNodes } from 'clownface-shacl-path'
 import { html } from 'lit'
 import isGraphPointer from 'is-graph-pointer'
-import { info } from 'loglevel'
+import log from '../lib/log'
 import { property } from './property.js'
 import { viewers } from '../lib/viewers.js'
 
@@ -17,7 +17,7 @@ interface FocusNodeArgs {
 class FocusNodeDirective extends Directive {
   render({ focusNode, shape }: FocusNodeArgs) {
     const viewerPtr = shape.out(dash.viewer)
-    info(`Focus node: ${focusNode.value}, ${viewerPtr.value}`)
+    log.info(`Focus node: ${focusNode.value}, ${viewerPtr.value}`)
 
     const properties = [
       ...shape.out(sh.property).toArray(),
