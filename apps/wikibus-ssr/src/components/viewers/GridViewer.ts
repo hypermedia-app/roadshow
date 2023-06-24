@@ -1,9 +1,12 @@
 import { defineViewer } from '@hydrofoil/roadshow-ng'
 import { hex } from '@hydrofoil/vocabularies/builders'
-import '@appnest/masonry-layout'
+import { isServer } from 'lit'
 
 defineViewer(hex.GridViewer, 'masonry-layout', {
   multiViewer: true,
+  oneTimeInit() {
+    if (!isServer) import('@appnest/masonry-layout')
+  },
   mapAttributes: {
     class() {
       return 'grid-container clearfix'

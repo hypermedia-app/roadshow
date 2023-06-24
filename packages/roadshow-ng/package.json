@@ -22,6 +22,7 @@
     "clownface-shacl-path": "^2.0.0",
     "is-graph-pointer": "^2.0.0",
     "lit": "^2.6.1",
+    "onetime": "^6.0.0",
     "rdf-dataset-ext": "^1.0.1",
     "string-to-stream": "^3.0.1"
   },
