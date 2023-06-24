@@ -1,4 +1,4 @@
-import 'lit/experimental-hydrate-support.js'
+import '@lit-labs/ssr-client/lit-element-hydrate-support.js'
 import { Directive, directive } from 'lit/directive.js'
 import type { GraphPointer } from 'clownface'
 import type { BlankNode, NamedNode } from '@rdfjs/types'

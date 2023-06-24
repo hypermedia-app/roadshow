@@ -1,4 +1,4 @@
 import 'anylogger-console'
-import '@hydrofoil/roadshow-vite/client'
+import '@lit-labs/ssr-client/lit-element-hydrate-support.js'
 import '@hydrofoil/roadshow-ng/rs-view'
 import './viewers.js'

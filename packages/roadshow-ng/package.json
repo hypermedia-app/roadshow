@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@hydrofoil/vocabularies": "^0.3",
+    "@lit-labs/ssr-client": "^1.1.2",
     "@tpluscode/rdf-ns-builders": "^2",
     "@rdfjs/data-model": "^2.0.1",
     "@rdfjs/dataset": "^2.0.1",
