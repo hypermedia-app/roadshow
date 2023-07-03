@@ -743,10 +743,10 @@
   resolved "https://registry.yarnpkg.com/@hydrofoil/vocab-roadshow/-/vocab-roadshow-1.0.0.tgz#52f91982f49bcc7a39d73bd434e66268adbb57c1"
   integrity sha512-NvhDG+mhLD7o9wxiZWLRZbvfZxFvS5du80KRk0e8QV3GoDjSKD+wqQMdxUfu0GXxvoosBpZaC9vjvi5uk2MM+g==
 
-"@hydrofoil/vocabularies@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@hydrofoil/vocabularies/-/vocabularies-1.0.0.tgz#a98f316ae2d218280282cf86315b50477e11cce2"
-  integrity sha512-VrdDqIYw22AMZG7csxzMfBMz7oZVRhsGvWX1xuDgIiNp3azPSan+o3LuEW0W8eirjNiVZYc+Pr3gsIfNJfnHWw==
+"@hydrofoil/vocabularies@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@hydrofoil/vocabularies/-/vocabularies-1.0.1.tgz#9f07a12741892f82cb719c0e8f934e32885143d8"
+  integrity sha512-bdRiKPK/J/hDjIVmhMJId4glZOAE2+t9NA5jc80ICV+2xvCT0TJnpp5ZOul8IcYRoZZDCfF2Wfy4ZbEwbKybtw==
   dependencies:
     "@hydrofoil/vocab-code" "^1.0.0"
     "@hydrofoil/vocab-hex" "^1.0.0"

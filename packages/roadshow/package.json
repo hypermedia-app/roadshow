@@ -16,7 +16,7 @@
     "./viewers": "./viewers.js"
   },
   "dependencies": {
-    "@hydrofoil/vocabularies": "^1.0.0",
+    "@hydrofoil/vocabularies": "^1.0.1",
     "@lit-labs/ssr-client": "^1.1.2",
     "@tpluscode/rdf-ns-builders": "^4",
     "@rdfjs/data-model": "^2.0.1",

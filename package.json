@@ -4,7 +4,7 @@
   "type": "module",
   "description": "Rendering app layouts using SHACL and lit-html",
   "scripts": {
-    "lint": "eslint . --ext .ts --quiet --ignore-path .gitignore --ignore-path .eslintignore",
+    "lint": "eslint . --ext .ts --quiet --ignore-path .gitignore",
     "test": "wtr",
     "test:ssr": "wsrun -p ssr-test -c test",
     "postinstall": "husky install; patch-package; yarn-deduplicate",
