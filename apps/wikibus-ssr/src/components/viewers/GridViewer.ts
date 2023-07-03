@@ -1,5 +1,5 @@
 import { defineViewer } from '@hydrofoil/roadshow'
-import { hex } from '@hydrofoil/vocabularies/builders'
+import { hex } from '@hydrofoil/vocabularies/builders/loose'
 import { isServer } from 'lit'
 
 defineViewer(hex.GridViewer, 'masonry-layout', {

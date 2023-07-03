@@ -1,7 +1,7 @@
 import { directive, Directive } from 'lit/directive.js'
 import { GraphPointer, MultiPointer } from 'clownface'
 import { dash, schema, sh } from '@tpluscode/rdf-ns-builders'
-import { roadshow } from '@hydrofoil/vocabularies/builders'
+import { roadshow } from '@hydrofoil/vocabularies/builders/loose'
 import { html } from 'lit'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import { toSparql } from 'clownface-shacl-path'
@@ -49,6 +49,7 @@ class PropertyDirective extends Directive {
       })
     }, html`${singleViewerResults}`)
 
+    // TODO selector property?
     const selector = shape.out(roadshow.selector).value
     const slot = shape.out(sh.group).out(schema.identifier).value
 
