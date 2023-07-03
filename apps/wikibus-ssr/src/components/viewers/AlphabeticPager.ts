@@ -1,4 +1,4 @@
-import { defineViewer } from '@hydrofoil/roadshow-ng'
+import { defineViewer } from '@hydrofoil/roadshow'
 import { canvas } from '../../ns'
 import '../canvas-shell/canvas-pager.js'
 

@@ -1,4 +1,4 @@
-import { defineViewer } from '@hydrofoil/roadshow-ng'
+import { defineViewer } from '@hydrofoil/roadshow'
 import { dash } from '@tpluscode/rdf-ns-builders'
 
 defineViewer(dash.ImageViewer, 'img', {

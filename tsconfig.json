@@ -26,9 +26,9 @@
     "packages",
     "apps/ssr-example",
     "apps/wikibus-ssr",
-    "apps/storybook/global.d.ts",
+    "global.d.ts",
     "test-setup.js",
     "test-karma-setup.js",
-    "web-dev-server.config.mjs"
+    "web-test-runner.config.js"
   ],
 }

@@ -1,7 +1,7 @@
 ---
-"@hydrofoil/roadshow-ng": patch
+"@hydrofoil/roadshow": minor
 "@hydrofoil/roadshow-ssr": patch
 "@hydrofoil/roadshow-vite": patch
 ---
 
-First prototype
+Rewrite to put emphasis on server-side rendering

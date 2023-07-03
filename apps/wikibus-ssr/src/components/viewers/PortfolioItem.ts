@@ -1,4 +1,4 @@
-import { defineViewer } from '@hydrofoil/roadshow-ng'
+import { defineViewer } from '@hydrofoil/roadshow'
 import { schema } from '@tpluscode/rdf-ns-builders'
 import { canvas } from '../../ns.js'
 import '../canvas-shell/canvas-portfolio-item.js'

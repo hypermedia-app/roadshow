@@ -1,4 +1,4 @@
-import { defineViewer } from '@hydrofoil/roadshow-ng'
+import { defineViewer } from '@hydrofoil/roadshow'
 import { hex } from '@hydrofoil/vocabularies/builders'
 import { isServer } from 'lit'
 

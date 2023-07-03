@@ -1,4 +1,4 @@
-import '@hydrofoil/roadshow-ng/viewers'
+import '@hydrofoil/roadshow/viewers'
 import './components/viewers/AlphabeticPager.js'
 import './components/viewers/GridViewer.js'
 import './components/viewers/FullWidthPage.js'

@@ -1,6 +1,6 @@
 import { css, html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
-import { defineViewer } from '@hydrofoil/roadshow-ng'
+import { defineViewer } from '@hydrofoil/roadshow'
 import { canvas } from '../../ns.js'
 import '../canvas-shell/canvas-header.js'
 import '../canvas-shell/canvas-footer.js'

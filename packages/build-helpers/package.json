@@ -10,7 +10,7 @@
     "clownface": "^1",
     "string-to-stream": "^3.0.1",
     "stream-to-string": "^1.2.0",
-    "@rdfjs/serializer-rdfjs": "^0.0.4",
+    "@rdfjs/serializer-rdfjs": "^0.1.1",
     "@rollup/pluginutils": "^3"
   },
   "devDependencies": {

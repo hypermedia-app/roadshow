@@ -3,10 +3,11 @@
   "version": "0.0.0",
   "type": "module",
   "dependencies": {
-    "@hydrofoil/roadshow-ng": "^0.0.0",
+    "@hydrofoil/roadshow": "^0.4.10",
     "@lit-labs/ssr": "^3.1.4",
-    "@rdfjs-elements/formats-pretty": "^0.5.1",
-    "@tpluscode/rdf-ns-builders": "^2.0.1",
+    "@lit-labs/ssr-client": "^1.1.2",
+    "@rdfjs-elements/formats-pretty": "^0.6",
+    "@tpluscode/rdf-ns-builders": "^4",
     "get-stream": "^6.0.1",
     "lit": "^2.7.3",
     "nanoid": "^4.0.0",
@@ -20,5 +21,10 @@
     "ts-node": "^10.9.1"
   },
   "main": "index.js",
+  "exports": {
+    ".": "./index.js",
+    "./client.js": "./client.js",
+    "./client": "./client.js"
+  },
   "license": "MIT"
 }

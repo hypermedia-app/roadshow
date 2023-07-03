@@ -4,7 +4,7 @@ import dataModel from '@rdfjs/data-model'
 import $rdf from '@rdfjs/dataset'
 
 declare interface QuadArrayFactory {
-  (factory: DataFactory): Quad[]
+  (arg: { factory: DataFactory }): Quad[]
 }
 
 interface DynamicallyImported {
@@ -12,9 +12,9 @@ interface DynamicallyImported {
 }
 
 export function runFactory(arg: QuadArrayFactory | DynamicallyImported): GraphPointer<NamedNode> {
-  const factory = 'default' in arg ? arg.default : arg
+  const createQuads = 'default' in arg ? arg.default : arg
 
-  const dataset = $rdf.dataset(factory(dataModel))
+  const dataset = $rdf.dataset(createQuads({ factory: dataModel }))
 
   return clownface({ dataset }).namedNode('')
 }

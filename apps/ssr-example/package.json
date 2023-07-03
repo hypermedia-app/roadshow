@@ -12,7 +12,7 @@
   "dependencies": {
     "@hydrofoil/roadshow-ssr": "^0.0.0",
     "@hydrofoil/roadshow-vite": "^0.0.0",
-    "@tpluscode/rdf-ns-builders": "^3.0.2",
+    "@tpluscode/rdf-ns-builders": "^4",
     "@vaadin/vaadin": "^23.2.15",
     "clownface": "^1.5.1",
     "express": "^4.18.2",
