@@ -29,8 +29,8 @@ describe('@hydrofoil/roadshow/directive/view', () => {
     // then
     expect(result).dom.to.eq(`
       <ex-layout>
-        <h1 slot="header">
-          Test page resource
+        <h1 slot="header" style="">
+          <span style="">Test page resource</span>
         </h1>
       </ex-layout>
     `)

@@ -26,6 +26,7 @@
     "anylogger": "^1.0.11",
     "clownface": "^1.5.1",
     "clownface-shacl-path": "^2.0.0",
+    "html-tags": "^3.3.1",
     "is-graph-pointer": "^2.0.0",
     "lit": "^2.6.1",
     "onetime": "^6.0.0",
@@ -33,7 +34,7 @@
     "string-to-stream": "^3.0.1"
   },
   "devDependencies": {
-    "@open-wc/testing": "^3.1.2",
+    "@open-wc/testing": "^3.2.0",
     "@roadshow/build-helpers": "*",
     "@types/rdfjs__dataset": "^2",
     "sinon": "^11",

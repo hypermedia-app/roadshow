@@ -8,6 +8,7 @@ interface Viewer<T> {
     shape: GraphPointer
     pointer: T
     innerContent?: unknown
+    slot?: string
   }) : unknown
 }
 

@@ -48,9 +48,8 @@ function createElementViewer(tagName: string, { multiViewer, mapAttributes = {},
     `
         const { html, ifDefined, styleMap } = lit
         const { mapStyle, mapAttributes, ns, init } = ctx
-        const { shape, innerContent } = arg
+        const { slot, shape, innerContent } = arg
         const styles = mapStyle?.(arg) || {}
-        const slot = shape.out(ns.sh.group).out(ns.schema.identifier).value
         init()
         return html\`<${tagName} ${attributeBindings} style="$\{styleMap(styles)}" slot="$\{ifDefined(slot)}">$\{innerContent}</${tagName}>\`
     `,

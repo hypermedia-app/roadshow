@@ -1,3 +1,4 @@
+PREFIX html: <http://www.w3.org/1999/xhtml/>
 PREFIX ex: <http://example.org/>
 PREFIX schema: <http://schema.org/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -12,7 +13,6 @@ prefix roadshow: <https://hypermedia.app/roadshow#>
   [
     sh:path schema:title ;
     sh:group [ schema:identifier "header" ] ;
-    dash:viewer dash:LiteralViewer ;
-    roadshow:selector "h1" ;
+    dash:viewer ( roadshow:element-h1 dash:LiteralViewer ) ;
   ] ;
 .

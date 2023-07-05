@@ -1,9 +1,7 @@
 import { directive, Directive } from 'lit/directive.js'
 import { GraphPointer, MultiPointer } from 'clownface'
 import { dash, schema, sh } from '@tpluscode/rdf-ns-builders'
-import { roadshow } from '@hydrofoil/vocabularies/builders/loose'
 import { html } from 'lit'
-import { ifDefined } from 'lit/directives/if-defined.js'
 import { toSparql } from 'clownface-shacl-path'
 import { isGraphPointer, isNamedNode } from 'is-graph-pointer'
 import { MultiViewer, SingleViewer, viewers } from '../lib/viewers.js'
@@ -24,44 +22,33 @@ class PropertyDirective extends Directive {
   render({ shape, values }: PropertyArgs) {
     log.info(`Property path: ${toSparql(shape.out(sh.path)).toString({ prologue: false })}`)
 
+    const groupId = shape.out(sh.group).out(schema.identifier).value
     const [multiViewers, singleViewers] = this.prepareViewers(shape)
 
     const singleViewerResults = values.toArray()
       .sort((l, r) => l.value.localeCompare(r.value))
-      .map(pointer => singleViewers.reduceRight<unknown>((previous, viewer) => {
+      .map(pointer => singleViewers.reduceRight<unknown>((previous, viewer, index) => {
         const innerContent = viewer.renderInner?.({ pointer, shape }) || previous
 
         return viewer.renderElement({
+          slot: !index && !multiViewers.length ? groupId : undefined,
           pointer,
           shape,
           innerContent,
         })
       }, emptyResult))
 
-    const content = multiViewers.reduceRight<unknown>((previous, viewer) => {
+    const content = multiViewers.reduceRight<unknown>((previous, viewer, index) => {
       const pointer = values
       const innerContent = viewer.renderInner?.({ pointer, shape }) || previous
 
       return viewer.renderElement({
+        slot: !index ? groupId : undefined,
         pointer,
         shape,
         innerContent,
       })
     }, html`${singleViewerResults}`)
-
-    // TODO selector property?
-    const selector = shape.out(roadshow.selector).value
-    const slot = shape.out(sh.group).out(schema.identifier).value
-
-    if (selector === 'h1') {
-      // TODO create HTML tag functions dynamically
-      return html`<h1 slot="${ifDefined(slot)}">${content}</h1>`
-    }
-
-    if (selector === 'span') {
-      // TODO create HTML tag functions dynamically
-      return html`<span slot="${ifDefined(slot)}">${content}</span>`
-    }
 
     return content
   }
