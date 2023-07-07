@@ -1,5 +1,5 @@
 import { css, html, LitElement } from 'lit'
-import CanvasShellBase from './CanvasShellBase'
+import CanvasShellBase from './CanvasShellBase.js'
 
 export class CanvasIconList extends CanvasShellBase(LitElement) {
   static get styles() {

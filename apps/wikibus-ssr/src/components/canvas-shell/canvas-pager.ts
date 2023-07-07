@@ -1,7 +1,7 @@
 import { css, html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js'
-import CanvasShellBase from './CanvasShellBase'
+import CanvasShellBase from './CanvasShellBase.js'
 
 @customElement('canvas-pager')
 export class CanvasPager extends CanvasShellBase(LitElement) {

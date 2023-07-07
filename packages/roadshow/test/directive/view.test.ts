@@ -1,6 +1,6 @@
 import { html, fixture, expect } from '@open-wc/testing'
 import { runFactory } from '@roadshow/build-helpers/runFactory.js'
-import { ex } from 'test-data/ns'
+import { ex } from 'test-data/ns.js'
 import { view } from '../../directive/view.js'
 import '../../viewers.js'
 import { viewers } from '../../lib/viewers.js'

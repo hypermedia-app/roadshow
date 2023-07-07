@@ -1,6 +1,6 @@
 import { css, html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
-import CanvasShellBase from './CanvasShellBase'
+import CanvasShellBase from './CanvasShellBase.js'
 
 @customElement('canvas-portfolio-item')
 export class CanvasPortfolioItem extends CanvasShellBase(LitElement) {

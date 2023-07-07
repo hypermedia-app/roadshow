@@ -1,7 +1,7 @@
 import { css, html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { classMap } from 'lit/directives/class-map.js'
-import CanvasShellBase from './CanvasShellBase'
+import CanvasShellBase from './CanvasShellBase.js'
 
 type Color =
   | 'white'
@@ -24,7 +24,7 @@ export class CanvasButton extends CanvasShellBase(LitElement) {
   static get styles() {
     return css`
       ${super.styles || []}
-      
+
       :host([disabled]) {
         pointer-events: none;
         cursor: progress;

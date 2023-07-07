@@ -1,6 +1,6 @@
 import { html, LitElement, css } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
-import CanvasShellBase from './CanvasShellBase'
+import CanvasShellBase from './CanvasShellBase.js'
 
 @customElement('canvas-featured-box')
 export class CanvasFeaturedBox extends CanvasShellBase(LitElement) {

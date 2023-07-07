@@ -1,7 +1,7 @@
 import { defineViewer } from '@hydrofoil/roadshow'
 import '../canvas-shell/canvas-featured-box.js'
 import { sh } from '@tpluscode/rdf-ns-builders'
-import { canvas } from '../../ns'
+import { canvas } from '../../ns.js'
 
 defineViewer(canvas.FeaturedBoxViewer, 'canvas-featured-box', {
   mapAttributes: {

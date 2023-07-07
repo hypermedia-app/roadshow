@@ -1,6 +1,6 @@
 import { css, html, LitElement } from 'lit'
 import { customElement } from 'lit/decorators.js'
-import CanvasShellBase from './CanvasShellBase'
+import CanvasShellBase from './CanvasShellBase.js'
 
 @customElement('canvas-footer')
 export class CanvasFooter extends CanvasShellBase(LitElement) {

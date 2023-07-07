@@ -1,7 +1,7 @@
 import { css, html, LitElement } from 'lit'
 import { property } from 'lit/decorators.js'
 import type { Term } from '@rdfjs/types'
-import CanvasShellBase from './CanvasShellBase'
+import CanvasShellBase from './CanvasShellBase.js'
 
 export class CanvasHeader extends CanvasShellBase(LitElement) {
   static get styles() {

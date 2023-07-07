@@ -1,7 +1,7 @@
 import { css, html, LitElement } from 'lit'
 import { property } from 'lit/decorators.js'
 // import { ChevronUp } from '../icons'
-import CanvasShellBase from './CanvasShellBase'
+import CanvasShellBase from './CanvasShellBase.js'
 
 export class CanvasGototop extends CanvasShellBase(LitElement) {
   private get goToTopEl() {
