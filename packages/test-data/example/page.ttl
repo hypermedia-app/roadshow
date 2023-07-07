@@ -1,0 +1,8 @@
+PREFIX dash: <http://datashapes.org/dash#>
+PREFIX schema: <http://schema.org/>
+
+<example/page>
+  a schema:WebPage ;
+  schema:title "Test page resource" ;
+  dash:shape <shape/only-header> ;
+.

@@ -1,0 +1,64 @@
+PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
+PREFIX dash: <http://datashapes.org/dash#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX sh: <http://www.w3.org/ns/shacl#>
+PREFIX schema: <http://schema.org/>
+prefix roadshow: <https://hypermedia.app/roadshow#>
+PREFIX wba: <https://wikibus.org/api#>
+
+<_include/HeaderShape>
+  sh:property
+    [
+      sh:path hydra:title ;
+      sh:group _:header ;
+      dash:viewer (roadshow:element-h1 dash:LiteralViewer) ;
+      sh:order 1 ;
+    ],
+    [
+      sh:path hydra:description ;
+      sh:group _:header ;
+      dash:viewer dash:LiteralViewer ;
+      sh:order 2 ;
+    ],
+    [
+      sh:path ( hydra:apiDocumentation hydra:entrypoint ) ;
+      sh:order 5 ;
+      sh:group _:nav ;
+      dash:viewer dash:LabelViewer ;
+    ],
+    [
+      sh:path ( hydra:apiDocumentation hydra:entrypoint wba:catalog ) ;
+      dash:viewer dash:LabelViewer ;
+      sh:order 6 ;
+      sh:group _:nav ;
+      sh:node
+        [
+          sh:property
+            [
+              sh:path rdfs:label ;
+              sh:values "Catalog"
+            ] ;
+        ] ;
+    ],
+    [
+      sh:path ( hydra:apiDocumentation hydra:entrypoint wba:library ) ;
+      dash:viewer dash:LabelViewer ;
+      sh:order 7 ;
+      sh:group _:nav ;
+      sh:node
+        [
+          sh:property
+            [
+              sh:path rdfs:label ;
+              sh:values "Library"
+            ] ;
+        ] ;
+    ] .
+
+_:header
+  schema:identifier "page-title" ;
+.
+
+_:nav
+  schema:identifier "nav" ;
+.

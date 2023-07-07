@@ -1,0 +1,18 @@
+PREFIX html: <http://www.w3.org/1999/xhtml/>
+PREFIX ex: <http://example.org/>
+PREFIX schema: <http://schema.org/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX dash: <http://datashapes.org/dash#>
+PREFIX sh: <http://www.w3.org/ns/shacl#>
+prefix roadshow: <https://hypermedia.app/roadshow#>
+
+<shape/only-header>
+  a sh:NodeShape ;
+  dash:viewer ex:LayoutViewer ;
+  sh:property
+  [
+    sh:path schema:title ;
+    sh:group [ schema:identifier "header" ] ;
+    dash:viewer ( roadshow:element-h1 dash:LiteralViewer ) ;
+  ] ;
+.

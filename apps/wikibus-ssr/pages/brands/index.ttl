@@ -1,0 +1,85 @@
+PREFIX dash: <http://datashapes.org/dash#>
+PREFIX schema: <http://schema.org/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX sh: <http://www.w3.org/ns/shacl#>
+prefix dash-sparql: <http://datashapes.org/sparql#>
+prefix hex: <https://w3id.org/hydra/extension#>
+
+<brands/index>
+  dash:shape
+    [
+      a sh:NodeShape ;
+      sh:targetNode <https://new.wikibus.org/brands> ;
+      sh:rule
+        [
+          sh:subject sh:this ;
+          sh:predicate rdf:type ;
+          sh:object hex:AlphabeticallyPagedView ;
+        ],
+        [
+          sh:subject sh:this ;
+          sh:predicate hex:page ;
+          sh:object _:pageLink ;
+        ],
+        [
+          sh:subject _:pageLink ;
+          sh:predicate rdfs:label ;
+          sh:object _:initials ;
+        ] ;
+    ] ;
+.
+
+_:pageLink
+#BIND(IRI(CONCAT(STR(?this),"?p=", STR(UCASE(substr(?label, 1, 1))))) as ?letter)
+  dash-sparql:iri
+    (
+      [
+        dash-sparql:concat
+          (
+            [ dash-sparql:str ( sh:this ) ]
+            "?i="
+            [
+              dash-sparql:encode_for_uri ( [ dash-sparql:lcase ( _:initials ) ] )
+            ]
+          )
+      ]
+    ) ;
+.
+
+_:initials
+  dash-sparql:substr
+    (
+      [
+        sh:path skos:prefLabel ;
+        sh:nodes _:includeCollectionMembers ;
+      ]
+      1
+      1
+    )
+.
+
+
+_:includeCollectionMembers
+  sh:path [ sh:inversePath rdf:type ] ;
+  sh:nodes
+    [
+      sh:path hydra:object ;
+      sh:nodes
+        [
+          sh:filterShape
+            [
+              sh:property
+                [
+                  sh:path hydra:property ;
+                  sh:hasValue rdf:type ;
+                ] ;
+            ] ;
+          sh:nodes
+            [
+              sh:path ( [ sh:zeroOrMorePath rdf:type ] hydra:memberAssertion )
+            ] ;
+        ] ;
+    ] .

@@ -1,0 +1,15 @@
+{
+  "name": "test-data",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@rdfjs/namespace": "^2",
+    "@types/n3": "^1",
+    "@types/rdf-ext": "^2.2.1",
+    "@types/rdf-utils-fs": "^2.1.0",
+    "clownface": "^1.5.1",
+    "rdf-ext": "^2.1.1",
+    "rdf-utils-fs": "^2.3.0"
+  }
+}

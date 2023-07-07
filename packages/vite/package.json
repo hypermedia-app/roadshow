@@ -1,0 +1,17 @@
+{
+  "name": "@hydrofoil/roadshow-vite",
+  "version": "0.0.0",
+  "type": "module",
+  "exports": {
+    "./config": "./config.js",
+    "./client": "./client.js",
+    "./server": "./server.js"
+  },
+  "dependencies": {
+    "@esbuild-plugins/node-globals-polyfill": "^0.1.1",
+    "express": "^4.18.2",
+    "lit": "^2",
+    "util": "^0.12.5",
+    "vite": "^4"
+  }
+}

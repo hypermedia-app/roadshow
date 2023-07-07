@@ -1,0 +1,47 @@
+PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
+PREFIX sh: <http://www.w3.org/ns/shacl#>
+prefix dash-sparql: <http://datashapes.org/sparql#>
+prefix : <http://example.org/>
+
+<_include/PartialCollectionView>
+  sh:rule
+    [
+      sh:subject sh:this ;
+      sh:predicate hydra:view ;
+      sh:object _:pagerViewId ;
+    ],
+    [
+      sh:subject _:pagerViewId ;
+      sh:predicate hydra:next ;
+      sh:object _:nextPage ;
+    ] ;
+.
+
+_:pagerViewId
+  dash-sparql:iri
+    (
+      [ dash-sparql:concat ( [ dash-sparql:str ( sh:this ) ] "#pager" ) ]
+    )
+.
+
+_:nextPage
+  dash-sparql:iri
+    (
+      [
+        dash-sparql:concat
+          (
+            [ dash-sparql:str ( sh:this ) ]
+            "?page="
+            [
+              dash-sparql:str
+                (
+                  [
+                    :param "page" ;
+                    sh:defaultValue "2"
+                  ]
+                )
+            ]
+          )
+      ]
+    )
+.

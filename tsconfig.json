@@ -1,13 +1,13 @@
 {
   "compilerOptions": {
-    "target": "es2019",
+    "target": "ES2020",
     "module": "ESNext",
     "baseUrl": "./",
     "forceConsistentCasingInFileNames": true,
-    "moduleResolution": "Node",
+    "moduleResolution": "Node16",
     "declaration": true,
     "declarationMap": true,
-    "sourceMap": true,
+    "sourceMap": false,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
@@ -24,9 +24,11 @@
   },
   "include": [
     "packages",
-    "apps",
+    "apps/ssr-example",
+    "apps/wikibus-ssr",
+    "global.d.ts",
     "test-setup.js",
     "test-karma-setup.js",
-    "web-dev-server.config.mjs"
-  ]
+    "web-test-runner.config.js"
+  ],
 }

@@ -1,0 +1,90 @@
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX dash: <http://datashapes.org/dash#>
+PREFIX schema: <http://schema.org/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX hydra: <http://www.w3.org/ns/hydra/core#>
+PREFIX sh: <http://www.w3.org/ns/shacl#>
+prefix dash-sparql: <http://datashapes.org/sparql#>
+prefix canvas: <https://themes.semicolonweb.com/canvas/>
+prefix hex: <https://w3id.org/hydra/extension#>
+prefix : <http://example.org/>
+
+<vehicles>
+  a schema:WebPage ;
+  hydra:search
+    [
+      hydra:template "{?page,i}" ;
+    ] ;
+  dash:shape
+    [
+      a sh:NodeShape ;
+      sh:targetNode <https://new.wikibus.org/page/vehicles> ;
+      owl:imports <_include/HeaderShape>, <_include/PartialCollectionView> ;
+      sh:and ( <_include/HeaderShape> ) ;
+      dash:viewer canvas:FullWidthPage ;
+      sh:property
+        [
+          sh:path schema:mainEntity ;
+          dash:viewer dash:LiteralViewer ;
+          sh:node
+            [
+              sh:and ( <_include/PartialCollectionView> ) ;
+              sh:property
+                [
+                  sh:path hydra:member ;
+                  dash:viewer hex:CollectionMembersViewer ;
+                  sh:values
+                    [
+                      sh:limit 39 ;
+                      sh:nodes
+                        [
+                          sh:offset 0 ;
+                          sh:nodes
+                            [
+                              sh:orderBy [ sh:path rdfs:label ] ;
+                              sh:nodes _:includeCollectionMembers ;
+                            ] ;
+                        ] ;
+                    ] ;
+                  sh:node
+                    [
+                      sh:property
+                        [
+                          sh:path skos:prefLabel ;
+                          dash:viewer dash:LiteralViewer ;
+                        ] ;
+                      sh:property
+                        [
+                          sh:path ( schema:image schema:contentUrl ) ;
+                          dash:viewer dash:LiteralViewer ;
+                        ] ;
+                    ] ;
+                ] ;
+            ] ;
+        ] ;
+    ] ;
+.
+
+_:includeCollectionMembers
+  sh:path [ sh:inversePath rdf:type ] ;
+  sh:nodes
+    [
+      sh:path hydra:object ;
+      sh:nodes
+        [
+          sh:filterShape
+            [
+              sh:property
+                [
+                  sh:path hydra:property ;
+                  sh:hasValue rdf:type ;
+                ] ;
+            ] ;
+          sh:nodes
+            [
+              sh:path ( [ sh:zeroOrMorePath rdf:type ] hydra:memberAssertion )
+            ] ;
+        ] ;
+    ] .

@@ -1,0 +1,10 @@
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix sh: <http://www.w3.org/ns/shacl#>
+
+<WikidataCityPageShape>
+  a sh:NodeShape ;
+  sh:property
+  [
+    sh:path rdfs:label ;
+  ] ;
+.

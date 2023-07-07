@@ -1,0 +1,18 @@
+diff --git a/node_modules/@appnest/masonry-layout/index.js b/node_modules/@appnest/masonry-layout/index.js
+index 02cecf5..f52762f 100644
+--- a/node_modules/@appnest/masonry-layout/index.js
++++ b/node_modules/@appnest/masonry-layout/index.js
+@@ -1,2 +1,2 @@
+-export * from "./masonry-layout";
++export * from "./masonry-layout.js";
+ //# sourceMappingURL=index.js.map
+diff --git a/node_modules/@appnest/masonry-layout/masonry-layout.js b/node_modules/@appnest/masonry-layout/masonry-layout.js
+index a96ed20..fb4185b 100644
+--- a/node_modules/@appnest/masonry-layout/masonry-layout.js
++++ b/node_modules/@appnest/masonry-layout/masonry-layout.js
+@@ -1,4 +1,4 @@
+-import { COL_COUNT_CSS_VAR_NAME, debounce, DEFAULT_COLS, DEFAULT_DEBOUNCE_MS, DEFAULT_GAP_PX, DEFAULT_MAX_COL_WIDTH, ELEMENT_NODE_TYPE, findSmallestColIndex, GAP_CSS_VAR_NAME, getColCount, getNumberAttribute } from "./masonry-helpers";
++import { COL_COUNT_CSS_VAR_NAME, debounce, DEFAULT_COLS, DEFAULT_DEBOUNCE_MS, DEFAULT_GAP_PX, DEFAULT_MAX_COL_WIDTH, ELEMENT_NODE_TYPE, findSmallestColIndex, GAP_CSS_VAR_NAME, getColCount, getNumberAttribute } from "./masonry-helpers.js";
+ /**
+  * Template for the masonry layout.
+  * Max width of each column is computed as the width in percentage of

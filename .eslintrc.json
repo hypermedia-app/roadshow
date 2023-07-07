@@ -21,7 +21,7 @@
     "no-param-reassign": ["error", { "props": false }]
   },
   "overrides": [{
-    "files": "**/test/**/*.ts",
+    "files": ["**/*.test.ts", "**/*.spec.ts"],
     "rules": {
       "no-unused-expressions": "warn",
       "babel/no-unused-expressions": "off"
@@ -30,6 +30,16 @@
     "files": "packages/roadshow/**",
     "rules": {
       "require-extensions/require-extensions": "error"
+    }
+  }, {
+    "files": "apps/ssr-example/**",
+    "rules": {
+      "import/no-extraneous-dependencies": "warn"
+    }
+  }, {
+    "files": "apps/wikibus-ssr/**",
+    "globals": {
+      "JQueryStatic": "readonly"
     }
   }]
 }

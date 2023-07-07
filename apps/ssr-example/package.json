@@ -1,0 +1,27 @@
+{
+  "name": "ssr-test",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "node --loader ts-node/esm server.ts",
+    "test": "playwright test",
+    "build:client": "vite build --outDir dist/client",
+    "build:server": "vite build --outDir dist/server --ssr src/server.ts"
+  },
+  "dependencies": {
+    "@hydrofoil/roadshow-ssr": "^0.0.0",
+    "@hydrofoil/roadshow-vite": "^0.0.0",
+    "@tpluscode/rdf-ns-builders": "^4",
+    "@vaadin/vaadin": "^23.2.15",
+    "clownface": "^1.5.1",
+    "express": "^4.18.2",
+    "lit": "^2.6.1",
+    "rdf-ext": "^2",
+    "test-data": "*"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.29.2",
+    "@types/express": "^4"
+  }
+}

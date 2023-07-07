@@ -1,0 +1,40 @@
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX schema: <http://schema.org/>
+PREFIX dash: <http://datashapes.org/dash#>
+PREFIX sh: <http://www.w3.org/ns/shacl#>
+prefix canvas: <https://themes.semicolonweb.com/canvas/>
+PREFIX wba: <https://wikibus.org/api#>
+
+<catalog>
+  a schema:WebPage ;
+  dash:shape
+    [
+      a sh:NodeShape ;
+      owl:imports <_include/HeaderShape> ;
+      sh:and ( <_include/HeaderShape> ) ;
+      sh:targetNode <https://new.wikibus.org/page/catalog> ;
+      dash:viewer canvas:FullWidthPage ;
+      sh:property
+        [
+          sh:path ( schema:mainEntity wba:vehicles ) ;
+          sh:name "vehicles" ;
+          dash:viewer canvas:FeaturedBoxViewer ;
+          canvas:icon "bus" ;
+          sh:order 3 ;
+        ],
+        [
+          sh:path ( schema:mainEntity wba:brands ) ;
+          sh:name "brands" ;
+          dash:viewer canvas:FeaturedBoxViewer ;
+          canvas:icon "star-outline" ;
+          sh:order 4 ;
+        ],
+        [
+          sh:path ( schema:mainEntity wba:companies ) ;
+          sh:name "companies" ;
+          dash:viewer canvas:FeaturedBoxViewer ;
+          canvas:icon "business-outline" ;
+          sh:order 5 ;
+        ] ;
+    ] ;
+.

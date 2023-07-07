@@ -1,7 +1,0 @@
-export * from './Details.js'
-export * from './Label.js'
-export * from './Literal.js'
-export * from './URI.js'
-export * from './roadshow/Loading.js'
-export * from './roadshow/LoadingFailed.js'
-export * from './roadshow/RendererNotFoundViewer.js'
